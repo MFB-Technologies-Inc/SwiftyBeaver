@@ -29,6 +29,6 @@ extension String {
 
     /// cross-Swift-compatible index
     func find(_ char: Character) -> Index? {
-        return firstIndex(of: char)
+        firstIndex(of: char)
     }
 }
