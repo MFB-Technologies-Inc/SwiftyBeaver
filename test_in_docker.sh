@@ -6,7 +6,7 @@ set -o pipefail
 
 echo ""
 echo "Running Tests in Docker Container"
-echo "Swift 5"
+echo "Swift 5.10"
 echo "================================="
 docker build -t swiftybeaver -f Dockerfile .
 

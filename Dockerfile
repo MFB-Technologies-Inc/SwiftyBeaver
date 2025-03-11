@@ -1,4 +1,4 @@
-ARG swift_version=5.0
+ARG swift_version=5.10
 FROM swift:$swift_version
 
 WORKDIR /code 
