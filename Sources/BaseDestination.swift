@@ -60,7 +60,6 @@ open class BaseDestination: Hashable, Equatable {
     let formatter = DateFormatter()
     let startDate = Date()
 
-    // each destination class must have an own hashValue Int
     public func hash(into hasher: inout Hasher) {
         hasher.combine(ObjectIdentifier(Self.self))
     }
