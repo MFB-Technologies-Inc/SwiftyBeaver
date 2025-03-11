@@ -62,7 +62,9 @@ open class FileDestination: BaseDestination {
             if let url = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first {
                 baseURL = url
                 // try to use ~/Library/Caches/APP NAME instead of ~/Library/Caches
-                if let appName = Bundle.main.object(forInfoDictionaryKey: "CFBundleExecutable") as? String {
+                if let appName = Bundle.main.object(forInfoDictionaryKey: "CFBundleExecutable")
+                    as? String
+                {
                     do {
                         if let appURL = baseURL?.appendingPathComponent(appName, isDirectory: true) {
                             try fileManager.createDirectory(
@@ -129,6 +131,7 @@ open class FileDestination: BaseDestination {
                 do {
                     // Get file size
                     let attr = try FileManager.default.attributesOfItem(atPath: filePath)
+                    // swiftlint:disable:next force_cast
                     let fileSize = attr[FileAttributeKey.size] as! UInt64
                     // Do file rotation
                     if fileSize > logFileMaxSize {
@@ -244,7 +247,9 @@ open class FileDestination: BaseDestination {
     /// deletes log file.
     /// returns true if file was removed or does not exist, false otherwise
     public func deleteLogFile() -> Bool {
-        guard let url = logFileURL, fileManager.fileExists(atPath: url.path) == true else { return true }
+        guard let url = logFileURL, fileManager.fileExists(atPath: url.path) == true else {
+            return true
+        }
         do {
             try fileManager.removeItem(at: url)
             return true

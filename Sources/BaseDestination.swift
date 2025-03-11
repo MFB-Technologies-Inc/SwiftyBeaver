@@ -9,29 +9,42 @@
 // This source code is licensed under the MIT License (MIT) found in the
 // LICENSE file in the root directory of this source tree.
 
+// swiftlint:disable file_length
+
 import Dispatch
 import Foundation
 
 // store operating system / platform
 #if os(iOS)
+    // swiftlint:disable:next identifier_name
     let OS = "iOS"
 #elseif os(OSX)
+    // swiftlint:disable:next identifier_name
     let OS = "OSX"
 #elseif os(watchOS)
+    // swiftlint:disable:next identifier_name
     let OS = "watchOS"
 #elseif os(tvOS)
+    // swiftlint:disable:next identifier_name
     let OS = "tvOS"
 #elseif os(Linux)
+    // swiftlint:disable:next identifier_name
     let OS = "Linux"
 #elseif os(FreeBSD)
+    // swiftlint:disable:next identifier_name
     let OS = "FreeBSD"
 #elseif os(Windows)
+    // swiftlint:disable:next identifier_name
     let OS = "Windows"
 #elseif os(Android)
+    // swiftlint:disable:next identifier_name
     let OS = "Android"
 #else
+    // swiftlint:disable:next identifier_name
     let OS = "Unknown"
 #endif
+
+// swiftlint:disable type_body_length
 
 /// destination which all others inherit from. do not directly use
 open class BaseDestination: Hashable, Equatable {
@@ -83,13 +96,9 @@ open class BaseDestination: Hashable, Equatable {
     let startDate = Date()
 
     // each destination class must have an own hashValue Int
-    #if swift(>=4.2)
-        public func hash(into hasher: inout Hasher) {
-            hasher.combine(defaultHashValue)
-        }
-    #else
-        public lazy var hashValue: Int = self.defaultHashValue
-    #endif
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(defaultHashValue)
+    }
 
     open var defaultHashValue: Int { 0 }
 
@@ -104,6 +113,7 @@ open class BaseDestination: Hashable, Equatable {
         queue = DispatchQueue(label: queueLabel, target: queue)
     }
 
+    // swiftlint:disable function_parameter_count
     /// send / store the formatted log message to the destination
     /// returns the formatted log message for processing by inheriting method
     /// and for unit tests (nil if error)
@@ -141,6 +151,8 @@ open class BaseDestination: Hashable, Equatable {
         }
     }
 
+    // swiftlint:enable function_parameter_count
+
     public func execute(synchronously: Bool, block: @escaping () -> Void) {
         guard let queue else {
             fatalError("Queue not set")
@@ -168,6 +180,7 @@ open class BaseDestination: Hashable, Equatable {
     /// returns (padding length value, offset in string after padding info)
     private func parsePadding(_ text: String) -> (Int, Int) {
         // look for digits followed by a alpha character
+        // swiftlint:disable:next identifier_name
         var s: String!
         var sign: Int = 1
         if text.firstChar == "-" {
@@ -191,7 +204,8 @@ open class BaseDestination: Hashable, Equatable {
                 // Hm... better to use suffix or prefix?
                 return truncating ? String(text.suffix(toLength)) : text
             } else {
-                return "".padding(toLength: toLength - text.count, withPad: " ", startingAt: 0) + text
+                return "".padding(toLength: toLength - text.count, withPad: " ", startingAt: 0)
+                    + text
             }
         } else if toLength < 0 {
             // Pad to the right of the string
@@ -202,6 +216,9 @@ open class BaseDestination: Hashable, Equatable {
         }
     }
 
+    // swiftlint:disable cyclomatic_complexity
+    // swiftlint:disable function_body_length
+    // swiftlint:disable function_parameter_count
     /// returns the log message based on the format pattern
     func formatMessage(
         _ format: String,
@@ -258,7 +275,9 @@ open class BaseDestination: Hashable, Equatable {
             case "Z":
                 // start of datetime format in UTC timezone
                 #if swift(>=3.2)
-                    text += paddedString(formatDate(String(remainingPhrase), timeZone: "UTC"), padding)
+                    text += paddedString(
+                        formatDate(String(remainingPhrase), timeZone: "UTC"), padding
+                    )
                 #else
                     text += paddedString(formatDate(remainingPhrase, timeZone: "UTC"), padding)
                 #endif
@@ -271,11 +290,13 @@ open class BaseDestination: Hashable, Equatable {
                 text += reset + remainingPhrase
             case "X":
                 // add the context
+                // swiftlint:disable:next identifier_name
                 if let cx = context {
-                    text += paddedString(
-                        String(describing: cx).trimmingCharacters(in: .whitespacesAndNewlines),
-                        padding
-                    ) + remainingPhrase
+                    text +=
+                        paddedString(
+                            String(describing: cx).trimmingCharacters(in: .whitespacesAndNewlines),
+                            padding
+                        ) + remainingPhrase
                 } else {
                     text += paddedString("", padding) + remainingPhrase
                 }
@@ -287,6 +308,11 @@ open class BaseDestination: Hashable, Equatable {
         return text.replacingOccurrences(of: "\\s+$", with: "", options: .regularExpression)
     }
 
+    // swiftlint:enable cyclomatic_complexity
+    // swiftlint:enable function_body_length
+    // swiftlint:enable function_parameter_count
+
+    // swiftlint:disable function_parameter_count
     /// returns the log payload as optional JSON string
     func messageToJSON(
         _ level: SwiftyBeaver.Level,
@@ -306,11 +332,14 @@ open class BaseDestination: Hashable, Equatable {
             "function": function,
             "line": line,
         ]
+        // swiftlint:disable:next identifier_name
         if let cx = context {
             dict["context"] = cx
         }
         return jsonStringFromDict(dict)
     }
+
+    // swiftlint:enable function_parameter_count
 
     /// returns the string of a level
     func levelWord(_ level: SwiftyBeaver.Level) -> String {
@@ -414,7 +443,9 @@ open class BaseDestination: Hashable, Equatable {
         let seconds = Int(interval) - (Int(interval / 60) * 60)
         let milliseconds = Int(interval.truncatingRemainder(dividingBy: 1) * 1000)
 
-        return String(format: "%0.2d:%0.2d:%0.2d.%03d", arguments: [hours, minutes, seconds, milliseconds])
+        return String(
+            format: "%0.2d:%0.2d:%0.2d.%03d", arguments: [hours, minutes, seconds, milliseconds]
+        )
     }
 
     /// returns the json-encoded string value
@@ -487,11 +518,12 @@ open class BaseDestination: Hashable, Equatable {
     /// the message before invoking shouldLevelBeLogged
     func hasMessageFilters() -> Bool {
         !getFiltersTargeting(
-            Filter.TargetType.Message(.Equals([], true)),
+            Filter.TargetType.message(.equals([], true)),
             fromFilters: filters
         ).isEmpty
     }
 
+    // swiftlint:disable cyclomatic_complexity
     /// checks if level is at least minLevel or if a minLevel filter for that path does exist
     /// returns boolean and can be used to decide if a message should be logged or not
     func shouldLevelBeLogged(
@@ -514,13 +546,15 @@ open class BaseDestination: Hashable, Equatable {
             }
         }
 
-        let filterCheckResult = FilterValidator.validate(input: .init(
-            filters: filters,
-            level: level,
-            path: path,
-            function: function,
-            message: message
-        ))
+        let filterCheckResult = FilterValidator.validate(
+            input: .init(
+                filters: filters,
+                level: level,
+                path: path,
+                function: function,
+                message: message
+            )
+        )
 
         // Exclusion filters match if they do NOT meet the filter condition (see Filter.apply(_:) method)
         switch filterCheckResult[.excluded] {
@@ -564,6 +598,8 @@ open class BaseDestination: Hashable, Equatable {
         }
     }
 
+    // swiftlint:enable cyclomatic_complexity
+
     func getFiltersTargeting(_ target: Filter.TargetType, fromFilters: [FilterType]) -> [FilterType] {
         fromFilters.filter { filter in
             filter.getTarget() == target
@@ -579,6 +615,8 @@ open class BaseDestination: Hashable, Equatable {
         // no implementation in base destination needed
     }
 }
+
+// swiftlint:enable type_body_length
 
 public func == (lhs: BaseDestination, rhs: BaseDestination) -> Bool {
     ObjectIdentifier(lhs) == ObjectIdentifier(rhs)

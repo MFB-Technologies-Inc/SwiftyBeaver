@@ -54,14 +54,14 @@ enum FilterValidator {
         case someFiltersMatch(PartialMatchData) // Only some filters fully match the log entry (condition + minimum log
         // level)
         case noFiltersMatchingType // There are no filters set for a particular type (excluded, required, nonRequired)
+    }
 
-        struct PartialMatchData {
-            let fullMatchCount: Int // Number of filters that match both the condition and the minimum log level of the
-            // log entry
-            let conditionMatchCount: Int // Number of filters that match ONLY the condition of the log entry (path,
-            // function, message)
-            let logLevelMatchCount: Int // Number of filters that match ONLY the minimum log level of the log entry
-        }
+    struct PartialMatchData {
+        let fullMatchCount: Int // Number of filters that match both the condition and the minimum log level of the
+        // log entry
+        let conditionMatchCount: Int // Number of filters that match ONLY the condition of the log entry (path,
+        // function, message)
+        let logLevelMatchCount: Int // Number of filters that match ONLY the minimum log level of the log entry
     }
 
     static func validate(
@@ -129,13 +129,13 @@ enum FilterValidator {
         let passes: Bool
 
         switch filter.getTarget() {
-        case .Path:
+        case .path:
             passes = filter.apply(path)
 
-        case .Function:
+        case .function:
             passes = filter.apply(function)
 
-        case .Message:
+        case .message:
             guard let message else {
                 return false
             }

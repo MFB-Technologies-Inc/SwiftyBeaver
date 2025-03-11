@@ -11,6 +11,7 @@
 
 import Foundation
 
+// swiftlint:disable:next type_body_length
 open class SwiftyBeaver {
     /// version string of framework
     public static let version = "2.1.1" // UPDATE ON RELEASE!
@@ -101,9 +102,15 @@ open class SwiftyBeaver {
         context: Any? = nil
     ) {
         #if swift(>=5)
-            custom(level: .verbose, message: message(), file: file, function: function, line: line, context: context)
+            custom(
+                level: .verbose, message: message(), file: file, function: function, line: line,
+                context: context
+            )
         #else
-            custom(level: .verbose, message: message, file: file, function: function, line: line, context: context)
+            custom(
+                level: .verbose, message: message, file: file, function: function, line: line,
+                context: context
+            )
         #endif
     }
 
@@ -116,9 +123,15 @@ open class SwiftyBeaver {
         context: Any? = nil
     ) {
         #if swift(>=5)
-            custom(level: .debug, message: message(), file: file, function: function, line: line, context: context)
+            custom(
+                level: .debug, message: message(), file: file, function: function, line: line,
+                context: context
+            )
         #else
-            custom(level: .debug, message: message, file: file, function: function, line: line, context: context)
+            custom(
+                level: .debug, message: message, file: file, function: function, line: line,
+                context: context
+            )
         #endif
     }
 
@@ -131,9 +144,15 @@ open class SwiftyBeaver {
         context: Any? = nil
     ) {
         #if swift(>=5)
-            custom(level: .info, message: message(), file: file, function: function, line: line, context: context)
+            custom(
+                level: .info, message: message(), file: file, function: function, line: line,
+                context: context
+            )
         #else
-            custom(level: .info, message: message, file: file, function: function, line: line, context: context)
+            custom(
+                level: .info, message: message, file: file, function: function, line: line,
+                context: context
+            )
         #endif
     }
 
@@ -146,9 +165,15 @@ open class SwiftyBeaver {
         context: Any? = nil
     ) {
         #if swift(>=5)
-            custom(level: .warning, message: message(), file: file, function: function, line: line, context: context)
+            custom(
+                level: .warning, message: message(), file: file, function: function, line: line,
+                context: context
+            )
         #else
-            custom(level: .warning, message: message, file: file, function: function, line: line, context: context)
+            custom(
+                level: .warning, message: message, file: file, function: function, line: line,
+                context: context
+            )
         #endif
     }
 
@@ -161,9 +186,15 @@ open class SwiftyBeaver {
         context: Any? = nil
     ) {
         #if swift(>=5)
-            custom(level: .error, message: message(), file: file, function: function, line: line, context: context)
+            custom(
+                level: .error, message: message(), file: file, function: function, line: line,
+                context: context
+            )
         #else
-            custom(level: .error, message: message, file: file, function: function, line: line, context: context)
+            custom(
+                level: .error, message: message, file: file, function: function, line: line,
+                context: context
+            )
         #endif
     }
 
@@ -176,9 +207,15 @@ open class SwiftyBeaver {
         context: Any? = nil
     ) {
         #if swift(>=5)
-            custom(level: .critical, message: message(), file: file, function: function, line: line, context: context)
+            custom(
+                level: .critical, message: message(), file: file, function: function, line: line,
+                context: context
+            )
         #else
-            custom(level: .critical, message: message, file: file, function: function, line: line, context: context)
+            custom(
+                level: .critical, message: message, file: file, function: function, line: line,
+                context: context
+            )
         #endif
     }
 
@@ -191,9 +228,15 @@ open class SwiftyBeaver {
         context: Any? = nil
     ) {
         #if swift(>=5)
-            custom(level: .fault, message: message(), file: file, function: function, line: line, context: context)
+            custom(
+                level: .fault, message: message(), file: file, function: function, line: line,
+                context: context
+            )
         #else
-            custom(level: .fault, message: message, file: file, function: function, line: line, context: context)
+            custom(
+                level: .fault, message: message, file: file, function: function, line: line,
+                context: context
+            )
         #endif
     }
 
@@ -229,6 +272,7 @@ open class SwiftyBeaver {
         #endif
     }
 
+    // swiftlint:disable function_parameter_count
     /// internal helper which dispatches send to dedicated queue if minLevel is ok
     class func dispatch_send(
         level: SwiftyBeaver.Level,
@@ -246,10 +290,15 @@ open class SwiftyBeaver {
                 continue
             }
 
-            resolvedMessage = resolvedMessage == nil && dest.hasMessageFilters() ? "\(message())" : resolvedMessage
-            if dest.shouldLevelBeLogged(level, path: file, function: function, message: resolvedMessage) {
+            resolvedMessage =
+                resolvedMessage == nil && dest.hasMessageFilters()
+                    ? "\(message())" : resolvedMessage
+            if dest.shouldLevelBeLogged(
+                level, path: file, function: function, message: resolvedMessage
+            ) {
                 // try to convert msg object to String and put it on queue
                 let msgStr = resolvedMessage == nil ? "\(message())" : resolvedMessage!
+                // swiftlint:disable:next identifier_name
                 let f = stripParams(function: function)
 
                 if dest.asynchronously {
@@ -281,6 +330,8 @@ open class SwiftyBeaver {
         }
     }
 
+    // swiftlint:enable function_parameter_count
+
     /// flush all destinations to make sure all logging messages have been written out
     /// returns after all messages flushed or timeout seconds
     /// returns: true if all messages flushed, false if timeout or error occurred
@@ -309,6 +360,7 @@ open class SwiftyBeaver {
 
     /// removes the parameters from a function because it looks weird with a single param
     class func stripParams(function: String) -> String {
+        // swiftlint:disable:next identifier_name
         var f = function
         if let indexOfBrace = f.find("(") {
             #if swift(>=4.0)
@@ -324,5 +376,4 @@ open class SwiftyBeaver {
 
 // MARK: Sendable
 
-@available(iOS 8.0, macOS 10.10, tvOS 9.0, watchOS 2.0, *)
 extension SwiftyBeaver.Level: Sendable {}

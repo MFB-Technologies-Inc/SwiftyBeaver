@@ -25,6 +25,8 @@
             try decode([UInt8](string.utf8))
         }
 
+        // swiftlint:disable cyclomatic_complexity
+        // swiftlint:disable function_body_length
         /// Decodes a Base64 encoded String into Data
         ///
         /// - throws: If the string isn't base64 encoded
@@ -56,9 +58,13 @@
             decoded.reserveCapacity(length)
 
             var index = 0
+            // swiftlint:disable:next identifier_name
             var i0: UInt8 = 0
+            // swiftlint:disable:next identifier_name
             var i1: UInt8 = 0
+            // swiftlint:disable:next identifier_name
             var i2: UInt8 = 0
+            // swiftlint:disable:next identifier_name
             var i3: UInt8 = 0
 
             while index &+ 4 < string.count {
@@ -131,6 +137,9 @@
             return decoded
         }
 
+        // swiftlint:enable cyclomatic_complexity
+        // swiftlint:enable function_body_length
+
         static func encode(_ data: [UInt8]) -> String {
             let base64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
             var encoded: String = ""
@@ -145,6 +154,7 @@
 
             let decodedBytes = data.map { Int($0) }
 
+            // swiftlint:disable:next identifier_name
             var i = 0
 
             while i < decodedBytes.count - 2 {

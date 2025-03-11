@@ -484,7 +484,7 @@ class BaseDestinationTests: XCTestCase {
     func test_shouldLevelBeLogged_hasMinLevel_True() {
         let destination = BaseDestination()
         destination.minLevel = SwiftyBeaver.Level.verbose
-        destination.addFilter(Filters.Path.equals("/world/beaver.swift", caseSensitive: true, required: true))
+        destination.addFilter(Filters.path.equals("/world/beaver.swift", caseSensitive: true, required: true))
         XCTAssertTrue(destination.shouldLevelBeLogged(
             SwiftyBeaver.Level.warning,
             path: "/world/beaver.swift",
@@ -495,7 +495,7 @@ class BaseDestinationTests: XCTestCase {
     func test_shouldLevelBeLogged_hasMinLevel_False() {
         let destination = BaseDestination()
         destination.minLevel = SwiftyBeaver.Level.info
-        destination.addFilter(Filters.Path.equals("/world/beaver.swift", caseSensitive: true, required: true))
+        destination.addFilter(Filters.path.equals("/world/beaver.swift", caseSensitive: true, required: true))
         XCTAssertTrue(destination.shouldLevelBeLogged(
             SwiftyBeaver.Level.warning,
             path: "/world/beaver.swift",
@@ -506,7 +506,7 @@ class BaseDestinationTests: XCTestCase {
     func test_shouldLevelBeLogged_hasMinLevelAndMatchingLevelAndEqualPath_True() {
         let destination = BaseDestination()
         destination.minLevel = SwiftyBeaver.Level.verbose
-        let filter = Filters.Path.equals("/world/beaver.swift", caseSensitive: true, required: true, minLevel: .debug)
+        let filter = Filters.path.equals("/world/beaver.swift", caseSensitive: true, required: true, minLevel: .debug)
         destination.addFilter(filter)
         XCTAssertTrue(destination.shouldLevelBeLogged(
             .debug,
@@ -518,7 +518,7 @@ class BaseDestinationTests: XCTestCase {
     func test_shouldLevelBeLogged_hasMinLevelAndNoMatchingLevelButEqualPath_False() {
         let destination = BaseDestination()
         destination.minLevel = SwiftyBeaver.Level.info
-        let filter = Filters.Path.equals("/world/beaver.swift", caseSensitive: true, required: true, minLevel: .debug)
+        let filter = Filters.path.equals("/world/beaver.swift", caseSensitive: true, required: true, minLevel: .debug)
         destination.addFilter(filter)
         XCTAssertTrue(destination.shouldLevelBeLogged(
             .debug,
@@ -530,7 +530,7 @@ class BaseDestinationTests: XCTestCase {
     func test_shouldLevelBeLogged_hasMinLevelAndOneEqualsPathFilterAndDoesNotPass_False() {
         let destination = BaseDestination()
         destination.minLevel = SwiftyBeaver.Level.info
-        destination.addFilter(Filters.Path.equals("/world/beaver.swift", caseSensitive: true, required: true))
+        destination.addFilter(Filters.path.equals("/world/beaver.swift", caseSensitive: true, required: true))
         XCTAssertFalse(destination.shouldLevelBeLogged(
             .debug,
             path: "/hello/foo.swift",
@@ -541,7 +541,7 @@ class BaseDestinationTests: XCTestCase {
     func test_shouldLevelBeLogged_hasMinLevelAndOneRequiredMessageFilterAndDoesNotPass_False() {
         let destination = BaseDestination()
         destination.minLevel = .error
-        destination.addFilter(Filters.Message.contains(
+        destination.addFilter(Filters.message.contains(
             "Required",
             caseSensitive: false,
             required: true,
@@ -558,7 +558,7 @@ class BaseDestinationTests: XCTestCase {
     func test_shouldLevelBeLogged_hasMinLevelAndOneRequiredMessageFilterAndDoesPass_True() {
         let destination = BaseDestination()
         destination.minLevel = SwiftyBeaver.Level.error
-        destination.addFilter(Filters.Message.contains(
+        destination.addFilter(Filters.message.contains(
             "Required",
             caseSensitive: false,
             required: true,
@@ -575,8 +575,8 @@ class BaseDestinationTests: XCTestCase {
     func test_shouldLevelBeLogged_hasLevelFilterAndTwoRequiredPathFiltersAndPasses_True() {
         let destination = BaseDestination()
         destination.minLevel = SwiftyBeaver.Level.info
-        destination.addFilter(Filters.Path.startsWith("/world", caseSensitive: true, required: true))
-        destination.addFilter(Filters.Path.endsWith("beaver.swift", caseSensitive: true, required: true))
+        destination.addFilter(Filters.path.startsWith("/world", caseSensitive: true, required: true))
+        destination.addFilter(Filters.path.endsWith("beaver.swift", caseSensitive: true, required: true))
         XCTAssertTrue(destination.shouldLevelBeLogged(
             SwiftyBeaver.Level.warning,
             path: "/world/beaver.swift",
@@ -587,8 +587,8 @@ class BaseDestinationTests: XCTestCase {
     func test_shouldLevelBeLogged_hasLevelFilterAndTwoRequiredPathFiltersAndDoesNotPass_False() {
         let destination = BaseDestination()
         destination.minLevel = SwiftyBeaver.Level.info
-        destination.addFilter(Filters.Path.startsWith("/world", caseSensitive: true, required: true))
-        destination.addFilter(Filters.Path.endsWith("foo.swift", caseSensitive: true, required: true))
+        destination.addFilter(Filters.path.startsWith("/world", caseSensitive: true, required: true))
+        destination.addFilter(Filters.path.endsWith("foo.swift", caseSensitive: true, required: true))
         XCTAssertFalse(destination.shouldLevelBeLogged(
             .debug,
             path: "/hello/foo.swift",
@@ -599,9 +599,9 @@ class BaseDestinationTests: XCTestCase {
     func test_shouldLevelBeLogged_hasLevelFilterARequiredPathFilterAndTwoRequiredMessageFiltersAndPasses_True() {
         let destination = BaseDestination()
         destination.minLevel = SwiftyBeaver.Level.info
-        destination.addFilter(Filters.Path.startsWith("/world", caseSensitive: true, required: true))
-        destination.addFilter(Filters.Message.startsWith("SQL:", caseSensitive: true, required: true))
-        destination.addFilter(Filters.Message.contains("insert", caseSensitive: false, required: true))
+        destination.addFilter(Filters.path.startsWith("/world", caseSensitive: true, required: true))
+        destination.addFilter(Filters.message.startsWith("SQL:", caseSensitive: true, required: true))
+        destination.addFilter(Filters.message.contains("insert", caseSensitive: false, required: true))
         XCTAssertTrue(destination.shouldLevelBeLogged(
             SwiftyBeaver.Level.warning,
             path: "/world/beaver.swift",
@@ -613,9 +613,9 @@ class BaseDestinationTests: XCTestCase {
     func test_shouldLevelBeLogged_hasLevelFilterARequiredPathFilterAndTwoRequiredMessageFiltersAndDoesNotPass_False() {
         let destination = BaseDestination()
         destination.minLevel = SwiftyBeaver.Level.info
-        destination.addFilter(Filters.Path.startsWith("/world", caseSensitive: true, required: true))
-        destination.addFilter(Filters.Message.startsWith("SQL:", caseSensitive: true, required: true))
-        destination.addFilter(Filters.Message.contains("insert", caseSensitive: false, required: true))
+        destination.addFilter(Filters.path.startsWith("/world", caseSensitive: true, required: true))
+        destination.addFilter(Filters.message.startsWith("SQL:", caseSensitive: true, required: true))
+        destination.addFilter(Filters.message.contains("insert", caseSensitive: false, required: true))
         XCTAssertFalse(destination.shouldLevelBeLogged(
             .debug,
             path: "/world/beaver.swift",
@@ -627,11 +627,11 @@ class BaseDestinationTests: XCTestCase {
     func test_shouldLevelBeLogged_hasLevelFilterCombinationOfAllOtherFiltersAndPasses_True() {
         let destination = BaseDestination()
         destination.minLevel = SwiftyBeaver.Level.info
-        destination.addFilter(Filters.Path.startsWith("/world", caseSensitive: true, required: true))
-        destination.addFilter(Filters.Path.endsWith("/beaver.swift", caseSensitive: true, required: true))
-        destination.addFilter(Filters.Function.equals("executeSQLStatement", required: true))
-        destination.addFilter(Filters.Message.startsWith("SQL:", caseSensitive: true, required: true))
-        destination.addFilter(Filters.Message.contains("insert", "update", "delete", required: true))
+        destination.addFilter(Filters.path.startsWith("/world", caseSensitive: true, required: true))
+        destination.addFilter(Filters.path.endsWith("/beaver.swift", caseSensitive: true, required: true))
+        destination.addFilter(Filters.function.equals("executeSQLStatement", required: true))
+        destination.addFilter(Filters.message.startsWith("SQL:", caseSensitive: true, required: true))
+        destination.addFilter(Filters.message.contains("insert", "update", "delete", required: true))
         XCTAssertTrue(destination.shouldLevelBeLogged(
             SwiftyBeaver.Level.warning,
             path: "/world/beaver.swift",
@@ -643,11 +643,11 @@ class BaseDestinationTests: XCTestCase {
     func test_shouldLevelBeLogged_hasLevelFilterCombinationOfAllOtherFiltersAndDoesNotPass_False() {
         let destination = BaseDestination()
         destination.minLevel = SwiftyBeaver.Level.info
-        destination.addFilter(Filters.Path.startsWith("/world", caseSensitive: true, required: true))
-        destination.addFilter(Filters.Path.endsWith("/beaver.swift", caseSensitive: true, required: true))
-        destination.addFilter(Filters.Function.equals("executeSQLStatement", required: true))
-        destination.addFilter(Filters.Message.startsWith("SQL:", caseSensitive: true, required: true))
-        destination.addFilter(Filters.Message.contains("insert", "update", "delete", required: true))
+        destination.addFilter(Filters.path.startsWith("/world", caseSensitive: true, required: true))
+        destination.addFilter(Filters.path.endsWith("/beaver.swift", caseSensitive: true, required: true))
+        destination.addFilter(Filters.function.equals("executeSQLStatement", required: true))
+        destination.addFilter(Filters.message.startsWith("SQL:", caseSensitive: true, required: true))
+        destination.addFilter(Filters.message.contains("insert", "update", "delete", required: true))
         XCTAssertFalse(destination.shouldLevelBeLogged(
             .debug,
             path: "/world/beaver.swift",
@@ -659,13 +659,13 @@ class BaseDestinationTests: XCTestCase {
     func test_shouldLevelBeLogged_hasLevelFilterCombinationOfOtherFiltersIncludingNonRequiredAndPasses_True() {
         let destination = BaseDestination()
         destination.minLevel = SwiftyBeaver.Level.info
-        destination.addFilter(Filters.Path.startsWith("/world", caseSensitive: true, required: true))
-        destination.addFilter(Filters.Path.endsWith("/beaver.swift", caseSensitive: true, required: true))
-        destination.addFilter(Filters.Function.equals("executeSQLStatement", required: true))
-        destination.addFilter(Filters.Message.startsWith("SQL:", caseSensitive: true, required: true))
-        destination.addFilter(Filters.Message.contains("insert"))
-        destination.addFilter(Filters.Message.contains("update"))
-        destination.addFilter(Filters.Message.contains("delete"))
+        destination.addFilter(Filters.path.startsWith("/world", caseSensitive: true, required: true))
+        destination.addFilter(Filters.path.endsWith("/beaver.swift", caseSensitive: true, required: true))
+        destination.addFilter(Filters.function.equals("executeSQLStatement", required: true))
+        destination.addFilter(Filters.message.startsWith("SQL:", caseSensitive: true, required: true))
+        destination.addFilter(Filters.message.contains("insert"))
+        destination.addFilter(Filters.message.contains("update"))
+        destination.addFilter(Filters.message.contains("delete"))
         XCTAssertTrue(destination.shouldLevelBeLogged(
             SwiftyBeaver.Level.warning,
             path: "/world/beaver.swift",
@@ -677,13 +677,13 @@ class BaseDestinationTests: XCTestCase {
     func test_shouldLevelBeLogged_hasLevelFilterCombinationOfOtherFiltersIncludingNonRequired_True() {
         let destination = BaseDestination()
         destination.minLevel = SwiftyBeaver.Level.info
-        destination.addFilter(Filters.Path.startsWith("/world", caseSensitive: true, required: true))
-        destination.addFilter(Filters.Path.endsWith("/beaver.swift", caseSensitive: true, required: true))
-        destination.addFilter(Filters.Function.equals("executeSQLStatement", required: true))
-        destination.addFilter(Filters.Message.startsWith("SQL:", caseSensitive: true, required: true))
-        destination.addFilter(Filters.Message.contains("insert", caseSensitive: true))
-        destination.addFilter(Filters.Message.contains("update"))
-        destination.addFilter(Filters.Message.contains("delete"))
+        destination.addFilter(Filters.path.startsWith("/world", caseSensitive: true, required: true))
+        destination.addFilter(Filters.path.endsWith("/beaver.swift", caseSensitive: true, required: true))
+        destination.addFilter(Filters.function.equals("executeSQLStatement", required: true))
+        destination.addFilter(Filters.message.startsWith("SQL:", caseSensitive: true, required: true))
+        destination.addFilter(Filters.message.contains("insert", caseSensitive: true))
+        destination.addFilter(Filters.message.contains("update"))
+        destination.addFilter(Filters.message.contains("delete"))
         XCTAssertTrue(destination.shouldLevelBeLogged(
             SwiftyBeaver.Level.warning,
             path: "/world/beaver.swift",
@@ -695,13 +695,13 @@ class BaseDestinationTests: XCTestCase {
     func test_shouldLevelBeLogged_hasLevelFilterCombinationOfOtherFiltersIncludingNonRequired_False() {
         let destination = BaseDestination()
         destination.minLevel = SwiftyBeaver.Level.info
-        destination.addFilter(Filters.Path.startsWith("/world", caseSensitive: true, required: true))
-        destination.addFilter(Filters.Path.endsWith("/beaver.swift", caseSensitive: true, required: true))
-        destination.addFilter(Filters.Function.equals("executeSQLStatement", required: true))
-        destination.addFilter(Filters.Message.startsWith("SQL:", caseSensitive: true, required: true))
-        destination.addFilter(Filters.Message.contains("rename", caseSensitive: true, required: true))
-        destination.addFilter(Filters.Message.contains("update"))
-        destination.addFilter(Filters.Message.contains("delete"))
+        destination.addFilter(Filters.path.startsWith("/world", caseSensitive: true, required: true))
+        destination.addFilter(Filters.path.endsWith("/beaver.swift", caseSensitive: true, required: true))
+        destination.addFilter(Filters.function.equals("executeSQLStatement", required: true))
+        destination.addFilter(Filters.message.startsWith("SQL:", caseSensitive: true, required: true))
+        destination.addFilter(Filters.message.contains("rename", caseSensitive: true, required: true))
+        destination.addFilter(Filters.message.contains("update"))
+        destination.addFilter(Filters.message.contains("delete"))
         XCTAssertFalse(destination.shouldLevelBeLogged(
             .debug,
             path: "/world/beaver.swift",
@@ -713,7 +713,7 @@ class BaseDestinationTests: XCTestCase {
     func test_shouldLevelBeLogged_hasMatchingNonRequiredFilter_True() {
         let destination = BaseDestination()
         destination.minLevel = .info
-        destination.addFilter(Filters.Path.contains("/ViewController"))
+        destination.addFilter(Filters.path.contains("/ViewController"))
         XCTAssertTrue(destination.shouldLevelBeLogged(
             .debug,
             path: "/world/ViewController.swift",
@@ -725,7 +725,7 @@ class BaseDestinationTests: XCTestCase {
     func test_shouldLevelBeLogged_hasNoMatchingNonRequiredFilter_False() {
         let destination = BaseDestination()
         destination.minLevel = .info
-        destination.addFilter(Filters.Path.contains("/ViewController"))
+        destination.addFilter(Filters.path.contains("/ViewController"))
         XCTAssertFalse(destination.shouldLevelBeLogged(
             .debug,
             path: "/world/beaver.swift",
@@ -737,7 +737,7 @@ class BaseDestinationTests: XCTestCase {
     func test_shouldLevelBeLogged_hasNoMatchingNonRequiredFilterAndMinLevel_True() {
         let destination = BaseDestination()
         destination.minLevel = .debug
-        destination.addFilter(Filters.Path.contains("/ViewController", minLevel: .info))
+        destination.addFilter(Filters.path.contains("/ViewController", minLevel: .info))
         XCTAssertTrue(destination.shouldLevelBeLogged(
             .debug,
             path: "/world/beaver.swift",
@@ -749,7 +749,7 @@ class BaseDestinationTests: XCTestCase {
     func test_shouldLevelBeLogged_hasNoMatchingNonRequiredFilterAndMinLevel_False() {
         let destination = BaseDestination()
         destination.minLevel = .verbose
-        destination.addFilter(Filters.Path.contains("/ViewController", minLevel: .debug))
+        destination.addFilter(Filters.path.contains("/ViewController", minLevel: .debug))
         XCTAssertFalse(destination.shouldLevelBeLogged(
             .verbose,
             path: "/world/ViewController.swift",
@@ -761,8 +761,8 @@ class BaseDestinationTests: XCTestCase {
     func test_shouldLevelBeLogged_hasMultipleNonMatchingNonRequiredFilterAndMinLevel_True() {
         let destination = BaseDestination()
         destination.minLevel = .debug
-        destination.addFilter(Filters.Path.contains("/ViewController", minLevel: .info))
-        destination.addFilter(Filters.Path.contains("/test", minLevel: .debug))
+        destination.addFilter(Filters.path.contains("/ViewController", minLevel: .info))
+        destination.addFilter(Filters.path.contains("/test", minLevel: .debug))
         XCTAssertTrue(destination.shouldLevelBeLogged(
             .debug,
             path: "/world/beaver.swift",
@@ -774,8 +774,8 @@ class BaseDestinationTests: XCTestCase {
     func test_shouldLevelBeLogged_hasMultipleNonMatchingNonRequiredFilterAndMinLevel_False() {
         let destination = BaseDestination()
         destination.minLevel = .verbose
-        destination.addFilter(Filters.Path.contains("/ViewController", minLevel: .debug))
-        destination.addFilter(Filters.Path.contains("/test", minLevel: .verbose))
+        destination.addFilter(Filters.path.contains("/ViewController", minLevel: .debug))
+        destination.addFilter(Filters.path.contains("/test", minLevel: .verbose))
         XCTAssertFalse(destination.shouldLevelBeLogged(
             .verbose,
             path: "/world/ViewController.swift",
@@ -800,9 +800,9 @@ class BaseDestinationTests: XCTestCase {
         let destination = BaseDestination()
         destination.minLevel = .info
 
-        destination.addFilter(Filters.Path.contains("/ViewController", minLevel: .debug))
-        destination.addFilter(Filters.Function.contains("Func", minLevel: .debug))
-        destination.addFilter(Filters.Message.contains("World", minLevel: .debug))
+        destination.addFilter(Filters.path.contains("/ViewController", minLevel: .debug))
+        destination.addFilter(Filters.function.contains("Func", minLevel: .debug))
+        destination.addFilter(Filters.message.contains("World", minLevel: .debug))
         // destination.debugPrint = true
 
         // covered by filters
@@ -827,8 +827,8 @@ class BaseDestinationTests: XCTestCase {
         let destination = BaseDestination()
         destination.minLevel = .error
 
-        destination.addFilter(Filters.Path.contains("/ViewController", minLevel: .debug))
-        destination.addFilter(Filters.Function.excludes("myFunc", minLevel: .debug))
+        destination.addFilter(Filters.path.contains("/ViewController", minLevel: .debug))
+        destination.addFilter(Filters.function.excludes("myFunc", minLevel: .debug))
         // destination.debugPrint = true
 
         // excluded
