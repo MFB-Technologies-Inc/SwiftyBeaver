@@ -36,10 +36,4 @@ class ConsoleDestinationTests: XCTestCase {
         XCTAssertEqual(console.reset, "\u{001b}[0m")
         XCTAssertEqual(console.escape, "\u{001b}[38;5;")
     }
-
-    // MARK: Linux allTests
-
-    static let allTests = [
-        ("testUseTerminalColors", testUseTerminalColors),
-    ]
 }

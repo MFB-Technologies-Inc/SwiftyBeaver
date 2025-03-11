@@ -138,11 +138,4 @@ class DestinationSetTests: XCTestCase {
             startSpammingLogs(log: log, queue: queue)
         }
     }
-
-    // MARK: Linux allTests
-
-    static let allTests = [
-        ("testChangeDestinationsMinLogLevels", testChangeDestinationsMinLogLevels),
-        ("testRemoveConsoleDestinations", testRemoveConsoleDestinations),
-    ]
 }

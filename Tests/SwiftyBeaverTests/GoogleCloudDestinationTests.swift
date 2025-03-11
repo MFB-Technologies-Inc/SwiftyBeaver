@@ -85,10 +85,4 @@ class GoogleCloudDestinationTests: XCTestCase {
             XCTAssertNotNil(str.range(of: "\"responseStatusCode\":200"))
         }
     }
-
-    static var allTests = [
-        ("testUseGoogleCloudPDestination", testUseGoogleCloudPDestination),
-        ("testSend", testSend),
-        ("testContextMessage", testContextMessage),
-    ]
 }

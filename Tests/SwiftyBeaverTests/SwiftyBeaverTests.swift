@@ -343,6 +343,7 @@ class SwiftyBeaverTests: XCTestCase {
     }
 
     func testGetCorrectThread() {
+        #if !os(Linux)
         let log = SwiftyBeaver.self
         let mock = MockDestination()
         // set info level on default
@@ -398,25 +399,8 @@ class SwiftyBeaverTests: XCTestCase {
         }
 
         wait(for: [expectation2], timeout: 2)
+        #endif
     }
-
-    static let allTests = [
-        ("testAddDestination", testAddDestination),
-        ("testRemoveDestination", testRemoveDestination),
-        ("testLoggingWithoutDestination", testLoggingWithoutDestination),
-        ("testDestinationIntegration", testDestinationIntegration),
-        ("testColors", testColors),
-        ("testModifiedColors", testModifiedColors),
-        ("testDifferentMessageTypes", testDifferentMessageTypes),
-        ("testAutoClosure", testAutoClosure),
-        (
-            "testLongRunningTaskIsNotExecutedWhenLoggingUnderMinLevel",
-            testLongRunningTaskIsNotExecutedWhenLoggingUnderMinLevel
-        ),
-        ("testVersionAndBuild", testVersionAndBuild),
-        ("testStripParams", testStripParams),
-        // ("testGetCorrectThread", testGetCorrectThread) // incorrect on Linux
-    ]
 }
 
 private class MockDestination: BaseDestination {
