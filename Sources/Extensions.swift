@@ -24,10 +24,6 @@ extension String {
 
     /// cross-Swift-compatible index
     func find(_ char: Character) -> Index? {
-        #if swift(>=5)
-            return firstIndex(of: char)
-        #else
-            return index(of: char)
-        #endif
+        return firstIndex(of: char)
     }
 }
