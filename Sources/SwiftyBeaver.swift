@@ -6,7 +6,6 @@
 
 import Foundation
 
-// swiftlint:disable:next type_body_length
 open class SwiftyBeaver {
     /// version string of framework
     public static let version = "2.1.1" // UPDATE ON RELEASE!
