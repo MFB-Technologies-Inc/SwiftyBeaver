@@ -11,34 +11,31 @@
 
 import Foundation
 @testable import SwiftyBeaver
-import XCTest
+import Testing
 
-class ConsoleDestinationTests: XCTestCase {
-    override func setUp() {
-        super.setUp()
+@Suite(.serialized)
+class ConsoleDestinationTests {
+    init() {
         SwiftyBeaver.removeAllDestinations()
     }
 
-    override func tearDown() {
-        super.tearDown()
-    }
-
+    @Test
     func testUseTerminalColors() {
         let log = SwiftyBeaver.self
         let console = ConsoleDestination()
-        XCTAssertTrue(log.addDestination(console))
+        #expect(log.addDestination(console))
 
         // default xcode colors
-        XCTAssertFalse(console.useTerminalColors)
-        XCTAssertEqual(console.levelColor.verbose, "⬜️ ")
-        XCTAssertEqual(console.reset, "")
-        XCTAssertEqual(console.escape, "")
+        #expect(!console.useTerminalColors)
+        #expect(console.levelColor.verbose == "⬜️ ")
+        #expect(console.reset == "")
+        #expect(console.escape == "")
 
         // switch to terminal colors
         console.useTerminalColors = true
-        XCTAssertTrue(console.useTerminalColors)
-        XCTAssertEqual(console.levelColor.verbose, "251m")
-        XCTAssertEqual(console.reset, "\u{001b}[0m")
-        XCTAssertEqual(console.escape, "\u{001b}[38;5;")
+        #expect(console.useTerminalColors)
+        #expect(console.levelColor.verbose == "251m")
+        #expect(console.reset == "\u{001b}[0m")
+        #expect(console.escape == "\u{001b}[38;5;")
     }
 }

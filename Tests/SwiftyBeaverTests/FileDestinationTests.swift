@@ -11,19 +11,16 @@
 
 import Foundation
 @testable import SwiftyBeaver
-import XCTest
+import Testing
 
-class FileDestinationTests: XCTestCase {
-    override func setUp() {
-        super.setUp()
+@Suite(.serialized)
+struct FileDestinationTests {
+    init() {
         SwiftyBeaver.removeAllDestinations()
     }
 
-    override func tearDown() {
-        super.tearDown()
-    }
-
-    func testFileIsWritten() {
+    @Test
+    func FileIsWritten() {
         let log = SwiftyBeaver.self
 
         let path = "/tmp/testSBF.log"
@@ -44,22 +41,23 @@ class FileDestinationTests: XCTestCase {
         // wait a bit until the logs are written to file
         for i in 1 ... 100_000 {
             let x = sqrt(Double(i))
-            XCTAssertEqual(x, sqrt(Double(i)))
+            #expect(x == sqrt(Double(i)))
         }
 
         // was the file written and does it contain the lines?
         let fileLines = linesOfFile(path: path)
-        XCTAssertNotNil(fileLines)
+        #expect(fileLines != nil)
         guard let lines = fileLines else { return }
-        XCTAssertEqual(lines.count, 5)
-        XCTAssertEqual(lines[0], "VERBOSE: first line to log")
-        XCTAssertEqual(lines[1], "DEBUG: second line to log")
-        XCTAssertEqual(lines[2], "INFO: third line to log")
-        XCTAssertEqual(lines[3], "WARNING: fourth line with context 123")
-        XCTAssertEqual(lines[4], "")
+        #expect(lines.count == 5)
+        #expect(lines[0] == "VERBOSE: first line to log")
+        #expect(lines[1] == "DEBUG: second line to log")
+        #expect(lines[2] == "INFO: third line to log")
+        #expect(lines[3] == "WARNING: fourth line with context 123")
+        #expect(lines[4] == "")
     }
 
-    func testFileIsWrittenToFolderWithSpaces() {
+    @Test
+    func FileIsWrittenToFolderWithSpaces() {
         let log = SwiftyBeaver.self
 
         let folder = "/tmp/folder with spaces"
@@ -71,7 +69,7 @@ class FileDestinationTests: XCTestCase {
         // in conversion from path String to URL you need to replace " " with "%20"
         let pathReadyForURL = path.replacingOccurrences(of: " ", with: "%20")
         let fileURL = URL(string: "file://" + pathReadyForURL)
-        XCTAssertNotNil(fileURL)
+        #expect(fileURL != nil)
         guard let url = fileURL else { return }
 
         // add file
@@ -88,21 +86,22 @@ class FileDestinationTests: XCTestCase {
         // wait a bit until the logs are written to file
         for i in 1 ... 100_000 {
             let x = sqrt(Double(i))
-            XCTAssertEqual(x, sqrt(Double(i)))
+            #expect(x == sqrt(Double(i)))
         }
 
         // was the file written and does it contain the lines?
         let fileLines = linesOfFile(path: path)
-        XCTAssertNotNil(fileLines)
+        #expect(fileLines != nil)
         guard let lines = fileLines else { return }
-        XCTAssertEqual(lines.count, 4)
-        XCTAssertEqual(lines[0], "VERBOSE: first line to log")
-        XCTAssertEqual(lines[1], "DEBUG: second line to log")
-        XCTAssertEqual(lines[2], "INFO: third line to log")
-        XCTAssertEqual(lines[3], "")
+        #expect(lines.count == 4)
+        #expect(lines[0] == "VERBOSE: first line to log")
+        #expect(lines[1] == "DEBUG: second line to log")
+        #expect(lines[2] == "INFO: third line to log")
+        #expect(lines[3] == "")
     }
 
-    func testFileIsWrittenToDeletedFolder() {
+    @Test
+    func FileIsWrittenToDeletedFolder() {
         let log = SwiftyBeaver.self
 
         let path = "/tmp/\(UUID().uuidString)/testSBF.log"
@@ -127,19 +126,19 @@ class FileDestinationTests: XCTestCase {
         // wait a bit until the logs are written to file
         for i in 1 ... 100_000 {
             let x = sqrt(Double(i))
-            XCTAssertEqual(x, sqrt(Double(i)))
+            #expect(x == sqrt(Double(i)))
         }
 
         // was the file written and does it contain the lines?
         let fileLines = linesOfFile(path: path)
-        XCTAssertNotNil(fileLines)
+        #expect(fileLines != nil)
         guard let lines = fileLines else { return }
-        XCTAssertEqual(lines.count, 5)
-        XCTAssertEqual(lines[0], "VERBOSE: first line to log") // is in first rotation file
-        XCTAssertEqual(lines[1], "DEBUG: second line to log")
-        XCTAssertEqual(lines[2], "INFO: third line to log")
-        XCTAssertEqual(lines[3], "WARNING: fourth line with context 123")
-        XCTAssertEqual(lines[4], "")
+        #expect(lines.count == 5)
+        #expect(lines[0] == "VERBOSE: first line to log") // is in first rotation file
+        #expect(lines[1] == "DEBUG: second line to log")
+        #expect(lines[2] == "INFO: third line to log")
+        #expect(lines[3] == "WARNING: fourth line with context 123")
+        #expect(lines[4] == "")
     }
 
     // MARK: Helper Functions

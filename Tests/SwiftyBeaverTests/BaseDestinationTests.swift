@@ -11,29 +11,18 @@
 
 import Foundation
 @testable import SwiftyBeaver
-import XCTest
+import Testing
 
-class BaseDestinationTests: XCTestCase {
-    override func setUp() {
-        super.setUp()
-    }
-
-    override func tearDown() {
-        super.tearDown()
-    }
-
-    func testInit() {
-        let obj = BaseDestination()
-        XCTAssertNotNil(obj.queue)
-    }
-
+@Suite
+struct BaseDestinationTests {
     ////////////////////////////////
 
     // MARK: Format
 
     ////////////////////////////////
 
-    func testFormatMessage() {
+    @Test
+    func FormatMessage() {
         let obj = BaseDestination()
         var str = ""
         var format = ""
@@ -49,7 +38,7 @@ class BaseDestinationTests: XCTestCase {
             function: "testFunction()",
             line: 50
         )
-        XCTAssertEqual(str, "")
+        #expect(str == "")
 
         // format without variables
         format = "Hello"
@@ -62,7 +51,7 @@ class BaseDestinationTests: XCTestCase {
             function: "testFunction()",
             line: 50
         )
-        XCTAssertEqual(str, "Hello")
+        #expect(str == "Hello")
 
         // format without variables (make sure the L is not interpreted as format character)
         format = "Linda"
@@ -75,7 +64,7 @@ class BaseDestinationTests: XCTestCase {
             function: "testFunction()",
             line: 50
         )
-        XCTAssertEqual(str, "Linda")
+        #expect(str == "Linda")
         format = "$Linda $M"
         str = obj.formatMessage(
             format,
@@ -86,7 +75,7 @@ class BaseDestinationTests: XCTestCase {
             function: "testFunction()",
             line: 50
         )
-        XCTAssertEqual(str, "VERBOSEinda Hello")
+        #expect(str == "VERBOSEinda Hello")
 
         // weird format
         format = "$"
@@ -99,7 +88,7 @@ class BaseDestinationTests: XCTestCase {
             function: "testFunction()",
             line: 50
         )
-        XCTAssertEqual(str, "")
+        #expect(str == "")
 
         // basic format with ignored color and thread
         format = "|$T| $C$L$c: $M"
@@ -112,7 +101,7 @@ class BaseDestinationTests: XCTestCase {
             function: "testFunction()",
             line: 50
         )
-        XCTAssertEqual(str, "|main| VERBOSE: Hello")
+        #expect(str == "|main| VERBOSE: Hello")
 
         // format with date and color
         let obj2 = BaseDestination()
@@ -134,7 +123,7 @@ class BaseDestinationTests: XCTestCase {
             function: "testFunction()",
             line: 50
         )
-        XCTAssertEqual(str, "[\(dateStr)] |main| ViewController.testFunction():50 >?VERBOSE<: Hello")
+        #expect(str == "[\(dateStr)] |main| ViewController.testFunction():50 >?VERBOSE<: Hello")
 
         //  UTC datetime
         let obj3 = BaseDestination()
@@ -154,7 +143,7 @@ class BaseDestinationTests: XCTestCase {
             function: "testFunction()",
             line: 50
         )
-        XCTAssertEqual(str, "\(utcDateStr)")
+        #expect(str == "\(utcDateStr)")
 
         // context in different formats
         let obj4 = BaseDestination()
@@ -169,7 +158,7 @@ class BaseDestinationTests: XCTestCase {
             line: 50,
             context: "Context!"
         )
-        XCTAssertEqual(str, "VERBOSE: Hello Context!")
+        #expect(str == "VERBOSE: Hello Context!")
 
         str = obj4.formatMessage(
             format,
@@ -181,7 +170,7 @@ class BaseDestinationTests: XCTestCase {
             line: 50,
             context: 123
         )
-        XCTAssertEqual(str, "VERBOSE: Hello 123")
+        #expect(str == "VERBOSE: Hello 123")
 
         str = obj4.formatMessage(
             format,
@@ -193,7 +182,7 @@ class BaseDestinationTests: XCTestCase {
             line: 50,
             context: [1, "a", 2]
         )
-        XCTAssertEqual(str, "VERBOSE: Hello [1, \"a\", 2]")
+        #expect(str == "VERBOSE: Hello [1, \"a\", 2]")
 
         str = obj4.formatMessage(
             format,
@@ -205,7 +194,7 @@ class BaseDestinationTests: XCTestCase {
             line: 50,
             context: nil
         )
-        XCTAssertEqual(str, "VERBOSE: Hello")
+        #expect(str == "VERBOSE: Hello")
 
         // context in the middle
         let obj5 = BaseDestination()
@@ -220,7 +209,7 @@ class BaseDestinationTests: XCTestCase {
             line: 50,
             context: "Context!"
         )
-        XCTAssertEqual(str, "VERBOSE: [Context!] Hello")
+        #expect(str == "VERBOSE: [Context!] Hello")
         // no context
         str = obj5.formatMessage(
             format,
@@ -231,7 +220,7 @@ class BaseDestinationTests: XCTestCase {
             function: "testFunction()",
             line: 50
         )
-        XCTAssertEqual(str, "VERBOSE: [] Hello")
+        #expect(str == "VERBOSE: [] Hello")
 
         // misc. paddings
         let obj6 = BaseDestination()
@@ -245,7 +234,7 @@ class BaseDestinationTests: XCTestCase {
             function: "testFunction()",
             line: 50
         )
-        XCTAssertEqual(str, "[DEBUG   ]")
+        #expect(str == "[DEBUG   ]")
         format = "$-8L"
         str = obj6.formatMessage(
             format,
@@ -256,7 +245,7 @@ class BaseDestinationTests: XCTestCase {
             function: "testFunction()",
             line: 50
         )
-        XCTAssertEqual(str, "DEBUG")
+        #expect(str == "DEBUG")
         format = "$8L"
         str = obj6.formatMessage(
             format,
@@ -267,7 +256,7 @@ class BaseDestinationTests: XCTestCase {
             function: "testFunction()",
             line: 50
         )
-        XCTAssertEqual(str, "   DEBUG")
+        #expect(str == "   DEBUG")
         format = "$-8L:_$10X___$M"
         str = obj6.formatMessage(
             format,
@@ -283,7 +272,7 @@ class BaseDestinationTests: XCTestCase {
         obj6.levelColor.verbose = "?"
         obj6.escape = ">"
         obj6.reset = "<"
-        XCTAssertEqual(str, "DEBUG   :_  Context!___Hello")
+        #expect(str == "DEBUG   :_  Context!___Hello")
         format = "[$Dyyyy-MM-dd HH:mm:ss$d] |$T| $N.$F:$l $C$L$c: $M"
         str = obj6.formatMessage(
             format,
@@ -294,10 +283,11 @@ class BaseDestinationTests: XCTestCase {
             function: "testFunction()",
             line: 50
         )
-        XCTAssertEqual(str, "[\(dateStr)] |main| ViewController.testFunction():50 >?VERBOSE<: Hello")
+        #expect(str == "[\(dateStr)] |main| ViewController.testFunction():50 >?VERBOSE<: Hello")
     }
 
-    func testMessageToJSON() {
+    @Test
+    func MessageToJSON() {
         let obj = BaseDestination()
         guard let str = obj.messageToJSON(
             .info,
@@ -308,9 +298,9 @@ class BaseDestinationTests: XCTestCase {
             line: 50,
             context: ["foo": "bar", "hello": 2]
         ) else {
-            XCTFail("str should not be nil"); return
+            Issue.record("str should not be nil")
+            return
         }
-        print(str)
         // decode JSON string into dict and compare if it is the the same
         guard let data = str.data(using: .utf8),
               let json = try? JSONSerialization.jsonObject(with: data, options: []),
@@ -324,33 +314,35 @@ class BaseDestinationTests: XCTestCase {
               let line = dict["line"] as? Int,
               let context = dict["context"] as? [String: Any]
         else {
-            XCTFail("dict and its properties should not be nil"); return
+            Issue.record("dict and its properties should not be nil")
+            return
         }
-        XCTAssertGreaterThanOrEqual(timestamp, Date().timeIntervalSince1970 - 10)
-        XCTAssertEqual(level, SwiftyBeaver.Level.info.rawValue)
-        XCTAssertEqual(message, "hello world")
-        XCTAssertEqual(thread, "main")
-        XCTAssertEqual(file, "/path/to/ViewController.swift")
-        XCTAssertEqual(function, "testFunction()")
-        XCTAssertEqual(line, 50)
-        XCTAssertEqual(context["foo"] as? String, "bar")
-        XCTAssertEqual(context["hello"] as? Int, 2)
+        #expect(timestamp >= Date().timeIntervalSince1970 - 10)
+        #expect(level == SwiftyBeaver.Level.info.rawValue)
+        #expect(message == "hello world")
+        #expect(thread == "main")
+        #expect(file == "/path/to/ViewController.swift")
+        #expect(function == "testFunction()")
+        #expect(line == 50)
+        #expect(context["foo"] as? String == "bar")
+        #expect(context["hello"] as? Int == 2)
     }
 
-    func testLevelWord() {
+    @Test
+    func LevelWord() {
         let obj = BaseDestination()
         var str = ""
 
         str = obj.levelWord(SwiftyBeaver.Level.verbose)
-        XCTAssertNotNil(str, "VERBOSE")
+        #expect(str != nil, "VERBOSE")
         str = obj.levelWord(SwiftyBeaver.Level.debug)
-        XCTAssertNotNil(str, "DEBUG")
+        #expect(str != nil, "DEBUG")
         str = obj.levelWord(SwiftyBeaver.Level.info)
-        XCTAssertNotNil(str, "INFO")
+        #expect(str != nil, "INFO")
         str = obj.levelWord(SwiftyBeaver.Level.warning)
-        XCTAssertNotNil(str, "WARNING")
+        #expect(str != nil, "WARNING")
         str = obj.levelWord(SwiftyBeaver.Level.error)
-        XCTAssertNotNil(str, "ERROR")
+        #expect(str != nil, "ERROR")
 
         // custom level strings
         obj.levelString.verbose = "Who cares"
@@ -360,32 +352,33 @@ class BaseDestinationTests: XCTestCase {
         obj.levelString.error = "OMG!!!"
 
         str = obj.levelWord(SwiftyBeaver.Level.verbose)
-        XCTAssertNotNil(str, "Who cares")
+        #expect(str != nil, "Who cares")
         str = obj.levelWord(SwiftyBeaver.Level.debug)
-        XCTAssertNotNil(str, "Look")
+        #expect(str != nil, "Look")
         str = obj.levelWord(SwiftyBeaver.Level.info)
-        XCTAssertNotNil(str, "Interesting")
+        #expect(str != nil, "Interesting")
         str = obj.levelWord(SwiftyBeaver.Level.warning)
-        XCTAssertNotNil(str, "Oh oh")
+        #expect(str != nil, "Oh oh")
         str = obj.levelWord(SwiftyBeaver.Level.error)
-        XCTAssertNotNil(str, "OMG!!!")
+        #expect(str != nil, "OMG!!!")
     }
 
-    func testColorForLevel() {
+    @Test
+    func ColorForLevel() {
         let obj = BaseDestination()
         var str = ""
 
         // empty on default
         str = obj.colorForLevel(SwiftyBeaver.Level.verbose)
-        XCTAssertNotNil(str, "")
+        #expect(str != nil)
         str = obj.colorForLevel(SwiftyBeaver.Level.debug)
-        XCTAssertNotNil(str, "")
+        #expect(str != nil)
         str = obj.colorForLevel(SwiftyBeaver.Level.info)
-        XCTAssertNotNil(str, "")
+        #expect(str != nil)
         str = obj.colorForLevel(SwiftyBeaver.Level.warning)
-        XCTAssertNotNil(str, "")
+        #expect(str != nil)
         str = obj.colorForLevel(SwiftyBeaver.Level.error)
-        XCTAssertNotNil(str, "")
+        #expect(str != nil)
 
         // custom level color strings
         obj.levelString.verbose = "silver"
@@ -395,65 +388,68 @@ class BaseDestinationTests: XCTestCase {
         obj.levelString.error = "red"
 
         str = obj.colorForLevel(SwiftyBeaver.Level.verbose)
-        XCTAssertNotNil(str, "silver")
+        #expect(str != nil, "silver")
         str = obj.colorForLevel(SwiftyBeaver.Level.debug)
-        XCTAssertNotNil(str, "green")
+        #expect(str != nil, "green")
         str = obj.colorForLevel(SwiftyBeaver.Level.info)
-        XCTAssertNotNil(str, "blue")
+        #expect(str != nil, "blue")
         str = obj.colorForLevel(SwiftyBeaver.Level.warning)
-        XCTAssertNotNil(str, "yellow")
+        #expect(str != nil, "yellow")
         str = obj.colorForLevel(SwiftyBeaver.Level.error)
-        XCTAssertNotNil(str, "red")
+        #expect(str != nil, "red")
     }
 
-    func testFileNameOfFile() {
+    @Test
+    func FileNameOfFile() {
         let obj = BaseDestination()
         var str = ""
 
         str = obj.fileNameOfFile("")
-        XCTAssertEqual(str, "")
+        #expect(str == "")
         str = obj.fileNameOfFile("foo.bar")
-        XCTAssertEqual(str, "foo.bar")
+        #expect(str == "foo.bar")
         str = obj.fileNameOfFile("path/to/ViewController.swift")
-        XCTAssertEqual(str, "ViewController.swift")
+        #expect(str == "ViewController.swift")
     }
 
-    func testFileNameOfFileWithoutSuffix() {
+    @Test
+    func FileNameOfFileWithoutSuffix() {
         let obj = BaseDestination()
         var str = ""
 
         str = obj.fileNameWithoutSuffix("")
-        XCTAssertEqual(str, "")
+        #expect(str == "")
         str = obj.fileNameWithoutSuffix("/")
-        XCTAssertEqual(str, "")
+        #expect(str == "")
         str = obj.fileNameWithoutSuffix("foo")
-        XCTAssertEqual(str, "foo")
+        #expect(str == "foo")
         str = obj.fileNameWithoutSuffix("foo.bar")
-        XCTAssertEqual(str, "foo")
+        #expect(str == "foo")
         str = obj.fileNameWithoutSuffix("path/to/ViewController.swift")
-        XCTAssertEqual(str, "ViewController")
+        #expect(str == "ViewController")
     }
 
-    func testFormatDate() {
+    @Test
+    func FormatDate() {
         // empty format
         var str = BaseDestination().formatDate("")
-        XCTAssertEqual(str, "")
+        #expect(str == "")
         // no time format
         str = BaseDestination().formatDate("--")
-        XCTAssertGreaterThanOrEqual(str, "--")
+        #expect(str >= "--")
         // HH:mm:ss
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm:ss"
         let dateStr = formatter.string(from: Date())
         str = BaseDestination().formatDate(formatter.dateFormat)
-        XCTAssertEqual(str, dateStr)
+        #expect(str == dateStr)
         // test UTC
         let utcFormatter = DateFormatter()
         utcFormatter.timeZone = TimeZone(abbreviation: "UTC")
         utcFormatter.dateFormat = "HH:mm:ss"
         let utcDateStr = utcFormatter.string(from: Date())
         str = BaseDestination().formatDate(utcFormatter.dateFormat, timeZone: "UTC")
-        XCTAssertEqual(str, utcDateStr)
+        #expect(str == utcDateStr)
     }
 
     ////////////////////////////////
@@ -462,83 +458,91 @@ class BaseDestinationTests: XCTestCase {
 
     ////////////////////////////////
 
-    func test_init_noMinLevelSet() {
+    @Test
+    func init_noMinLevelSet() {
         let destination = BaseDestination()
-        XCTAssertTrue(destination.shouldLevelBeLogged(SwiftyBeaver.Level.verbose, path: "", function: ""))
-        XCTAssertTrue(destination.shouldLevelBeLogged(SwiftyBeaver.Level.debug, path: "", function: ""))
-        XCTAssertTrue(destination.shouldLevelBeLogged(SwiftyBeaver.Level.info, path: "", function: ""))
-        XCTAssertTrue(destination.shouldLevelBeLogged(SwiftyBeaver.Level.warning, path: "", function: ""))
-        XCTAssertTrue(destination.shouldLevelBeLogged(SwiftyBeaver.Level.error, path: "", function: ""))
+        #expect(destination.shouldLevelBeLogged(SwiftyBeaver.Level.verbose, path: "", function: ""))
+        #expect(destination.shouldLevelBeLogged(SwiftyBeaver.Level.debug, path: "", function: ""))
+        #expect(destination.shouldLevelBeLogged(SwiftyBeaver.Level.info, path: "", function: ""))
+        #expect(destination.shouldLevelBeLogged(SwiftyBeaver.Level.warning, path: "", function: ""))
+        #expect(destination.shouldLevelBeLogged(SwiftyBeaver.Level.error, path: "", function: ""))
     }
 
-    func test_init_minLevelSet() {
+    @Test
+    func init_minLevelSet() {
         let destination = BaseDestination()
         destination.minLevel = SwiftyBeaver.Level.info
-        XCTAssertFalse(destination.shouldLevelBeLogged(SwiftyBeaver.Level.verbose, path: "", function: ""))
-        XCTAssertFalse(destination.shouldLevelBeLogged(SwiftyBeaver.Level.debug, path: "", function: ""))
-        XCTAssertTrue(destination.shouldLevelBeLogged(SwiftyBeaver.Level.info, path: "", function: ""))
-        XCTAssertTrue(destination.shouldLevelBeLogged(SwiftyBeaver.Level.warning, path: "", function: ""))
-        XCTAssertTrue(destination.shouldLevelBeLogged(SwiftyBeaver.Level.error, path: "", function: ""))
+        #expect(!destination.shouldLevelBeLogged(SwiftyBeaver.Level.verbose, path: "", function: ""))
+        #expect(!destination.shouldLevelBeLogged(SwiftyBeaver.Level.debug, path: "", function: ""))
+        #expect(destination.shouldLevelBeLogged(SwiftyBeaver.Level.info, path: "", function: ""))
+        #expect(destination.shouldLevelBeLogged(SwiftyBeaver.Level.warning, path: "", function: ""))
+        #expect(destination.shouldLevelBeLogged(SwiftyBeaver.Level.error, path: "", function: ""))
     }
 
-    func test_shouldLevelBeLogged_hasMinLevel_True() {
+    @Test
+    func shouldLevelBeLogged_hasMinLevel_True() {
         let destination = BaseDestination()
         destination.minLevel = SwiftyBeaver.Level.verbose
         destination.addFilter(Filters.path.equals("/world/beaver.swift", caseSensitive: true, required: true))
-        XCTAssertTrue(destination.shouldLevelBeLogged(
+        #expect(destination.shouldLevelBeLogged(
             SwiftyBeaver.Level.warning,
             path: "/world/beaver.swift",
             function: "initialize"
         ))
     }
 
-    func test_shouldLevelBeLogged_hasMinLevel_False() {
+    @Test
+    func shouldLevelBeLogged_hasMinLevel_False() {
         let destination = BaseDestination()
         destination.minLevel = SwiftyBeaver.Level.info
         destination.addFilter(Filters.path.equals("/world/beaver.swift", caseSensitive: true, required: true))
-        XCTAssertTrue(destination.shouldLevelBeLogged(
+        #expect(destination.shouldLevelBeLogged(
             SwiftyBeaver.Level.warning,
             path: "/world/beaver.swift",
             function: "initialize"
         ))
     }
 
-    func test_shouldLevelBeLogged_hasMinLevelAndMatchingLevelAndEqualPath_True() {
+    @Test
+    func shouldLevelBeLogged_hasMinLevelAndMatchingLevelAndEqualPath_True() {
         let destination = BaseDestination()
         destination.minLevel = SwiftyBeaver.Level.verbose
         let filter = Filters.path.equals("/world/beaver.swift", caseSensitive: true, required: true, minLevel: .debug)
         destination.addFilter(filter)
-        XCTAssertTrue(destination.shouldLevelBeLogged(
+        #expect(destination.shouldLevelBeLogged(
             .debug,
             path: "/world/beaver.swift",
             function: "initialize"
         ))
     }
 
-    func test_shouldLevelBeLogged_hasMinLevelAndNoMatchingLevelButEqualPath_False() {
+    @Test
+    func shouldLevelBeLogged_hasMinLevelAndNoMatchingLevelButEqualPath_False() {
         let destination = BaseDestination()
         destination.minLevel = SwiftyBeaver.Level.info
         let filter = Filters.path.equals("/world/beaver.swift", caseSensitive: true, required: true, minLevel: .debug)
         destination.addFilter(filter)
-        XCTAssertTrue(destination.shouldLevelBeLogged(
+        #expect(destination.shouldLevelBeLogged(
             .debug,
             path: "/world/beaver.swift",
             function: "initialize"
         ))
     }
 
-    func test_shouldLevelBeLogged_hasMinLevelAndOneEqualsPathFilterAndDoesNotPass_False() {
+    @Test
+    func shouldLevelBeLogged_hasMinLevelAndOneEqualsPathFilterAndDoesNotPass_False() {
         let destination = BaseDestination()
         destination.minLevel = SwiftyBeaver.Level.info
         destination.addFilter(Filters.path.equals("/world/beaver.swift", caseSensitive: true, required: true))
-        XCTAssertFalse(destination.shouldLevelBeLogged(
+        #expect(!destination.shouldLevelBeLogged(
             .debug,
             path: "/hello/foo.swift",
             function: "initialize"
         ))
     }
 
-    func test_shouldLevelBeLogged_hasMinLevelAndOneRequiredMessageFilterAndDoesNotPass_False() {
+    @Test
+    func shouldLevelBeLogged_hasMinLevelAndOneRequiredMessageFilterAndDoesNotPass_False() {
         let destination = BaseDestination()
         destination.minLevel = .error
         destination.addFilter(Filters.message.contains(
@@ -547,7 +551,7 @@ class BaseDestinationTests: XCTestCase {
             required: true,
             minLevel: .info
         ))
-        XCTAssertFalse(destination.shouldLevelBeLogged(
+        #expect(!destination.shouldLevelBeLogged(
             .info,
             path: "/hello/foo.swift",
             function: "initialize",
@@ -555,7 +559,8 @@ class BaseDestinationTests: XCTestCase {
         ))
     }
 
-    func test_shouldLevelBeLogged_hasMinLevelAndOneRequiredMessageFilterAndDoesPass_True() {
+    @Test
+    func shouldLevelBeLogged_hasMinLevelAndOneRequiredMessageFilterAndDoesPass_True() {
         let destination = BaseDestination()
         destination.minLevel = SwiftyBeaver.Level.error
         destination.addFilter(Filters.message.contains(
@@ -564,7 +569,7 @@ class BaseDestinationTests: XCTestCase {
             required: true,
             minLevel: .info
         ))
-        XCTAssertTrue(destination.shouldLevelBeLogged(
+        #expect(destination.shouldLevelBeLogged(
             .info,
             path: "/hello/foo.swift",
             function: "initialize",
@@ -572,37 +577,40 @@ class BaseDestinationTests: XCTestCase {
         ))
     }
 
-    func test_shouldLevelBeLogged_hasLevelFilterAndTwoRequiredPathFiltersAndPasses_True() {
+    @Test
+    func shouldLevelBeLogged_hasLevelFilterAndTwoRequiredPathFiltersAndPasses_True() {
         let destination = BaseDestination()
         destination.minLevel = SwiftyBeaver.Level.info
         destination.addFilter(Filters.path.startsWith("/world", caseSensitive: true, required: true))
         destination.addFilter(Filters.path.endsWith("beaver.swift", caseSensitive: true, required: true))
-        XCTAssertTrue(destination.shouldLevelBeLogged(
+        #expect(destination.shouldLevelBeLogged(
             SwiftyBeaver.Level.warning,
             path: "/world/beaver.swift",
             function: "initialize"
         ))
     }
 
-    func test_shouldLevelBeLogged_hasLevelFilterAndTwoRequiredPathFiltersAndDoesNotPass_False() {
+    @Test
+    func shouldLevelBeLogged_hasLevelFilterAndTwoRequiredPathFiltersAndDoesNotPass_False() {
         let destination = BaseDestination()
         destination.minLevel = SwiftyBeaver.Level.info
         destination.addFilter(Filters.path.startsWith("/world", caseSensitive: true, required: true))
         destination.addFilter(Filters.path.endsWith("foo.swift", caseSensitive: true, required: true))
-        XCTAssertFalse(destination.shouldLevelBeLogged(
+        #expect(!destination.shouldLevelBeLogged(
             .debug,
             path: "/hello/foo.swift",
             function: "initialize"
         ))
     }
 
-    func test_shouldLevelBeLogged_hasLevelFilterARequiredPathFilterAndTwoRequiredMessageFiltersAndPasses_True() {
+    @Test
+    func shouldLevelBeLogged_hasLevelFilterARequiredPathFilterAndTwoRequiredMessageFiltersAndPasses_True() {
         let destination = BaseDestination()
         destination.minLevel = SwiftyBeaver.Level.info
         destination.addFilter(Filters.path.startsWith("/world", caseSensitive: true, required: true))
         destination.addFilter(Filters.message.startsWith("SQL:", caseSensitive: true, required: true))
         destination.addFilter(Filters.message.contains("insert", caseSensitive: false, required: true))
-        XCTAssertTrue(destination.shouldLevelBeLogged(
+        #expect(destination.shouldLevelBeLogged(
             SwiftyBeaver.Level.warning,
             path: "/world/beaver.swift",
             function: "executeSQLStatement",
@@ -610,13 +618,14 @@ class BaseDestinationTests: XCTestCase {
         ))
     }
 
-    func test_shouldLevelBeLogged_hasLevelFilterARequiredPathFilterAndTwoRequiredMessageFiltersAndDoesNotPass_False() {
+    @Test
+    func shouldLevelBeLogged_hasLevelFilterARequiredPathFilterAndTwoRequiredMessageFiltersAndDoesNotPass_False() {
         let destination = BaseDestination()
         destination.minLevel = SwiftyBeaver.Level.info
         destination.addFilter(Filters.path.startsWith("/world", caseSensitive: true, required: true))
         destination.addFilter(Filters.message.startsWith("SQL:", caseSensitive: true, required: true))
         destination.addFilter(Filters.message.contains("insert", caseSensitive: false, required: true))
-        XCTAssertFalse(destination.shouldLevelBeLogged(
+        #expect(!destination.shouldLevelBeLogged(
             .debug,
             path: "/world/beaver.swift",
             function: "executeSQLStatement",
@@ -624,7 +633,8 @@ class BaseDestinationTests: XCTestCase {
         ))
     }
 
-    func test_shouldLevelBeLogged_hasLevelFilterCombinationOfAllOtherFiltersAndPasses_True() {
+    @Test
+    func shouldLevelBeLogged_hasLevelFilterCombinationOfAllOtherFiltersAndPasses_True() {
         let destination = BaseDestination()
         destination.minLevel = SwiftyBeaver.Level.info
         destination.addFilter(Filters.path.startsWith("/world", caseSensitive: true, required: true))
@@ -632,7 +642,7 @@ class BaseDestinationTests: XCTestCase {
         destination.addFilter(Filters.function.equals("executeSQLStatement", required: true))
         destination.addFilter(Filters.message.startsWith("SQL:", caseSensitive: true, required: true))
         destination.addFilter(Filters.message.contains("insert", "update", "delete", required: true))
-        XCTAssertTrue(destination.shouldLevelBeLogged(
+        #expect(destination.shouldLevelBeLogged(
             SwiftyBeaver.Level.warning,
             path: "/world/beaver.swift",
             function: "executeSQLStatement",
@@ -640,7 +650,8 @@ class BaseDestinationTests: XCTestCase {
         ))
     }
 
-    func test_shouldLevelBeLogged_hasLevelFilterCombinationOfAllOtherFiltersAndDoesNotPass_False() {
+    @Test
+    func shouldLevelBeLogged_hasLevelFilterCombinationOfAllOtherFiltersAndDoesNotPass_False() {
         let destination = BaseDestination()
         destination.minLevel = SwiftyBeaver.Level.info
         destination.addFilter(Filters.path.startsWith("/world", caseSensitive: true, required: true))
@@ -648,7 +659,7 @@ class BaseDestinationTests: XCTestCase {
         destination.addFilter(Filters.function.equals("executeSQLStatement", required: true))
         destination.addFilter(Filters.message.startsWith("SQL:", caseSensitive: true, required: true))
         destination.addFilter(Filters.message.contains("insert", "update", "delete", required: true))
-        XCTAssertFalse(destination.shouldLevelBeLogged(
+        #expect(!destination.shouldLevelBeLogged(
             .debug,
             path: "/world/beaver.swift",
             function: "executeSQLStatement",
@@ -656,7 +667,8 @@ class BaseDestinationTests: XCTestCase {
         ))
     }
 
-    func test_shouldLevelBeLogged_hasLevelFilterCombinationOfOtherFiltersIncludingNonRequiredAndPasses_True() {
+    @Test
+    func shouldLevelBeLogged_hasLevelFilterCombinationOfOtherFiltersIncludingNonRequiredAndPasses_True() {
         let destination = BaseDestination()
         destination.minLevel = SwiftyBeaver.Level.info
         destination.addFilter(Filters.path.startsWith("/world", caseSensitive: true, required: true))
@@ -666,7 +678,7 @@ class BaseDestinationTests: XCTestCase {
         destination.addFilter(Filters.message.contains("insert"))
         destination.addFilter(Filters.message.contains("update"))
         destination.addFilter(Filters.message.contains("delete"))
-        XCTAssertTrue(destination.shouldLevelBeLogged(
+        #expect(destination.shouldLevelBeLogged(
             SwiftyBeaver.Level.warning,
             path: "/world/beaver.swift",
             function: "executeSQLStatement",
@@ -674,7 +686,8 @@ class BaseDestinationTests: XCTestCase {
         ))
     }
 
-    func test_shouldLevelBeLogged_hasLevelFilterCombinationOfOtherFiltersIncludingNonRequired_True() {
+    @Test
+    func shouldLevelBeLogged_hasLevelFilterCombinationOfOtherFiltersIncludingNonRequired_True() {
         let destination = BaseDestination()
         destination.minLevel = SwiftyBeaver.Level.info
         destination.addFilter(Filters.path.startsWith("/world", caseSensitive: true, required: true))
@@ -684,7 +697,7 @@ class BaseDestinationTests: XCTestCase {
         destination.addFilter(Filters.message.contains("insert", caseSensitive: true))
         destination.addFilter(Filters.message.contains("update"))
         destination.addFilter(Filters.message.contains("delete"))
-        XCTAssertTrue(destination.shouldLevelBeLogged(
+        #expect(destination.shouldLevelBeLogged(
             SwiftyBeaver.Level.warning,
             path: "/world/beaver.swift",
             function: "executeSQLStatement",
@@ -692,7 +705,8 @@ class BaseDestinationTests: XCTestCase {
         ))
     }
 
-    func test_shouldLevelBeLogged_hasLevelFilterCombinationOfOtherFiltersIncludingNonRequired_False() {
+    @Test
+    func shouldLevelBeLogged_hasLevelFilterCombinationOfOtherFiltersIncludingNonRequired_False() {
         let destination = BaseDestination()
         destination.minLevel = SwiftyBeaver.Level.info
         destination.addFilter(Filters.path.startsWith("/world", caseSensitive: true, required: true))
@@ -702,7 +716,7 @@ class BaseDestinationTests: XCTestCase {
         destination.addFilter(Filters.message.contains("rename", caseSensitive: true, required: true))
         destination.addFilter(Filters.message.contains("update"))
         destination.addFilter(Filters.message.contains("delete"))
-        XCTAssertFalse(destination.shouldLevelBeLogged(
+        #expect(!destination.shouldLevelBeLogged(
             .debug,
             path: "/world/beaver.swift",
             function: "executeSQLStatement",
@@ -710,11 +724,12 @@ class BaseDestinationTests: XCTestCase {
         ))
     }
 
-    func test_shouldLevelBeLogged_hasMatchingNonRequiredFilter_True() {
+    @Test
+    func shouldLevelBeLogged_hasMatchingNonRequiredFilter_True() {
         let destination = BaseDestination()
         destination.minLevel = .info
         destination.addFilter(Filters.path.contains("/ViewController"))
-        XCTAssertTrue(destination.shouldLevelBeLogged(
+        #expect(destination.shouldLevelBeLogged(
             .debug,
             path: "/world/ViewController.swift",
             function: "myFunc",
@@ -722,11 +737,12 @@ class BaseDestinationTests: XCTestCase {
         ))
     }
 
-    func test_shouldLevelBeLogged_hasNoMatchingNonRequiredFilter_False() {
+    @Test
+    func shouldLevelBeLogged_hasNoMatchingNonRequiredFilter_False() {
         let destination = BaseDestination()
         destination.minLevel = .info
         destination.addFilter(Filters.path.contains("/ViewController"))
-        XCTAssertFalse(destination.shouldLevelBeLogged(
+        #expect(!destination.shouldLevelBeLogged(
             .debug,
             path: "/world/beaver.swift",
             function: "myFunc",
@@ -734,11 +750,12 @@ class BaseDestinationTests: XCTestCase {
         ))
     }
 
-    func test_shouldLevelBeLogged_hasNoMatchingNonRequiredFilterAndMinLevel_True() {
+    @Test
+    func shouldLevelBeLogged_hasNoMatchingNonRequiredFilterAndMinLevel_True() {
         let destination = BaseDestination()
         destination.minLevel = .debug
         destination.addFilter(Filters.path.contains("/ViewController", minLevel: .info))
-        XCTAssertTrue(destination.shouldLevelBeLogged(
+        #expect(destination.shouldLevelBeLogged(
             .debug,
             path: "/world/beaver.swift",
             function: "myFunc",
@@ -746,11 +763,12 @@ class BaseDestinationTests: XCTestCase {
         ))
     }
 
-    func test_shouldLevelBeLogged_hasNoMatchingNonRequiredFilterAndMinLevel_False() {
+    @Test
+    func shouldLevelBeLogged_hasNoMatchingNonRequiredFilterAndMinLevel_False() {
         let destination = BaseDestination()
         destination.minLevel = .verbose
         destination.addFilter(Filters.path.contains("/ViewController", minLevel: .debug))
-        XCTAssertFalse(destination.shouldLevelBeLogged(
+        #expect(!destination.shouldLevelBeLogged(
             .verbose,
             path: "/world/ViewController.swift",
             function: "myFunc",
@@ -758,12 +776,13 @@ class BaseDestinationTests: XCTestCase {
         ))
     }
 
-    func test_shouldLevelBeLogged_hasMultipleNonMatchingNonRequiredFilterAndMinLevel_True() {
+    @Test
+    func shouldLevelBeLogged_hasMultipleNonMatchingNonRequiredFilterAndMinLevel_True() {
         let destination = BaseDestination()
         destination.minLevel = .debug
         destination.addFilter(Filters.path.contains("/ViewController", minLevel: .info))
         destination.addFilter(Filters.path.contains("/test", minLevel: .debug))
-        XCTAssertTrue(destination.shouldLevelBeLogged(
+        #expect(destination.shouldLevelBeLogged(
             .debug,
             path: "/world/beaver.swift",
             function: "myFunc",
@@ -771,12 +790,13 @@ class BaseDestinationTests: XCTestCase {
         ))
     }
 
-    func test_shouldLevelBeLogged_hasMultipleNonMatchingNonRequiredFilterAndMinLevel_False() {
+    @Test
+    func shouldLevelBeLogged_hasMultipleNonMatchingNonRequiredFilterAndMinLevel_False() {
         let destination = BaseDestination()
         destination.minLevel = .verbose
         destination.addFilter(Filters.path.contains("/ViewController", minLevel: .debug))
         destination.addFilter(Filters.path.contains("/test", minLevel: .verbose))
-        XCTAssertFalse(destination.shouldLevelBeLogged(
+        #expect(!destination.shouldLevelBeLogged(
             .verbose,
             path: "/world/ViewController.swift",
             function: "myFunc",
@@ -784,10 +804,11 @@ class BaseDestinationTests: XCTestCase {
         ))
     }
 
-    func test_shouldLevelBeLogged_noFilters_True() {
+    @Test
+    func shouldLevelBeLogged_noFilters_True() {
         // everything is logged on default
         let destination = BaseDestination()
-        XCTAssertTrue(destination.shouldLevelBeLogged(
+        #expect(destination.shouldLevelBeLogged(
             .debug,
             path: "/world/ViewController.swift",
             function: "myFunc",
@@ -795,7 +816,8 @@ class BaseDestinationTests: XCTestCase {
         ))
     }
 
-    func test_shouldLevelBeLogged_multipleNonRequiredFiltersAndGlobal_True() {
+    @Test
+    func shouldLevelBeLogged_multipleNonRequiredFiltersAndGlobal_True() {
         // everything is logged on default
         let destination = BaseDestination()
         destination.minLevel = .info
@@ -806,7 +828,7 @@ class BaseDestinationTests: XCTestCase {
         // destination.debugPrint = true
 
         // covered by filters
-        XCTAssertTrue(destination.shouldLevelBeLogged(
+        #expect(destination.shouldLevelBeLogged(
             .debug,
             path: "/world/ViewController.swift",
             function: "myFunc",
@@ -814,7 +836,7 @@ class BaseDestinationTests: XCTestCase {
         ))
 
         // not in filter and below global minLevel
-        XCTAssertFalse(destination.shouldLevelBeLogged(
+        #expect(!destination.shouldLevelBeLogged(
             .debug,
             path: "hello.swift",
             function: "foo",
@@ -822,7 +844,8 @@ class BaseDestinationTests: XCTestCase {
         ))
     }
 
-    func test_shouldLevelBeLogged_excludeFilter_True() {
+    @Test
+    func shouldLevelBeLogged_excludeFilter_True() {
         // everything is logged on default
         let destination = BaseDestination()
         destination.minLevel = .error
@@ -832,7 +855,7 @@ class BaseDestinationTests: XCTestCase {
         // destination.debugPrint = true
 
         // excluded
-        XCTAssertFalse(destination.shouldLevelBeLogged(
+        #expect(!destination.shouldLevelBeLogged(
             .debug,
             path: "/world/ViewController.swift",
             function: "myFunc",
@@ -840,7 +863,7 @@ class BaseDestinationTests: XCTestCase {
         ))
 
         // excluded
-        XCTAssertFalse(destination.shouldLevelBeLogged(
+        #expect(!destination.shouldLevelBeLogged(
             .error,
             path: "/world/ViewController.swift",
             function: "myFunc",
@@ -848,7 +871,7 @@ class BaseDestinationTests: XCTestCase {
         ))
 
         // not excluded, but below minLevel
-        XCTAssertFalse(destination.shouldLevelBeLogged(
+        #expect(!destination.shouldLevelBeLogged(
             .debug,
             path: "/world/OtherViewController.swift",
             function: "otherFunc",
@@ -856,7 +879,7 @@ class BaseDestinationTests: XCTestCase {
         ))
 
         // not excluded, above minLevel, no matching filter
-        XCTAssertTrue(destination.shouldLevelBeLogged(
+        #expect(destination.shouldLevelBeLogged(
             .error,
             path: "/world/OtherViewController.swift",
             function: "otherFunc",
@@ -864,7 +887,7 @@ class BaseDestinationTests: XCTestCase {
         ))
 
         // not excluded, above minLevel, matching path filter
-        XCTAssertTrue(destination.shouldLevelBeLogged(
+        #expect(destination.shouldLevelBeLogged(
             .error,
             path: "/ViewController.swift",
             function: "otherFunc",

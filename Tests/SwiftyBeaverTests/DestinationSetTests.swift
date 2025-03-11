@@ -9,41 +9,42 @@
 // This source code is licensed under the MIT License (MIT) found in the
 // LICENSE file in the root directory of this source tree.
 
+import Foundation
 import SwiftyBeaver
-import XCTest
+import Testing
 
-class DestinationSetTests: XCTestCase {
-    override func setUp() {
-        super.setUp()
+@Suite(.serialized)
+final class DestinationSetTests {
+    init() {
         SwiftyBeaver.removeAllDestinations()
     }
 
-    override func tearDown() {
-        super.tearDown()
+    deinit {
         SwiftyBeaver.removeAllDestinations()
     }
 
+    @Test
     func testChangeDestinationsMinLogLevels() {
         let log = SwiftyBeaver.self
 
         // Test for default state
-        XCTAssertEqual(log.countDestinations(), 0)
+        #expect(log.countDestinations() == 0)
 
         // add valid destinations
         let console = ConsoleDestination()
         let console2 = ConsoleDestination()
         let file = FileDestination()
 
-        XCTAssertTrue(log.addDestination(console))
-        XCTAssertTrue(log.addDestination(console2))
-        XCTAssertTrue(log.addDestination(file))
+        #expect(log.addDestination(console))
+        #expect(log.addDestination(console2))
+        #expect(log.addDestination(file))
 
         // Test that destinations are successfully added
-        XCTAssertEqual(log.countDestinations(), 3)
+        #expect(log.countDestinations() == 3)
 
         // Test default log level of destinations
         for destination in log.destinations {
-            XCTAssertEqual(destination.minLevel, SwiftyBeaver.Level.verbose)
+            #expect(destination.minLevel == SwiftyBeaver.Level.verbose)
         }
 
         // Change min log level for all destinations
@@ -51,37 +52,38 @@ class DestinationSetTests: XCTestCase {
 
         // Test min level of destinations has changed
         for destination in log.destinations {
-            XCTAssertEqual(destination.minLevel, SwiftyBeaver.Level.info)
+            #expect(destination.minLevel == SwiftyBeaver.Level.info)
         }
     }
 
+    @Test
     func testRemoveConsoleDestinations() {
         let log = SwiftyBeaver.self
 
         // Test for default state
-        XCTAssertEqual(log.countDestinations(), 0)
+        #expect(log.countDestinations() == 0)
 
         // add valid destinations
         let console = ConsoleDestination()
         let console2 = ConsoleDestination()
         let file = FileDestination()
 
-        XCTAssertTrue(log.addDestination(console))
-        XCTAssertTrue(log.addDestination(console2))
-        XCTAssertTrue(log.addDestination(file))
+        #expect(log.addDestination(console))
+        #expect(log.addDestination(console2))
+        #expect(log.addDestination(file))
 
         // Test that destinations are successfully added
-        XCTAssertEqual(log.countDestinations(), 3)
+        #expect(log.countDestinations() == 3)
 
         // Remove console destinations
         for destination in log.destinations {
             if let consoleDestination = destination as? ConsoleDestination {
-                XCTAssertTrue(log.removeDestination(consoleDestination))
+                #expect(log.removeDestination(consoleDestination))
             }
         }
 
         // Test that console destinations are removed
-        XCTAssertEqual(log.countDestinations(), 1)
+        #expect(log.countDestinations() == 1)
     }
 
     /*
@@ -89,7 +91,7 @@ class DestinationSetTests: XCTestCase {
          let log = SwiftyBeaver.self
 
          // Test for default state
-         XCTAssertEqual(log.countDestinations(), 0)
+         #expect(log.countDestinations(), 0)
 
          let concurrentQueue = DispatchQueue(label: "log queue", attributes: .concurrent)
          let serialQueue = DispatchQueue(label: "destination queue") // serial
@@ -104,36 +106,36 @@ class DestinationSetTests: XCTestCase {
      }
      */
 
-    private func startMutatingDestinations(
-        log: SwiftyBeaver.Type,
-        queue: DispatchQueue,
-        expectation: XCTestExpectation,
-        onGoingMutationCount: Int = 0
-    ) {
-        if onGoingMutationCount >= 1 {
-            expectation.fulfill()
-        }
-
-        queue.async { [weak self, weak queue] in
-            let destination = ConsoleDestination()
-            log.addDestination(destination)
-
-            queue?.asyncAfter(deadline: .now() + 0.2) { [weak self, weak queue] in
-                _ = log.removeDestination(destination)
-
-                queue?.asyncAfter(deadline: .now() + 0.2) { [weak self, weak queue] in
-                    guard let self, let queue else { return }
-
-                    startMutatingDestinations(
-                        log: log,
-                        queue: queue,
-                        expectation: expectation,
-                        onGoingMutationCount: onGoingMutationCount + 1
-                    )
-                }
-            }
-        }
-    }
+//    private func startMutatingDestinations(
+//        log: SwiftyBeaver.Type,
+//        queue: DispatchQueue,
+//        expectation: XCTestExpectation,
+//        onGoingMutationCount: Int = 0
+//    ) {
+//        if onGoingMutationCount >= 1 {
+//            expectation.fulfill()
+//        }
+//
+//        queue.async { [weak self, weak queue] in
+//            let destination = ConsoleDestination()
+//            log.addDestination(destination)
+//
+//            queue?.asyncAfter(deadline: .now() + 0.2) { [weak self, weak queue] in
+//                _ = log.removeDestination(destination)
+//
+//                queue?.asyncAfter(deadline: .now() + 0.2) { [weak self, weak queue] in
+//                    guard let self, let queue else { return }
+//
+//                    startMutatingDestinations(
+//                        log: log,
+//                        queue: queue,
+//                        expectation: expectation,
+//                        onGoingMutationCount: onGoingMutationCount + 1
+//                    )
+//                }
+//            }
+//        }
+//    }
 
     private func startSpammingLogs(log: SwiftyBeaver.Type, queue: DispatchQueue) {
         queue.async { [weak self, weak queue] in

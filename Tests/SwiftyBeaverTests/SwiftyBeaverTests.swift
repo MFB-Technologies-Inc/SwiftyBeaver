@@ -11,48 +11,46 @@
 
 import Foundation
 @testable import SwiftyBeaver
-import XCTest
+import Testing
 
-class SwiftyBeaverTests: XCTestCase {
+@Suite(.serialized)
+struct SwiftyBeaverTests {
     var instanceVar = "an instance variable"
 
-    override func setUp() {
-        super.setUp()
+    init() {
         SwiftyBeaver.removeAllDestinations()
     }
 
-    override func tearDown() {
-        super.tearDown()
-    }
-
-    func testAddDestination() {
+    @Test
+    func AddDestination() {
         let log = SwiftyBeaver.self
 
         // add invalid destination
-        XCTAssertEqual(log.countDestinations(), 0)
+        #expect(log.countDestinations() == 0)
 
         // add valid destinations
         let console = ConsoleDestination()
         let console2 = ConsoleDestination()
         let file = FileDestination()
 
-        XCTAssertEqual(log.countDestinations(), 0)
-        XCTAssertTrue(log.addDestination(console))
-        XCTAssertEqual(log.countDestinations(), 1)
-        XCTAssertFalse(log.addDestination(console))
-        XCTAssertEqual(log.countDestinations(), 1)
-        XCTAssertTrue(log.addDestination(console2))
-        XCTAssertEqual(log.countDestinations(), 2)
-        XCTAssertFalse(log.addDestination(console2))
-        XCTAssertTrue(log.addDestination(file))
-        XCTAssertEqual(log.countDestinations(), 3)
+        #expect(log.countDestinations() == 0)
+        #expect(log.addDestination(console))
+        #expect(log.countDestinations() == 1)
+        #expect(!log.addDestination(console))
+        #expect(log.countDestinations() == 1)
+        #expect(log.addDestination(console2))
+        #expect(log.countDestinations() == 2)
+        #expect(!log.addDestination(console2))
+        #expect(log.addDestination(file))
+        #expect(log.countDestinations() == 3)
     }
 
-    func testRemoveDestination() {
+    @Test
+    func RemoveDestination() {
         let log = SwiftyBeaver.self
 
         // remove invalid destination
-        XCTAssertEqual(log.countDestinations(), 0)
+        #expect(log.countDestinations() == 0)
 
         // remove valid destinations
         let console = ConsoleDestination()
@@ -60,23 +58,24 @@ class SwiftyBeaverTests: XCTestCase {
         let file = FileDestination()
 
         // add destinations
-        XCTAssertTrue(log.addDestination(console))
-        XCTAssertTrue(log.addDestination(console2))
-        XCTAssertTrue(log.addDestination(file))
-        XCTAssertEqual(log.countDestinations(), 3)
+        #expect(log.addDestination(console))
+        #expect(log.addDestination(console2))
+        #expect(log.addDestination(file))
+        #expect(log.countDestinations() == 3)
         // remove destinations
-        XCTAssertTrue(log.removeDestination(console))
-        XCTAssertEqual(log.countDestinations(), 2)
-        XCTAssertFalse(log.removeDestination(console))
-        XCTAssertEqual(log.countDestinations(), 2)
-        XCTAssertTrue(log.removeDestination(console2))
-        XCTAssertFalse(log.removeDestination(console2))
-        XCTAssertEqual(log.countDestinations(), 1)
-        XCTAssertTrue(log.removeDestination(file))
-        XCTAssertEqual(log.countDestinations(), 0)
+        #expect(log.removeDestination(console))
+        #expect(log.countDestinations() == 2)
+        #expect(!log.removeDestination(console))
+        #expect(log.countDestinations() == 2)
+        #expect(log.removeDestination(console2))
+        #expect(!log.removeDestination(console2))
+        #expect(log.countDestinations() == 1)
+        #expect(log.removeDestination(file))
+        #expect(log.countDestinations() == 0)
     }
 
-    func testLogVerifiesIfShouldLogOnAllDestinations() {
+    @Test
+    func LogVerifiesIfShouldLogOnAllDestinations() {
         let log = SwiftyBeaver.self
 
         let dest1 = MockDestination()
@@ -97,20 +96,21 @@ class SwiftyBeaverTests: XCTestCase {
             context: "Context"
         )
 
-        XCTAssertEqual(dest1.shouldLogToLevel, SwiftyBeaver.Level.warning)
-        XCTAssertEqual(dest2.shouldLogToLevel, SwiftyBeaver.Level.warning)
+        #expect(dest1.shouldLogToLevel == SwiftyBeaver.Level.warning)
+        #expect(dest2.shouldLogToLevel == SwiftyBeaver.Level.warning)
 
-        XCTAssertEqual(dest1.shouldLogPath, "File")
-        XCTAssertEqual(dest2.shouldLogPath, "File")
+        #expect(dest1.shouldLogPath == "File")
+        #expect(dest2.shouldLogPath == "File")
 
-        XCTAssertEqual(dest1.shouldLogFunction, "Function()")
-        XCTAssertEqual(dest2.shouldLogFunction, "Function()")
+        #expect(dest1.shouldLogFunction == "Function()")
+        #expect(dest2.shouldLogFunction == "Function()")
 
-        XCTAssertEqual(dest1.shouldLogMessage, "Message")
-        XCTAssertEqual(dest2.shouldLogMessage, "Message")
+        #expect(dest1.shouldLogMessage == "Message")
+        #expect(dest2.shouldLogMessage == "Message")
     }
 
-    func testLogCallsAllDestinations() {
+    @Test
+    func LogCallsAllDestinations() {
         let log = SwiftyBeaver.self
 
         let dest1 = MockDestination()
@@ -131,46 +131,48 @@ class SwiftyBeaverTests: XCTestCase {
             context: "Context"
         )
 
-        XCTAssertEqual(dest1.didSendToLevel, SwiftyBeaver.Level.warning)
-        XCTAssertEqual(dest2.didSendToLevel, SwiftyBeaver.Level.warning)
+        #expect(dest1.didSendToLevel == SwiftyBeaver.Level.warning)
+        #expect(dest2.didSendToLevel == SwiftyBeaver.Level.warning)
 
-        XCTAssertEqual(dest1.didSendMessage, "Message")
-        XCTAssertEqual(dest2.didSendMessage, "Message")
+        #expect(dest1.didSendMessage == "Message")
+        #expect(dest2.didSendMessage == "Message")
 
-        XCTAssertEqual(dest1.didSendToThread, "Thread")
-        XCTAssertEqual(dest2.didSendToThread, "Thread")
+        #expect(dest1.didSendToThread == "Thread")
+        #expect(dest2.didSendToThread == "Thread")
 
-        XCTAssertEqual(dest1.didSendFile, "File")
-        XCTAssertEqual(dest2.didSendFile, "File")
+        #expect(dest1.didSendFile == "File")
+        #expect(dest2.didSendFile == "File")
 
-        XCTAssertEqual(dest1.didSendFunction, "Function()")
-        XCTAssertEqual(dest2.didSendFunction, "Function()")
+        #expect(dest1.didSendFunction == "Function()")
+        #expect(dest2.didSendFunction == "Function()")
 
-        XCTAssertEqual(dest1.didSendLine, 123)
-        XCTAssertEqual(dest2.didSendLine, 123)
+        #expect(dest1.didSendLine == 123)
+        #expect(dest2.didSendLine == 123)
 
-        XCTAssertEqual(dest1.didSendContext as? String, "Context")
-        XCTAssertEqual(dest2.didSendContext as? String, "Context")
+        #expect(dest1.didSendContext as? String == "Context")
+        #expect(dest2.didSendContext as? String == "Context")
     }
 
-    func testLoggingWithoutDestination() {
+    @Test
+    func LoggingWithoutDestination() {
         let log = SwiftyBeaver.self
         // no destination was set, yet
         log.verbose("Where do I log to?")
     }
 
-    func testDestinationIntegration() {
+    @Test
+    func DestinationIntegration() {
         let log = SwiftyBeaver.self
         log.verbose("that should lead to nowhere")
 
         // add console
         let console = ConsoleDestination()
-        XCTAssertTrue(log.addDestination(console))
+        #expect(log.addDestination(console))
         log.verbose("the default console destination")
         // add another console and set it to be less chatty
         let console2 = ConsoleDestination()
-        XCTAssertTrue(log.addDestination(console2))
-        XCTAssertEqual(log.countDestinations(), 2)
+        #expect(log.addDestination(console2))
+        #expect(log.countDestinations() == 2)
         console2.format = "$L: $M"
         console2.minLevel = SwiftyBeaver.Level.debug
         log.verbose("a verbose hello from hopefully just 1 console!")
@@ -179,8 +181,8 @@ class SwiftyBeaverTests: XCTestCase {
         // add file
         let file = FileDestination()
         file.logFileURL = URL(string: "file:///tmp/testSwiftyBeaver.log")!
-        XCTAssertTrue(log.addDestination(file))
-        XCTAssertEqual(log.countDestinations(), 3)
+        #expect(log.addDestination(file))
+        #expect(log.countDestinations() == 3)
         log.verbose("default file msg 1")
         log.verbose("default file msg 2")
         log.verbose("default file msg 3")
@@ -190,8 +192,8 @@ class SwiftyBeaverTests: XCTestCase {
         file2.logFileURL = URL(string: "file:///tmp/testSwiftyBeaver2.log")!
         console2.format = "$L: $M"
         file2.minLevel = SwiftyBeaver.Level.debug
-        XCTAssertTrue(log.addDestination(file2))
-        XCTAssertEqual(log.countDestinations(), 4)
+        #expect(log.addDestination(file2))
+        #expect(log.countDestinations() == 4)
         log.verbose("this should be in file 1")
         log.debug("this should be in both files, msg 1")
         log.info("this should be in both files, msg 2")
@@ -199,27 +201,28 @@ class SwiftyBeaverTests: XCTestCase {
         // log to default file location
         let file3 = FileDestination()
         console2.format = "$L: $M"
-        XCTAssertTrue(log.addDestination(file3))
-        XCTAssertEqual(log.countDestinations(), 5)
+        #expect(log.addDestination(file3))
+        #expect(log.countDestinations() == 5)
         guard let f3URL = file3.logFileURL else {
             return
         }
         log.info("Logging to default log file \(f3URL)")
     }
 
-    func testColors() {
+    @Test
+    func Colors() {
         let log = SwiftyBeaver.self
         log.verbose("that should lead to nowhere")
 
         // add console
         let console = ConsoleDestination()
-        XCTAssertTrue(log.addDestination(console))
+        #expect(log.addDestination(console))
 
         // add file
         let file = FileDestination()
         file.logFileURL = URL(string: "file:///tmp/testSwiftyBeaver.log")!
         file.format = "$L: $M"
-        XCTAssertTrue(log.addDestination(file))
+        #expect(log.addDestination(file))
 
         log.verbose("not so important")
         log.debug("something to debug")
@@ -227,23 +230,24 @@ class SwiftyBeaverTests: XCTestCase {
         log.warning("oh no, that won’t be good")
         log.error("ouch, an error did occur!")
 
-        XCTAssertEqual(log.countDestinations(), 2)
+        #expect(log.countDestinations() == 2)
     }
 
-    func testUptime() {
+    @Test
+    func Uptime() {
         let log = SwiftyBeaver.self
         log.verbose("that should lead to nowhere")
 
         // add console
         let console = ConsoleDestination()
         console.format = "$U: $M"
-        XCTAssertTrue(log.addDestination(console))
+        #expect(log.addDestination(console))
 
         // add file
         let file = FileDestination()
         file.logFileURL = URL(string: "file:///tmp/testSwiftyBeaver.log")!
         file.format = "$U: $M"
-        XCTAssertTrue(log.addDestination(file))
+        #expect(log.addDestination(file))
 
         log.verbose("not so important")
         log.debug("something to debug")
@@ -251,15 +255,16 @@ class SwiftyBeaverTests: XCTestCase {
         log.warning("oh no, that won’t be good")
         log.error("ouch, an error did occur!")
 
-        XCTAssertEqual(log.countDestinations(), 2)
+        #expect(log.countDestinations() == 2)
     }
 
-    func testModifiedColors() {
+    @Test
+    func ModifiedColors() {
         let log = SwiftyBeaver.self
 
         // add console
         let console = ConsoleDestination()
-        XCTAssertTrue(log.addDestination(console))
+        #expect(log.addDestination(console))
 
         // change default color
         console.levelColor.verbose = "fg255,0,255;"
@@ -275,14 +280,15 @@ class SwiftyBeaverTests: XCTestCase {
         log.error("ouch, an error did occur!, level in purple")
     }
 
-    func testDifferentMessageTypes() {
+    @Test
+    func DifferentMessageTypes() {
         let log = SwiftyBeaver.self
 
         // add console
         let console = ConsoleDestination()
         console.format = "$L: $M"
         console.levelString.info = "interesting number"
-        XCTAssertTrue(log.addDestination(console))
+        #expect(log.addDestination(console))
 
         log.verbose("My name is üÄölèå")
         log.verbose(123)
@@ -294,7 +300,7 @@ class SwiftyBeaverTests: XCTestCase {
         // JSON Logging
         let jsonConsole = ConsoleDestination()
         jsonConsole.format = "$J"
-        XCTAssertTrue(log.addDestination(jsonConsole))
+        #expect(log.addDestination(jsonConsole))
 
         log.verbose("My name is üÄölèå")
         log.verbose(123)
@@ -303,19 +309,21 @@ class SwiftyBeaverTests: XCTestCase {
         log.error(["I", "like", "logs!"])
         log.error(["beaver": "yeah", "age": 12])
 
-        XCTAssertEqual(log.countDestinations(), 2)
+        #expect(log.countDestinations() == 2)
     }
 
-    func testAutoClosure() {
+    @Test
+    func AutoClosure() {
         let log = SwiftyBeaver.self
         // add console
         let console = ConsoleDestination()
-        XCTAssertTrue(log.addDestination(console))
+        #expect(log.addDestination(console))
         // should not create a compile error relating autoclosure
         log.info(instanceVar)
     }
 
-    func testLongRunningTaskIsNotExecutedWhenLoggingUnderMinLevel() {
+    @Test
+    func LongRunningTaskIsNotExecutedWhenLoggingUnderMinLevel() {
         let log = SwiftyBeaver.self
 
         // add console
@@ -323,31 +331,34 @@ class SwiftyBeaverTests: XCTestCase {
         // set info level on default
         console.minLevel = .info
 
-        XCTAssertTrue(log.addDestination(console))
+        #expect(log.addDestination(console))
 
         func longRunningTask() -> String {
-            XCTAssert(false, "A block passed should not be executed if the log should not be logged.")
+            Issue.record("A block passed should not be executed if the log should not be logged.")
             return "This should NOT BE VISIBLE!"
         }
 
         log.verbose(longRunningTask())
     }
 
-    func testVersionAndBuild() {
-        XCTAssertGreaterThan(SwiftyBeaver.version.count, 4)
-        XCTAssertGreaterThan(SwiftyBeaver.build, 500)
+    @Test
+    func VersionAndBuild() {
+        #expect(SwiftyBeaver.version.count > 4)
+        #expect(SwiftyBeaver.build > 500)
     }
 
-    func testStripParams() {
+    @Test
+    func StripParams() {
         var f = "singleParam"
-        XCTAssertEqual(SwiftyBeaver.stripParams(function: f), "singleParam()")
+        #expect(SwiftyBeaver.stripParams(function: f) == "singleParam()")
         f = "logWithParamFunc(_:foo:hello:)"
-        XCTAssertEqual(SwiftyBeaver.stripParams(function: f), "logWithParamFunc()")
+        #expect(SwiftyBeaver.stripParams(function: f) == "logWithParamFunc()")
         f = "aFunc()"
-        XCTAssertEqual(SwiftyBeaver.stripParams(function: f), "aFunc()")
+        #expect(SwiftyBeaver.stripParams(function: f) == "aFunc()")
     }
 
-    func testGetCorrectThread() {
+    @Test
+    func GetCorrectThread() async {
         #if !os(Linux)
             let log = SwiftyBeaver.self
             let mock = MockDestination()
@@ -359,51 +370,44 @@ class SwiftyBeaverTests: XCTestCase {
 
             // main thread
             log.verbose("Hi")
-            XCTAssertEqual(mock.didSendToThread, "")
+            #expect(mock.didSendToThread == "com.apple.root.default-qos.cooperative")
             log.debug("Hi")
-            XCTAssertEqual(mock.didSendToThread, "")
+            #expect(mock.didSendToThread == "com.apple.root.default-qos.cooperative")
             log.info("Hi")
-            XCTAssertEqual(mock.didSendToThread, "")
+            #expect(mock.didSendToThread == "com.apple.root.default-qos.cooperative")
             log.warning("Hi")
-            XCTAssertEqual(mock.didSendToThread, "")
+            #expect(mock.didSendToThread == "com.apple.root.default-qos.cooperative")
             log.error("Hi")
-            XCTAssertEqual(mock.didSendToThread, "")
+            #expect(mock.didSendToThread == "com.apple.root.default-qos.cooperative")
 
-            let expectation = XCTestExpectation(description: "thread check")
-
-            DispatchQueue.global(qos: .background).async {
+            await Task(priority: .background) {
                 log.verbose("Hi")
-                XCTAssertEqual(mock.didSendToThread, "com.apple.root.background-qos")
+                #expect(mock.didSendToThread == "com.apple.root.background-qos.cooperative")
                 log.debug("Hi")
-                XCTAssertEqual(mock.didSendToThread, "com.apple.root.background-qos")
+                #expect(mock.didSendToThread == "com.apple.root.background-qos.cooperative")
                 log.info("Hi")
-                XCTAssertEqual(mock.didSendToThread, "com.apple.root.background-qos")
+                #expect(mock.didSendToThread == "com.apple.root.background-qos.cooperative")
                 log.warning("Hi")
-                XCTAssertEqual(mock.didSendToThread, "com.apple.root.background-qos")
+                #expect(mock.didSendToThread == "com.apple.root.background-qos.cooperative")
                 log.error("Hi")
-                XCTAssertEqual(mock.didSendToThread, "com.apple.root.background-qos")
-                expectation.fulfill()
-            }
+                #expect(mock.didSendToThread == "com.apple.root.background-qos.cooperative")
+            }.value
 
-            wait(for: [expectation], timeout: 2)
-
-            let expectation2 = XCTestExpectation(description: "thread check custom")
-
-            DispatchQueue(label: "MyTestLabel").async {
-                log.verbose("Hi")
-                XCTAssertEqual(mock.didSendToThread, "MyTestLabel")
-                log.debug("Hi")
-                XCTAssertEqual(mock.didSendToThread, "MyTestLabel")
-                log.info("Hi")
-                XCTAssertEqual(mock.didSendToThread, "MyTestLabel")
-                log.warning("Hi")
-                XCTAssertEqual(mock.didSendToThread, "MyTestLabel")
-                log.error("Hi")
-                XCTAssertEqual(mock.didSendToThread, "MyTestLabel")
-                expectation2.fulfill()
-            }
-
-            wait(for: [expectation2], timeout: 2)
+            await Task {
+                let dispatchQueue = DispatchQueue(label: "MyTestLabel")
+                dispatchQueue.sync {
+                    log.verbose("Hi")
+                    #expect(mock.didSendToThread == "MyTestLabel")
+                    log.debug("Hi")
+                    #expect(mock.didSendToThread == "MyTestLabel")
+                    log.info("Hi")
+                    #expect(mock.didSendToThread == "MyTestLabel")
+                    log.warning("Hi")
+                    #expect(mock.didSendToThread == "MyTestLabel")
+                    log.error("Hi")
+                    #expect(mock.didSendToThread == "MyTestLabel")
+                }
+            }.value
         #endif
     }
 }
