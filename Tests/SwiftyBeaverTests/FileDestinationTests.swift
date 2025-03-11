@@ -171,11 +171,4 @@ class FileDestinationTests: XCTestCase {
             print("Unable to create directory")
         }
     }
-
-    // MARK: Linux allTests
-
-    static let allTests = [
-        ("testFileIsWritten", testFileIsWritten),
-        ("testFileIsWrittenToFolderWithSpaces", testFileIsWrittenToFolderWithSpaces),
-    ]
 }
