@@ -9,36 +9,6 @@
 import Dispatch
 import Foundation
 
-// store operating system / platform
-#if os(iOS)
-    // swiftlint:disable:next identifier_name
-    let OS = "iOS"
-#elseif os(OSX)
-    // swiftlint:disable:next identifier_name
-    let OS = "OSX"
-#elseif os(watchOS)
-    // swiftlint:disable:next identifier_name
-    let OS = "watchOS"
-#elseif os(tvOS)
-    // swiftlint:disable:next identifier_name
-    let OS = "tvOS"
-#elseif os(Linux)
-    // swiftlint:disable:next identifier_name
-    let OS = "Linux"
-#elseif os(FreeBSD)
-    // swiftlint:disable:next identifier_name
-    let OS = "FreeBSD"
-#elseif os(Windows)
-    // swiftlint:disable:next identifier_name
-    let OS = "Windows"
-#elseif os(Android)
-    // swiftlint:disable:next identifier_name
-    let OS = "Android"
-#else
-    // swiftlint:disable:next identifier_name
-    let OS = "Unknown"
-#endif
-
 // swiftlint:disable type_body_length
 
 /// destination which all others inherit from. do not directly use
