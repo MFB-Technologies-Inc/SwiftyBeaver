@@ -1,26 +1,30 @@
+// FilterTests.swift
+// SwiftyBeaver
 //
-// Created by Jeff Roberts on 6/1/16.
-// Copyright (c) 2016 Sebastian Kreutzberger. All rights reserved.
+// Copyright (c) 2015 Sebastian Kreutzberger
+// All rights reserved.
 //
+// Copyright 2025 MFB Technologies, Inc.
+//
+// This source code is licensed under the MIT License (MIT) found in the
+// LICENSE file in the root directory of this source tree.
 
 import Foundation
-import XCTest
 @testable import SwiftyBeaver
+import XCTest
 
 class FilterTests: XCTestCase {
-
     //
     // Path filtering tests (identity)
     //
     func test_path_getTarget_isPathFilter() {
         let filter = Filters.Path.startsWith("/some/path")
-        let isCorrectTargetType: Bool
-        switch filter.getTarget() {
+        let isCorrectTargetType: Bool = switch filter.getTarget() {
         case .Path:
-            isCorrectTargetType = true
+            true
 
         default:
-            isCorrectTargetType = false
+            false
         }
         XCTAssertTrue(isCorrectTargetType)
     }
@@ -286,7 +290,7 @@ class FilterTests: XCTestCase {
 
     func test_pathCustomSimple_answersTrue() {
         let filter = Filters.Path.custom { string in
-            return string == "/Second/path/to/anywhere"
+            string == "/Second/path/to/anywhere"
         }
         XCTAssertTrue(filter.apply("/Second/path/to/anywhere"))
     }
@@ -314,13 +318,12 @@ class FilterTests: XCTestCase {
     //
     func test_function_getTarget_isFunctionFilter() {
         let filter = Filters.Function.startsWith("myFunc")
-        let isCorrectTargetType: Bool
-        switch filter.getTarget() {
+        let isCorrectTargetType: Bool = switch filter.getTarget() {
         case .Function:
-            isCorrectTargetType = true
+            true
 
         default:
-            isCorrectTargetType = false
+            false
         }
         XCTAssertTrue(isCorrectTargetType)
     }
@@ -576,7 +579,7 @@ class FilterTests: XCTestCase {
 
     func test_functionCustomSimple_answersTrue() {
         let filter = Filters.Function.custom { string in
-            return string == "myfunc"
+            string == "myfunc"
         }
         XCTAssertTrue(filter.apply("myfunc"))
     }
@@ -604,13 +607,12 @@ class FilterTests: XCTestCase {
     //
     func test_message_getTarget_isMessageFilter() {
         let filter = Filters.Message.startsWith("Hello there, SwiftyBeaver!")
-        let isCorrectTargetType: Bool
-        switch filter.getTarget() {
+        let isCorrectTargetType: Bool = switch filter.getTarget() {
         case .Message:
-            isCorrectTargetType = true
+            true
 
         default:
-            isCorrectTargetType = false
+            false
         }
         XCTAssertTrue(isCorrectTargetType)
     }
@@ -865,7 +867,11 @@ class FilterTests: XCTestCase {
     }
 
     func test_messageEquals_hasMultipleValuesAndIsNotCaseSensitiveAndMatches_answersTrue() {
-        let filter = Filters.Message.equals("goodbye, sluggishmink!", "hello there, swiftybeaver!", caseSensitive: false)
+        let filter = Filters.Message.equals(
+            "goodbye, sluggishmink!",
+            "hello there, swiftybeaver!",
+            caseSensitive: false
+        )
         XCTAssertTrue(filter.apply("Hello there, SwiftyBeaver!"))
     }
 
@@ -876,7 +882,7 @@ class FilterTests: XCTestCase {
 
     func test_messageCustomSimple_answersTrue() {
         let filter = Filters.Message.custom { string in
-            return string == "hello"
+            string == "hello"
         }
         XCTAssertTrue(filter.apply("hello"))
     }
@@ -901,44 +907,41 @@ class FilterTests: XCTestCase {
 
     // Helper functions
     private func isCaseSensitive(_ targetType: Filter.TargetType) -> Bool {
-        let comparisonType: Filter.ComparisonType?
-        switch targetType {
+        let comparisonType: Filter.ComparisonType? = switch targetType {
         case let .Path(type):
-            comparisonType = type
+            type
 
         case let .Function(type):
-            comparisonType = type
+            type
 
         case let .Message(type):
-            comparisonType = type
+            type
         }
 
         guard let compareType = comparisonType else {
             return false
         }
 
-        let isCaseSensitive: Bool
-
-        switch compareType {
+        let isCaseSensitive: Bool = switch compareType {
         case let .Contains(_, caseSensitive):
-            isCaseSensitive = caseSensitive
+            caseSensitive
 
         case let .Excludes(_, caseSensitive):
-            isCaseSensitive = caseSensitive
+            caseSensitive
 
         case let .StartsWith(_, caseSensitive):
-            isCaseSensitive = caseSensitive
+            caseSensitive
 
         case let .EndsWith(_, caseSensitive):
-            isCaseSensitive = caseSensitive
+            caseSensitive
 
         case let .Equals(_, caseSensitive):
-            isCaseSensitive = caseSensitive
+            caseSensitive
+
         case .Custom:
-            isCaseSensitive = false
+            false
         }
 
         return isCaseSensitive
     }
-
 }

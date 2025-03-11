@@ -1,19 +1,19 @@
+// ConsoleDestinationTests.swift
+// SwiftyBeaver
 //
-//  ConsoleDestinationTests.swift
-//  SwiftyBeaver
+// Copyright (c) 2015 Sebastian Kreutzberger
+// All rights reserved.
 //
-//  Created by Sebastian Kreutzberger on 3/28/17.
-//  Copyright © 2017 Sebastian Kreutzberger. All rights reserved.
+// Copyright 2025 MFB Technologies, Inc.
 //
-// run tests for this class only:
-// swift test -s SwiftyBeaverTests.ConsoleDestinationTests
+// This source code is licensed under the MIT License (MIT) found in the
+// LICENSE file in the root directory of this source tree.
 
 import Foundation
-import XCTest
 @testable import SwiftyBeaver
+import XCTest
 
 class ConsoleDestinationTests: XCTestCase {
-
     override func setUp() {
         super.setUp()
         SwiftyBeaver.removeAllDestinations()
@@ -37,7 +37,7 @@ class ConsoleDestinationTests: XCTestCase {
         // switch to terminal colors
         console.useTerminalColors = true
         XCTAssertTrue(console.useTerminalColors)
-        XCTAssertEqual(console.levelColor.verbose, "251m" )
+        XCTAssertEqual(console.levelColor.verbose, "251m")
         XCTAssertEqual(console.reset, "\u{001b}[0m")
         XCTAssertEqual(console.escape, "\u{001b}[38;5;")
     }
@@ -45,6 +45,6 @@ class ConsoleDestinationTests: XCTestCase {
     // MARK: Linux allTests
 
     static let allTests = [
-        ("testUseTerminalColors", testUseTerminalColors)
+        ("testUseTerminalColors", testUseTerminalColors),
     ]
 }

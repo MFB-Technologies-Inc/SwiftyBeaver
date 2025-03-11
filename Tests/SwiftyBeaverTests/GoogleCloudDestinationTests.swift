@@ -1,3 +1,14 @@
+// GoogleCloudDestinationTests.swift
+// SwiftyBeaver
+//
+// Copyright (c) 2015 Sebastian Kreutzberger
+// All rights reserved.
+//
+// Copyright 2025 MFB Technologies, Inc.
+//
+// This source code is licensed under the MIT License (MIT) found in the
+// LICENSE file in the root directory of this source tree.
+
 //
 //  GoogleCloudDestinationTests.swift
 //  SwiftyBeaver
@@ -6,11 +17,10 @@
 //  Copyright © 2017 Sebastian Kreutzberger. All rights reserved.
 //
 import Foundation
-import XCTest
 @testable import SwiftyBeaver
+import XCTest
 
 class GoogleCloudDestinationTests: XCTestCase {
-
     override func setUp() {
         super.setUp()
         SwiftyBeaver.removeAllDestinations()
@@ -38,7 +48,7 @@ class GoogleCloudDestinationTests: XCTestCase {
         let gcpDestination = GoogleCloudDestination(serviceName: "TEST")
         let str = gcpDestination.send(.verbose, msg: msg, thread: thread, file: file, function: function, line: line)
         XCTAssertNotNil(str)
-        if let str = str {
+        if let str {
             XCTAssertEqual(str.firstChar, "{")
             XCTAssertEqual(str.lastChar, "}")
             XCTAssertNotNil(str.range(of: "{\"service\":\"TEST\"}"))
@@ -57,11 +67,18 @@ class GoogleCloudDestinationTests: XCTestCase {
 
         let gcd = GoogleCloudDestination(serviceName: "SwiftyBeaver")
 
-        let str = gcd.send(.verbose, msg: msg, thread: thread, file: file, function: function, line: line,
-                           context: ["user": "Beaver", "httpRequest": ["method": "GET", "responseStatusCode": 200]])
+        let str = gcd.send(
+            .verbose,
+            msg: msg,
+            thread: thread,
+            file: file,
+            function: function,
+            line: line,
+            context: ["user": "Beaver", "httpRequest": ["method": "GET", "responseStatusCode": 200]]
+        )
 
         XCTAssertNotNil(str)
-        if let str = str {
+        if let str {
             XCTAssertEqual(str.firstChar, "{")
             XCTAssertEqual(str.lastChar, "}")
             XCTAssertNotNil(str.range(of: "{\"service\":\"SwiftyBeaver\"}"))
@@ -72,13 +89,11 @@ class GoogleCloudDestinationTests: XCTestCase {
             XCTAssertNotNil(str.range(of: "\"method\":\"GET\""))
             XCTAssertNotNil(str.range(of: "\"responseStatusCode\":200"))
         }
-
     }
 
     static var allTests = [
         ("testUseGoogleCloudPDestination", testUseGoogleCloudPDestination),
         ("testSend", testSend),
-        ("testContextMessage", testContextMessage)
+        ("testContextMessage", testContextMessage),
     ]
-
 }

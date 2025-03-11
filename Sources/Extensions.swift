@@ -1,35 +1,38 @@
+// Extensions.swift
+// SwiftyBeaver
 //
-//  Extensions.swift
-//  SwiftyBeaver
+// Copyright (c) 2015 Sebastian Kreutzberger
+// All rights reserved.
 //
-//  Created by Sebastian Kreutzberger on 13.12.17.
-//  Copyright © 2017 Sebastian Kreutzberger. All rights reserved.
+// Copyright 2025 MFB Technologies, Inc.
 //
+// This source code is licensed under the MIT License (MIT) found in the
+// LICENSE file in the root directory of this source tree.
 
 import Foundation
 
 extension String {
     /// cross-Swift compatible characters count
     var length: Int {
-        return self.count
+        count
     }
 
     /// cross-Swift-compatible first character
     var firstChar: Character? {
-        return self.first
+        first
     }
 
     /// cross-Swift-compatible last character
     var lastChar: Character? {
-        return self.last
+        last
     }
 
     /// cross-Swift-compatible index
     func find(_ char: Character) -> Index? {
         #if swift(>=5)
-            return self.firstIndex(of: char)
+            return firstIndex(of: char)
         #else
-            return self.index(of: char)
+            return index(of: char)
         #endif
     }
 }

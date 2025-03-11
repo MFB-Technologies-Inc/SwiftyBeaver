@@ -1,17 +1,19 @@
+// FileDestinationTests.swift
+// SwiftyBeaver
 //
-//  FileDestinationTests.swift
-//  SwiftyBeaver
+// Copyright (c) 2015 Sebastian Kreutzberger
+// All rights reserved.
 //
-//  Created by Sebastian Kreutzberger on 6/21/16.
-//  Copyright © 2016 Sebastian Kreutzberger. All rights reserved.
+// Copyright 2025 MFB Technologies, Inc.
 //
+// This source code is licensed under the MIT License (MIT) found in the
+// LICENSE file in the root directory of this source tree.
 
 import Foundation
-import XCTest
 @testable import SwiftyBeaver
+import XCTest
 
 class FileDestinationTests: XCTestCase {
-
     override func setUp() {
         super.setUp()
         SwiftyBeaver.removeAllDestinations()
@@ -40,13 +42,13 @@ class FileDestinationTests: XCTestCase {
         _ = log.flush(secondTimeout: 3)
 
         // wait a bit until the logs are written to file
-        for i in 1...100000 {
+        for i in 1 ... 100_000 {
             let x = sqrt(Double(i))
             XCTAssertEqual(x, sqrt(Double(i)))
         }
 
         // was the file written and does it contain the lines?
-        let fileLines = self.linesOfFile(path: path)
+        let fileLines = linesOfFile(path: path)
         XCTAssertNotNil(fileLines)
         guard let lines = fileLines else { return }
         XCTAssertEqual(lines.count, 5)
@@ -84,13 +86,13 @@ class FileDestinationTests: XCTestCase {
         _ = log.flush(secondTimeout: 3)
 
         // wait a bit until the logs are written to file
-        for i in 1...100000 {
+        for i in 1 ... 100_000 {
             let x = sqrt(Double(i))
             XCTAssertEqual(x, sqrt(Double(i)))
         }
 
         // was the file written and does it contain the lines?
-        let fileLines = self.linesOfFile(path: path)
+        let fileLines = linesOfFile(path: path)
         XCTAssertNotNil(fileLines)
         guard let lines = fileLines else { return }
         XCTAssertEqual(lines.count, 4)
@@ -99,15 +101,14 @@ class FileDestinationTests: XCTestCase {
         XCTAssertEqual(lines[2], "INFO: third line to log")
         XCTAssertEqual(lines[3], "")
     }
-    
+
     func testFileIsWrittenToDeletedFolder() {
         let log = SwiftyBeaver.self
-        
+
         let path = "/tmp/\(UUID().uuidString)/testSBF.log"
         deleteFile(path: path)
         deleteFile(path: "/tmp/\(UUID().uuidString)/testSBF.log.1")
 
-        
         // add file
         let file = FileDestination()
         file.logFileURL = URL(string: "file://" + path)!
@@ -116,21 +117,21 @@ class FileDestinationTests: XCTestCase {
         file.logFileAmount = 2
         file.logFileMaxSize = 1000
         _ = log.addDestination(file)
-        
+
         log.verbose("first line to log")
         log.debug("second line to log")
         log.info("third line to log")
         log.warning("fourth line with context", context: 123)
         _ = log.flush(secondTimeout: 3)
-        
+
         // wait a bit until the logs are written to file
-        for i in 1...100000 {
+        for i in 1 ... 100_000 {
             let x = sqrt(Double(i))
             XCTAssertEqual(x, sqrt(Double(i)))
         }
-        
+
         // was the file written and does it contain the lines?
-        let fileLines = self.linesOfFile(path: path)
+        let fileLines = linesOfFile(path: path)
         XCTAssertNotNil(fileLines)
         guard let lines = fileLines else { return }
         XCTAssertEqual(lines.count, 5)
@@ -156,7 +157,7 @@ class FileDestinationTests: XCTestCase {
             // try to read file
             let fileContent = try NSString(contentsOfFile: path, encoding: String.Encoding.utf8.rawValue)
             return fileContent.components(separatedBy: "\n")
-        } catch let error {
+        } catch {
             print(error)
             return nil
         }
@@ -175,6 +176,6 @@ class FileDestinationTests: XCTestCase {
 
     static let allTests = [
         ("testFileIsWritten", testFileIsWritten),
-        ("testFileIsWrittenToFolderWithSpaces", testFileIsWrittenToFolderWithSpaces)
+        ("testFileIsWrittenToFolderWithSpaces", testFileIsWrittenToFolderWithSpaces),
     ]
 }
