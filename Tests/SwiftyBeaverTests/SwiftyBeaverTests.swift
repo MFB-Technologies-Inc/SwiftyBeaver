@@ -344,61 +344,61 @@ class SwiftyBeaverTests: XCTestCase {
 
     func testGetCorrectThread() {
         #if !os(Linux)
-        let log = SwiftyBeaver.self
-        let mock = MockDestination()
-        // set info level on default
-        mock.minLevel = .verbose
-        mock.asynchronously = false
+            let log = SwiftyBeaver.self
+            let mock = MockDestination()
+            // set info level on default
+            mock.minLevel = .verbose
+            mock.asynchronously = false
 
-        log.addDestination(mock)
+            log.addDestination(mock)
 
-        // main thread
-        log.verbose("Hi")
-        XCTAssertEqual(mock.didSendToThread, "")
-        log.debug("Hi")
-        XCTAssertEqual(mock.didSendToThread, "")
-        log.info("Hi")
-        XCTAssertEqual(mock.didSendToThread, "")
-        log.warning("Hi")
-        XCTAssertEqual(mock.didSendToThread, "")
-        log.error("Hi")
-        XCTAssertEqual(mock.didSendToThread, "")
-
-        let expectation = XCTestExpectation(description: "thread check")
-
-        DispatchQueue.global(qos: .background).async {
+            // main thread
             log.verbose("Hi")
-            XCTAssertEqual(mock.didSendToThread, "com.apple.root.background-qos")
+            XCTAssertEqual(mock.didSendToThread, "")
             log.debug("Hi")
-            XCTAssertEqual(mock.didSendToThread, "com.apple.root.background-qos")
+            XCTAssertEqual(mock.didSendToThread, "")
             log.info("Hi")
-            XCTAssertEqual(mock.didSendToThread, "com.apple.root.background-qos")
+            XCTAssertEqual(mock.didSendToThread, "")
             log.warning("Hi")
-            XCTAssertEqual(mock.didSendToThread, "com.apple.root.background-qos")
+            XCTAssertEqual(mock.didSendToThread, "")
             log.error("Hi")
-            XCTAssertEqual(mock.didSendToThread, "com.apple.root.background-qos")
-            expectation.fulfill()
-        }
+            XCTAssertEqual(mock.didSendToThread, "")
 
-        wait(for: [expectation], timeout: 2)
+            let expectation = XCTestExpectation(description: "thread check")
 
-        let expectation2 = XCTestExpectation(description: "thread check custom")
+            DispatchQueue.global(qos: .background).async {
+                log.verbose("Hi")
+                XCTAssertEqual(mock.didSendToThread, "com.apple.root.background-qos")
+                log.debug("Hi")
+                XCTAssertEqual(mock.didSendToThread, "com.apple.root.background-qos")
+                log.info("Hi")
+                XCTAssertEqual(mock.didSendToThread, "com.apple.root.background-qos")
+                log.warning("Hi")
+                XCTAssertEqual(mock.didSendToThread, "com.apple.root.background-qos")
+                log.error("Hi")
+                XCTAssertEqual(mock.didSendToThread, "com.apple.root.background-qos")
+                expectation.fulfill()
+            }
 
-        DispatchQueue(label: "MyTestLabel").async {
-            log.verbose("Hi")
-            XCTAssertEqual(mock.didSendToThread, "MyTestLabel")
-            log.debug("Hi")
-            XCTAssertEqual(mock.didSendToThread, "MyTestLabel")
-            log.info("Hi")
-            XCTAssertEqual(mock.didSendToThread, "MyTestLabel")
-            log.warning("Hi")
-            XCTAssertEqual(mock.didSendToThread, "MyTestLabel")
-            log.error("Hi")
-            XCTAssertEqual(mock.didSendToThread, "MyTestLabel")
-            expectation2.fulfill()
-        }
+            wait(for: [expectation], timeout: 2)
 
-        wait(for: [expectation2], timeout: 2)
+            let expectation2 = XCTestExpectation(description: "thread check custom")
+
+            DispatchQueue(label: "MyTestLabel").async {
+                log.verbose("Hi")
+                XCTAssertEqual(mock.didSendToThread, "MyTestLabel")
+                log.debug("Hi")
+                XCTAssertEqual(mock.didSendToThread, "MyTestLabel")
+                log.info("Hi")
+                XCTAssertEqual(mock.didSendToThread, "MyTestLabel")
+                log.warning("Hi")
+                XCTAssertEqual(mock.didSendToThread, "MyTestLabel")
+                log.error("Hi")
+                XCTAssertEqual(mock.didSendToThread, "MyTestLabel")
+                expectation2.fulfill()
+            }
+
+            wait(for: [expectation2], timeout: 2)
         #endif
     }
 }
