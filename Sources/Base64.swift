@@ -9,12 +9,6 @@
 // This source code is licensed under the MIT License (MIT) found in the
 // LICENSE file in the root directory of this source tree.
 
-//
-//  Base64.swift
-//  SwiftyBeaver (macOS)
-//
-//  Copyright © 2017 Sebastian Kreutzberger. All rights reserved.
-//
 #if os(Linux)
     import Foundation
 
