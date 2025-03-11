@@ -295,7 +295,7 @@ open class SwiftyBeaver {
     class func stripParams(function: String) -> String {
         // swiftlint:disable:next identifier_name
         var f = function
-        if let indexOfBrace = f.find("(") {
+        if let indexOfBrace = f.firstIndex(of: "(") {
             f = String(f[..<indexOfBrace])
         }
         f += "()"

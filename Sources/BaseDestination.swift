@@ -146,7 +146,7 @@ open class BaseDestination: Hashable, Equatable {
         // swiftlint:disable:next identifier_name
         var s: String!
         var sign: Int = 1
-        if text.firstChar == "-" {
+        if text.first == "-" {
             sign = -1
             s = String(text.suffix(from: text.index(text.startIndex, offsetBy: 1)))
         } else {
@@ -411,10 +411,10 @@ open class BaseDestination: Hashable, Equatable {
         }
 
         // remove the leading {"key":" from the json string and the final }
-        let offset = key.length + 5
+        let offset = key.count + 5
         let endIndex = str.index(
             str.startIndex,
-            offsetBy: str.length - 2
+            offsetBy: str.count - 2
         )
         let range = str.index(str.startIndex, offsetBy: offset) ..< endIndex
         return String(str[range])
