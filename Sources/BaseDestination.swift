@@ -92,10 +92,8 @@ open class BaseDestination: Hashable, Equatable {
 
     // each destination class must have an own hashValue Int
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(defaultHashValue)
+        hasher.combine(ObjectIdentifier(Self.self))
     }
-
-    open var defaultHashValue: Int { 0 }
 
     // each destination instance must have an own serial queue to ensure serial output
     // GCD gives it a prioritization between User Initiated and Utility

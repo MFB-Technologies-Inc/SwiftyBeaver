@@ -56,8 +56,6 @@ open class ConsoleDestination: BaseDestination {
         }
     }
 
-    override public var defaultHashValue: Int { 1 }
-
     override public init() {
         super.init()
         levelColor.verbose = "⬜️ " // silver

@@ -41,7 +41,6 @@ open class FileDestination: BaseDestination {
     // Number of log files used in rotation, default is 1 which deactivates file rotation
     public var logFileAmount = 1
 
-    override public var defaultHashValue: Int { 2 }
     let fileManager = FileManager.default
 
     public init(logFileURL: URL? = nil) {
