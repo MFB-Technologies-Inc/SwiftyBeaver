@@ -22,7 +22,7 @@ struct BaseDestinationTests {
     ////////////////////////////////
 
     @Test
-    func FormatMessage() {
+    func formatMessage() {
         let obj = BaseDestination()
         var str = ""
         var format = ""
@@ -287,7 +287,7 @@ struct BaseDestinationTests {
     }
 
     @Test
-    func MessageToJSON() {
+    func messageToJSON() {
         let obj = BaseDestination()
         guard let str = obj.messageToJSON(
             .info,
@@ -329,7 +329,7 @@ struct BaseDestinationTests {
     }
 
     @Test
-    func LevelWord() {
+    func levelWord() {
         let obj = BaseDestination()
         var str = ""
 
@@ -364,7 +364,7 @@ struct BaseDestinationTests {
     }
 
     @Test
-    func ColorForLevel() {
+    func colorForLevel() {
         let obj = BaseDestination()
         var str = ""
 
@@ -400,7 +400,7 @@ struct BaseDestinationTests {
     }
 
     @Test
-    func FileNameOfFile() {
+    func fileNameOfFile() {
         let obj = BaseDestination()
         var str = ""
 
@@ -413,7 +413,7 @@ struct BaseDestinationTests {
     }
 
     @Test
-    func FileNameOfFileWithoutSuffix() {
+    func fileNameOfFileWithoutSuffix() {
         let obj = BaseDestination()
         var str = ""
 
@@ -430,7 +430,7 @@ struct BaseDestinationTests {
     }
 
     @Test
-    func FormatDate() {
+    func formatDate() {
         // empty format
         var str = BaseDestination().formatDate("")
         #expect(str == "")

@@ -20,7 +20,7 @@ struct FileDestinationTests {
     }
 
     @Test
-    func FileIsWritten() {
+    func fileIsWritten() {
         let log = SwiftyBeaver.self
 
         let path = "/tmp/testSBF.log"
@@ -57,7 +57,7 @@ struct FileDestinationTests {
     }
 
     @Test
-    func FileIsWrittenToFolderWithSpaces() {
+    func fileIsWrittenToFolderWithSpaces() {
         let log = SwiftyBeaver.self
 
         let folder = "/tmp/folder with spaces"
@@ -101,7 +101,7 @@ struct FileDestinationTests {
     }
 
     @Test
-    func FileIsWrittenToDeletedFolder() {
+    func fileIsWrittenToDeletedFolder() {
         let log = SwiftyBeaver.self
 
         let path = "/tmp/\(UUID().uuidString)/testSBF.log"

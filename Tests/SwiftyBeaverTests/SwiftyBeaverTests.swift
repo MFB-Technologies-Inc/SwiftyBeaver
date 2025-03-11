@@ -22,7 +22,7 @@ struct SwiftyBeaverTests {
     }
 
     @Test
-    func AddDestination() {
+    func addDestination() {
         let log = SwiftyBeaver.self
 
         // add invalid destination
@@ -46,7 +46,7 @@ struct SwiftyBeaverTests {
     }
 
     @Test
-    func RemoveDestination() {
+    func removeDestination() {
         let log = SwiftyBeaver.self
 
         // remove invalid destination
@@ -75,7 +75,7 @@ struct SwiftyBeaverTests {
     }
 
     @Test
-    func LogVerifiesIfShouldLogOnAllDestinations() {
+    func logVerifiesIfShouldLogOnAllDestinations() {
         let log = SwiftyBeaver.self
 
         let dest1 = MockDestination()
@@ -110,7 +110,7 @@ struct SwiftyBeaverTests {
     }
 
     @Test
-    func LogCallsAllDestinations() {
+    func logCallsAllDestinations() {
         let log = SwiftyBeaver.self
 
         let dest1 = MockDestination()
@@ -154,14 +154,14 @@ struct SwiftyBeaverTests {
     }
 
     @Test
-    func LoggingWithoutDestination() {
+    func loggingWithoutDestination() {
         let log = SwiftyBeaver.self
         // no destination was set, yet
         log.verbose("Where do I log to?")
     }
 
     @Test
-    func DestinationIntegration() {
+    func destinationIntegration() {
         let log = SwiftyBeaver.self
         log.verbose("that should lead to nowhere")
 
@@ -210,7 +210,7 @@ struct SwiftyBeaverTests {
     }
 
     @Test
-    func Colors() {
+    func colors() {
         let log = SwiftyBeaver.self
         log.verbose("that should lead to nowhere")
 
@@ -234,7 +234,7 @@ struct SwiftyBeaverTests {
     }
 
     @Test
-    func Uptime() {
+    func uptime() {
         let log = SwiftyBeaver.self
         log.verbose("that should lead to nowhere")
 
@@ -259,7 +259,7 @@ struct SwiftyBeaverTests {
     }
 
     @Test
-    func ModifiedColors() {
+    func modifiedColors() {
         let log = SwiftyBeaver.self
 
         // add console
@@ -281,7 +281,7 @@ struct SwiftyBeaverTests {
     }
 
     @Test
-    func DifferentMessageTypes() {
+    func differentMessageTypes() {
         let log = SwiftyBeaver.self
 
         // add console
@@ -313,7 +313,7 @@ struct SwiftyBeaverTests {
     }
 
     @Test
-    func AutoClosure() {
+    func autoClosure() {
         let log = SwiftyBeaver.self
         // add console
         let console = ConsoleDestination()
@@ -323,7 +323,7 @@ struct SwiftyBeaverTests {
     }
 
     @Test
-    func LongRunningTaskIsNotExecutedWhenLoggingUnderMinLevel() {
+    func longRunningTaskIsNotExecutedWhenLoggingUnderMinLevel() {
         let log = SwiftyBeaver.self
 
         // add console
@@ -342,13 +342,13 @@ struct SwiftyBeaverTests {
     }
 
     @Test
-    func VersionAndBuild() {
+    func versionAndBuild() {
         #expect(SwiftyBeaver.version.count > 4)
         #expect(SwiftyBeaver.build > 500)
     }
 
     @Test
-    func StripParams() {
+    func stripParams() {
         var f = "singleParam"
         #expect(SwiftyBeaver.stripParams(function: f) == "singleParam()")
         f = "logWithParamFunc(_:foo:hello:)"
@@ -358,7 +358,7 @@ struct SwiftyBeaverTests {
     }
 
     @Test
-    func GetCorrectThread() async {
+    func getCorrectThread() async {
         #if !os(Linux)
             let log = SwiftyBeaver.self
             let mock = MockDestination()

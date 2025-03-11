@@ -27,7 +27,7 @@ struct GoogleCloudDestinationTests {
     }
 
     @Test
-    func UseGoogleCloudPDestination() {
+    func useGoogleCloudPDestination() {
         let log = SwiftyBeaver.self
         let gcpDestination = GoogleCloudDestination(serviceName: "TEST")
         gcpDestination.minLevel = .verbose
@@ -35,7 +35,7 @@ struct GoogleCloudDestinationTests {
     }
 
     @Test
-    func Send() {
+    func send() {
         // let dateStr = formatter.stringFromDate(NSDate())
         let msg = "test message\nNewlineäößø"
         let thread = ""
@@ -57,7 +57,7 @@ struct GoogleCloudDestinationTests {
     }
 
     @Test
-    func ContextMessage() {
+    func contextMessage() {
         let msg = "test message\nNewlineäößø"
         let thread = ""
         let file = "/file/path.swift"
