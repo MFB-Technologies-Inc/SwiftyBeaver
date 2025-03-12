@@ -2,7 +2,7 @@
 --redundanttype explicit
 --swiftversion 5.10
 --maxwidth 120
---header "{file}\nSwiftyBeaver\n\nCopyright (c) 2015 Sebastian Kreutzberger\nAll rights reserved.\n\nCopyright 2025 MFB Technologies, Inc.\n\nThis source code is licensed under the MIT License (MIT) found in the\nLICENSE file in the root directory of this source tree."
+--header "{file}\nSwiftyBeaver\n\nThis source code is licensed under the MIT License (MIT) found in the\nLICENSE file in the root directory of this source tree."
 --allman false
 --wraparguments before-first
 --wrapcollections before-first
