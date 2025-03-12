@@ -81,63 +81,71 @@ final class DestinationSetTests {
         #expect(log.countDestinations() == 1)
     }
 
-    /*
-     func testModifyingDestinationsWhileLoggingFromDifferentThread() {
-         let log = SwiftyBeaver.self
+    @Test(.disabled("Now fixed but verifies that there is no crash when removing destinations while logging."))
+    func modifyingDestinationsWhileLoggingFromDifferentThread() async {
+        let log = SwiftyBeaver.self
 
-         // Test for default state
-         #expect(log.countDestinations(), 0)
+        // Test for default state
+        #expect(log.countDestinations() == 0)
 
-         let concurrentQueue = DispatchQueue(label: "log queue", attributes: .concurrent)
-         let serialQueue = DispatchQueue(label: "destination queue") // serial
+        let concurrentQueue = DispatchQueue(label: "log queue", attributes: .concurrent)
+        let serialQueue = DispatchQueue(label: "destination queue") // serial
 
-         let expectation = XCTestExpectation(description: "Enough mutations on log destinations were made to likely trigger the race condition")
+        await confirmation(
+            "Enough mutations on log destinations were made to likely trigger the race condition",
+            expectedCount: 1000
+        ) { enoughMutationsMade in
+            await withTaskGroup(of: Void.self) { taskGroup in
+                Self.startMutatingDestinations(log: log, queue: serialQueue, taskGroup: &taskGroup)
+                Self.startSpammingLogs(
+                    log: log,
+                    queue: concurrentQueue,
+                    confirmation: enoughMutationsMade,
+                    taskGroup: &taskGroup
+                )
+                Self.startSpammingLogs(
+                    log: log,
+                    queue: concurrentQueue,
+                    confirmation: enoughMutationsMade,
+                    taskGroup: &taskGroup
+                )
+            }
+        }
+    }
 
-         startMutatingDestinations(log: log, queue: serialQueue, expectation: expectation)
-         startSpammingLogs(log: log, queue: concurrentQueue)
-         startSpammingLogs(log: log, queue: concurrentQueue)
+    private static func startMutatingDestinations(
+        log: SwiftyBeaver.Type,
+        queue: DispatchQueue,
+        taskGroup: inout TaskGroup<Void>
+    ) {
+        for _ in 1 ... 500 {
+            let destination = ConsoleDestination()
+            taskGroup.addTask {
+                queue.sync {
+                    _ = log.addDestination(destination)
+                }
+            }
+            taskGroup.addTask {
+                queue.sync {
+                    _ = log.removeDestination(destination)
+                }
+            }
+        }
+    }
 
-         wait(for: [expectation], timeout: 10.0)
-     }
-     */
-
-//    private func startMutatingDestinations(
-//        log: SwiftyBeaver.Type,
-//        queue: DispatchQueue,
-//        expectation: XCTestExpectation,
-//        onGoingMutationCount: Int = 0
-//    ) {
-//        if onGoingMutationCount >= 1 {
-//            expectation.fulfill()
-//        }
-//
-//        queue.async { [weak self, weak queue] in
-//            let destination = ConsoleDestination()
-//            log.addDestination(destination)
-//
-//            queue?.asyncAfter(deadline: .now() + 0.2) { [weak self, weak queue] in
-//                _ = log.removeDestination(destination)
-//
-//                queue?.asyncAfter(deadline: .now() + 0.2) { [weak self, weak queue] in
-//                    guard let self, let queue else { return }
-//
-//                    startMutatingDestinations(
-//                        log: log,
-//                        queue: queue,
-//                        expectation: expectation,
-//                        onGoingMutationCount: onGoingMutationCount + 1
-//                    )
-//                }
-//            }
-//        }
-//    }
-
-    private func startSpammingLogs(log: SwiftyBeaver.Type, queue: DispatchQueue) {
-        queue.async { [weak self, weak queue] in
-            log.info("Test Message")
-
-            guard let self, let queue else { return }
-            startSpammingLogs(log: log, queue: queue)
+    private static func startSpammingLogs(
+        log: SwiftyBeaver.Type,
+        queue: DispatchQueue,
+        confirmation: Confirmation,
+        taskGroup: inout TaskGroup<Void>
+    ) {
+        for _ in 1 ... 1000 {
+            taskGroup.addTask {
+                queue.sync {
+                    log.info("Test Message")
+                    confirmation.confirm()
+                }
+            }
         }
     }
 }
