@@ -25,47 +25,36 @@ open class SwiftyBeaver {
     // a set of active destinations
     public private(set) static var destinations = Set<BaseDestination>()
 
-    /// A private queue for synchronizing access to `destinations`.
-    /// Read accesses are done concurrently.
-    /// Write accesses are done with a barrier, ensuring only 1 operation is ran at that time.
-    private static let queue = DispatchQueue(label: "destination queue", attributes: .concurrent)
-
     // MARK: Destination Handling
 
     /// returns boolean about success
     @discardableResult
     open class func addDestination(_ destination: BaseDestination) -> Bool {
-        queue.sync(flags: DispatchWorkItemFlags.barrier) {
-            if destinations.contains(destination) {
-                return false
-            }
-            destinations.insert(destination)
-            return true
+        if destinations.contains(destination) {
+            return false
         }
+        destinations.insert(destination)
+        return true
     }
 
     /// returns boolean about success
     @discardableResult
     open class func removeDestination(_ destination: BaseDestination) -> Bool {
-        queue.sync(flags: DispatchWorkItemFlags.barrier) {
-            if destinations.contains(destination) == false {
-                return false
-            }
-            destinations.remove(destination)
-            return true
+        if destinations.contains(destination) == false {
+            return false
         }
+        destinations.remove(destination)
+        return true
     }
 
     /// if you need to start fresh
     open class func removeAllDestinations() {
-        queue.sync(flags: DispatchWorkItemFlags.barrier) {
-            destinations.removeAll()
-        }
+        destinations.removeAll()
     }
 
     /// returns the amount of destinations
     open class func countDestinations() -> Int {
-        queue.sync { destinations.count }
+        return destinations.count
     }
 
     /// returns the current thread name
@@ -217,7 +206,6 @@ open class SwiftyBeaver {
         context: Any?
     ) {
         var resolvedMessage: String?
-        let destinations = queue.sync { self.destinations }
         for dest in destinations {
             guard let queue = dest.queue else {
                 continue
@@ -270,7 +258,6 @@ open class SwiftyBeaver {
     /// returns: true if all messages flushed, false if timeout or error occurred
     public class func flush(secondTimeout: Int64) -> Bool {
         let grp = DispatchGroup()
-        let destinations = queue.sync { self.destinations }
         for dest in destinations {
             guard let queue = dest.queue else {
                 continue
