@@ -1,15 +1,12 @@
-<p align="center"><b>Colorful</b>, flexible, <b>lightweight</b> logging for Swift 3, Swift 4 & <b>Swift 5</b>.<br/>Great for <b>development & release</b> with support for Console, file & cloud destinations for server-side Swift.</p>
+**Colorful**, flexible, **lightweight** logging for Swift 5 & **Swift 6**.
 
-<p align="center"><a href="https://swift.org" target="_blank"><img src="https://img.shields.io/badge/Language-Swift%203,%204%20&%205-orange.svg" alt="Language Swift 2, 3, 4 & 5"></a> <a href="https://circleci.com/gh/SwiftyBeaver/SwiftyBeaver" target="_blank"><img src="https://circleci.com/gh/SwiftyBeaver/SwiftyBeaver/tree/master.svg?style=shield" alt="CircleCI"/></a><br/><p>
+Great for **development & release** with support for Console, file & cloud destinations for server-side Swift.
 
 ---
-
-<br/>
 
 ### During Development: Colored Logging to Xcode Console via OSLog API or Print
 
 <img width="924" alt="image" src="https://github.com/SwiftyBeaver/SwiftyBeaver/assets/15070906/418a6a70-ced4-4000-91c3-8dc8fc235b7c">
-
 
 #### In Xcode 15
 ```Swift
@@ -22,10 +19,6 @@ console.logPrintWay = .logger(subsystem: "Main", category: "UI")
 let console = ConsoleDestination()
 console.logPrintWay = .print
 ```
-#### In Xcode 8
-[Learn more](http://docs.swiftybeaver.com/article/9-log-to-xcode-console) about colored logging to Xcode 8 Console with Swift 3, 4 & 5. For Swift 2.3 [use this Gist](https://gist.github.com/skreutzberger/7c396573796473ed1be2c6d15cafed34). **No need to hack Xcode 8 anymore** to get color. You can even customize the log level word (ATTENTION instead of ERROR maybe?), the general amount of displayed data and if you want to use the 💜s or replace them with something else 😉
-
-<br/>
 
 ### During Development: Colored Logging to File
 
@@ -33,26 +26,17 @@ console.logPrintWay = .print
 
 [Learn more](http://docs.swiftybeaver.com/article/10-log-to-file) about logging to file which is great for Terminal.app fans or to store logs on disk.
 
-<br/>
-
 ### Google Cloud & More
 
 You can fully customize your log format, turn it into JSON, or create your own destinations. For example, our [Google Cloud Destination](https://github.com/SwiftyBeaver/SwiftyBeaver/blob/master/Sources/GoogleCloudDestination.swift) is just another customized logging format that adds the powerful functionality of automatic server-side Swift logging when hosted on Google Cloud Platform.
 
-<br/>
-
 ---
-
-<br/>
-<br/>
 
 ## Installation
 
 - For **Swift 4 & 5** install the latest SwiftyBeaver version
 - For **Swift 3** install SwiftyBeaver 1.8.4
 - For **Swift 2** install SwiftyBeaver 0.7.0
-
-<br/>
 
 ### Carthage
 
@@ -76,8 +60,6 @@ Swift 2:
 github "SwiftyBeaver/SwiftyBeaver" ~> 0.7
 ```
 
-<br/>
-
 ### Swift Package Manager
 
 For [Swift Package Manager](https://swift.org/package-manager/) add the following package to your Package.swift file. Just Swift 4 & 5 are supported:
@@ -85,50 +67,6 @@ For [Swift Package Manager](https://swift.org/package-manager/) add the followin
 ```Swift
 .package(url: "https://github.com/SwiftyBeaver/SwiftyBeaver.git", .upToNextMajor(from: "2.0.0")),
 ```
-
-<br/>
-
-### CocoaPods
-
-To use [CocoaPods](https://cocoapods.org) just add this to your Podfile:
-
-Swift 4 & 5:
-
-```Swift
-pod 'SwiftyBeaver'
-```
-
-Swift 3:
-
-```Ruby
-target 'MyProject' do
-  use_frameworks!
-
-  # Pods for MyProject
-  pod 'SwiftyBeaver', '~> 1.8.4'
-end
-```
-
-Swift 2:
-
-```Ruby
-target 'MyProject' do
-  use_frameworks!
-
-  # Pods for MyProject
-  pod 'SwiftyBeaver', '~> 0.7'
-end
-
-post_install do |installer|
-  installer.pods_project.build_configurations.each do |config|
-    # Configure Pod targets for Xcode 8 with Swift 2.3
-    config.build_settings['SWIFT_VERSION'] = '2.3'
-  end
-end
-```
-
-<br/>
-<br/>
 
 ## Usage
 
@@ -154,7 +92,7 @@ console.format = "$DHH:mm:ss$d $L $M"
 // In Xcode 15, specifying the logging method as .logger to display color, subsystem, and category information in the console.(Relies on the OSLog API)
 console.logPrintWay = .logger(subsystem: "Main", category: "UI")
 // If you prefer not to use the OSLog API, you can use print instead.
-// console.logPrintWay = .print 
+// console.logPrintWay = .print
 
 // add the destinations to SwiftyBeaver
 log.addDestination(console)
@@ -203,12 +141,9 @@ struct yourApp: App {
 }
 ```
 
-<br/>
-<br/>
-
 ## Server-side Swift
 
-We ❤️ server-side Swift 4 & 5 and SwiftyBeaver support it **out-of-the-box**! Try for yourself and run SwiftyBeaver inside a Ubuntu Docker container. Just install Docker and then go to your project folder on macOS or Ubuntu and type:
+We ❤️ server-side Swift and SwiftyBeaver support it **out-of-the-box**! Try for yourself and run SwiftyBeaver inside a Ubuntu Docker container. Just install Docker and then go to your project folder on macOS or Ubuntu and type:
 
 ```shell
 # create docker image, build SwiftyBeaver and run unit tests
@@ -219,9 +154,6 @@ docker run --rm -it --privileged=true -v $PWD:/app swiftybeaver
 ```
 
 Best: for the popular server-side Swift web framework [Vapor](https://github.com/vapor/vapor) you can use **[our Vapor logging provider](https://github.com/SwiftyBeaver/SwiftyBeaver-Vapor)** which makes server logging awesome again 🙌
-
-<br/>
-<br/>
 
 ## Documentation
 
@@ -240,9 +172,6 @@ Best: for the popular server-side Swift web framework [Vapor](https://github.com
 
 - [Custom Format & Context](http://docs.swiftybeaver.com/article/20-custom-format)
 - [Filters](http://docs.swiftybeaver.com/article/21-filters)
-
-<br/>
-<br/>
 
 ## License
 

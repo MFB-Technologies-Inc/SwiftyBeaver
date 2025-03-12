@@ -1,18 +1,14 @@
+// SwiftyBeaverTests.swift
+// SwiftyBeaver
 //
-//  SwiftyBeaverTests.swift
-//  SwiftyBeaverTests
-//
-//  Created by Sebastian Kreutzberger (Twitter @skreutzb) on 28.11.15.
-//  Copyright © 2015 Sebastian Kreutzberger
-//  Some rights reserved: http://opensource.org/licenses/MIT
-//
+// This source code is licensed under the MIT License (MIT) found in the
+// LICENSE file in the root directory of this source tree.
 
 import Foundation
-import XCTest
 @testable import SwiftyBeaver
+import XCTest
 
 class SwiftyBeaverTests: XCTestCase {
-
     var instanceVar = "an instance variable"
 
     override func setUp() {
@@ -86,7 +82,15 @@ class SwiftyBeaverTests: XCTestCase {
         log.addDestination(dest1)
         log.addDestination(dest2)
 
-        log.dispatch_send(level: .warning, message: "Message", thread: "Thread", file: "File", function: "Function()", line: 123, context: "Context")
+        log.dispatch_send(
+            level: .warning,
+            message: "Message",
+            thread: "Thread",
+            file: "File",
+            function: "Function()",
+            line: 123,
+            context: "Context"
+        )
 
         XCTAssertEqual(dest1.shouldLogToLevel, SwiftyBeaver.Level.warning)
         XCTAssertEqual(dest2.shouldLogToLevel, SwiftyBeaver.Level.warning)
@@ -112,7 +116,15 @@ class SwiftyBeaverTests: XCTestCase {
         log.addDestination(dest1)
         log.addDestination(dest2)
 
-        log.dispatch_send(level: .warning, message: "Message", thread: "Thread", file: "File", function: "Function()", line: 123, context: "Context")
+        log.dispatch_send(
+            level: .warning,
+            message: "Message",
+            thread: "Thread",
+            file: "File",
+            function: "Function()",
+            line: 123,
+            context: "Context"
+        )
 
         XCTAssertEqual(dest1.didSendToLevel, SwiftyBeaver.Level.warning)
         XCTAssertEqual(dest2.didSendToLevel, SwiftyBeaver.Level.warning)
@@ -299,7 +311,6 @@ class SwiftyBeaverTests: XCTestCase {
     }
 
     func testLongRunningTaskIsNotExecutedWhenLoggingUnderMinLevel() {
-
         let log = SwiftyBeaver.self
 
         // add console
@@ -340,7 +351,7 @@ class SwiftyBeaverTests: XCTestCase {
 
         log.addDestination(mock)
 
-        //main thread
+        // main thread
         log.verbose("Hi")
         XCTAssertEqual(mock.didSendToThread, "")
         log.debug("Hi")
@@ -368,11 +379,11 @@ class SwiftyBeaverTests: XCTestCase {
             expectation.fulfill()
         }
 
-        self.wait(for: [expectation], timeout: 2)
-        
+        wait(for: [expectation], timeout: 2)
+
         let expectation2 = XCTestExpectation(description: "thread check custom")
 
-        DispatchQueue.init(label: "MyTestLabel").async {
+        DispatchQueue(label: "MyTestLabel").async {
             log.verbose("Hi")
             XCTAssertEqual(mock.didSendToThread, "MyTestLabel")
             log.debug("Hi")
@@ -386,8 +397,7 @@ class SwiftyBeaverTests: XCTestCase {
             expectation2.fulfill()
         }
 
-        self.wait(for: [expectation2], timeout: 2)
-        
+        wait(for: [expectation2], timeout: 2)
     }
 
     static let allTests = [
@@ -399,11 +409,13 @@ class SwiftyBeaverTests: XCTestCase {
         ("testModifiedColors", testModifiedColors),
         ("testDifferentMessageTypes", testDifferentMessageTypes),
         ("testAutoClosure", testAutoClosure),
-        ("testLongRunningTaskIsNotExecutedWhenLoggingUnderMinLevel",
-            testLongRunningTaskIsNotExecutedWhenLoggingUnderMinLevel),
+        (
+            "testLongRunningTaskIsNotExecutedWhenLoggingUnderMinLevel",
+            testLongRunningTaskIsNotExecutedWhenLoggingUnderMinLevel
+        ),
         ("testVersionAndBuild", testVersionAndBuild),
         ("testStripParams", testStripParams),
-        //("testGetCorrectThread", testGetCorrectThread) // incorrect on Linux
+        // ("testGetCorrectThread", testGetCorrectThread) // incorrect on Linux
     ]
 }
 
@@ -414,9 +426,17 @@ private class MockDestination: BaseDestination {
     var didSendFile: String?
     var didSendFunction: String?
     var didSendLine: Int?
-    var didSendContext: (Any?)?
+    var didSendContext: Any??
 
-    override func send(_ level: SwiftyBeaver.Level, msg: String, thread: String, file: String, function: String, line: Int, context: Any?) -> String? {
+    override func send(
+        _ level: SwiftyBeaver.Level,
+        msg: String,
+        thread: String,
+        file: String,
+        function: String,
+        line: Int,
+        context: Any?
+    ) -> String? {
         didSendToLevel = level
         didSendMessage = msg
         didSendToThread = thread
@@ -432,7 +452,12 @@ private class MockDestination: BaseDestination {
     var shouldLogPath: String?
     var shouldLogFunction: String?
     var shouldLogMessage: String?
-    override func shouldLevelBeLogged(_ level: SwiftyBeaver.Level, path: String, function: String, message: String?) -> Bool {
+    override func shouldLevelBeLogged(
+        _ level: SwiftyBeaver.Level,
+        path: String,
+        function: String,
+        message: String?
+    ) -> Bool {
         shouldLogToLevel = level
         shouldLogPath = path
         shouldLogFunction = function
@@ -441,7 +466,6 @@ private class MockDestination: BaseDestination {
     }
 
     override func hasMessageFilters() -> Bool {
-        return true
+        true
     }
 }
-
