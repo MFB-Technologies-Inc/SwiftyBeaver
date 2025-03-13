@@ -40,17 +40,25 @@
         // LOGFILE ROTATION
         // ho many bytes should a logfile have until it is rotated?
         // default is 5 MB. Just is used if logFileAmount > 1
-        public var logFileMaxSize = (5 * 1024 * 1024)
+        public var logFileMaxSize: Int
         // Number of log files used in rotation, default is 1 which deactivates file rotation
-        public var logFileAmount = 1
+        public var logFileAmount: Int
+
+        public enum Constants {
+            public static let defaultLogFileAmount = 1
+            public static let defaultLogFileMaxSize = (5 * 1024 * 1024) // 5 MB
+        }
 
         let fileManager: FileManager
 
-        public convenience init(logFileURL: URL? = nil) {
-            self.init(logFileURL: logFileURL, fileManager: .default)
-        }
-
-        public init(logFileURL: URL? = nil, fileManager: FileManager) {
+        public init(
+            logFileURL: URL? = nil,
+            logFileMaxSize: Int = Constants.defaultLogFileMaxSize,
+            logFileAmount: Int = Constants.defaultLogFileAmount,
+            fileManager: FileManager = .default
+        ) {
+            self.logFileAmount = logFileAmount
+            self.logFileMaxSize = logFileMaxSize
             self.fileManager = fileManager
             if let logFileURL {
                 self.logFileURL = logFileURL
