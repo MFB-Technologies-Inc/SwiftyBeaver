@@ -120,6 +120,11 @@
             return formattedString
         }
 
+        // allows customization of initializing FileHandle
+        open func fileHandle(forWritingTo url: URL) throws -> FileHandle {
+            try FileHandle(forWritingTo: url)
+        }
+
         // check if filesize is bigger than wanted and if yes then rotate them
         func validateSaveFile(str: String) -> Bool {
             if logFileAmount > 1 {
@@ -213,7 +218,7 @@
                         #endif
                     }
 
-                    let fileHandle = try FileHandle(forWritingTo: url)
+                    let fileHandle = try fileHandle(forWritingTo: url)
                     fileHandle.seekToEndOfFile()
                     if #available(iOS 13.4, watchOS 6.2, tvOS 13.4, macOS 10.15.4, *) {
                         try fileHandle.write(contentsOf: data)
