@@ -115,6 +115,17 @@ open class BaseDestination: Hashable, Equatable {
 
     // swiftlint:enable function_parameter_count
 
+    // Allows customization of fallback logging. Defaults to `print`
+    open class func fallbackLog(
+        _ message: @autoclosure () -> String,
+        file _: String = #file,
+        function _: String = #function,
+        line _: Int = #line,
+        context _: Any? = nil
+    ) {
+        print("SwiftyBeaver.\(String(describing: Self.self)): \(message())")
+    }
+
     public func execute(synchronously: Bool, block: @escaping () -> Void) {
         guard let queue else {
             fatalError("Queue not set")
@@ -428,7 +439,7 @@ open class BaseDestination: Hashable, Equatable {
             let jsonData = try JSONSerialization.data(withJSONObject: dict, options: [])
             jsonString = String(data: jsonData, encoding: .utf8)
         } catch {
-            print("SwiftyBeaver could not create JSON from dict.")
+            Self.fallbackLog("Could not create JSON from dict.")
         }
         return jsonString
     }
@@ -479,12 +490,12 @@ open class BaseDestination: Hashable, Equatable {
         if filters.isEmpty {
             if level.rawValue >= minLevel.rawValue {
                 if debugPrint {
-                    print("filters are empty and level >= minLevel")
+                    Self.fallbackLog("filters are empty and level >= minLevel")
                 }
                 return true
             } else {
                 if debugPrint {
-                    print("filters are empty and level < minLevel")
+                    Self.fallbackLog("filters are empty and level < minLevel")
                 }
                 return false
             }
@@ -505,7 +516,7 @@ open class BaseDestination: Hashable, Equatable {
         case .some(.someFiltersMatch):
             // Exclusion filters are present and at least one of them matches the log entry
             if debugPrint {
-                print("filters are not empty and message was excluded")
+                Self.fallbackLog("filters are not empty and message was excluded")
             }
             return false
         case .some(.allFiltersMatch), .some(.noFiltersMatchingType), .none: break

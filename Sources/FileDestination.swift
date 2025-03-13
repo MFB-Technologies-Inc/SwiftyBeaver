@@ -85,7 +85,7 @@
                                 baseURL = appURL
                             }
                         } catch {
-                            print("Warning! Could not create folder /Library/Caches/\(appName)")
+                            Self.fallbackLog("Warning! Could not create folder /Library/Caches/\(appName)")
                         }
                     }
                 }
@@ -149,7 +149,7 @@
                             rotateFile(url)
                         }
                     } catch {
-                        print("validateSaveFile error: \(error)")
+                        Self.fallbackLog("validateSaveFile error: \(error)")
                     }
                 }
             }
@@ -180,7 +180,7 @@
                 let newFile = makeRotatedFileUrl(fileUrl, index: firstIndex).path
                 try fileManager.moveItem(atPath: filePath, toPath: newFile)
             } catch {
-                print("rotateFile error: \(error)")
+                Self.fallbackLog("rotateFile error: \(error)")
             }
         }
 
@@ -239,12 +239,12 @@
                     fileHandle.closeFile()
                     success = true
                 } catch {
-                    print("SwiftyBeaver File Destination could not write to file \(url).")
+                    Self.fallbackLog("Could not write to file \(url).")
                 }
             }
 
             if let error {
-                print("Failed writing file with error: \(String(describing: error))")
+                Self.fallbackLog("Failed writing file with error: \(String(describing: error))")
                 return false
             }
 
@@ -261,7 +261,7 @@
                 try fileManager.removeItem(at: url)
                 return true
             } catch {
-                print("SwiftyBeaver File Destination could not remove file \(url).")
+                Self.fallbackLog("Could not remove file \(url).")
                 return false
             }
         }
