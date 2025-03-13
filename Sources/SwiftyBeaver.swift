@@ -74,6 +74,10 @@ open class SwiftyBeaver {
             // on 9/30/2016 not yet implemented in server-side Swift:
             // > import Foundation
             // > Thread.isMainThread
+
+            // 2025/03/13 `Thread.isMainThread` is implemented on non-Darwin platforms. However,
+            // `__dispatch_queue_get_label` is not exposed on non-Darwin platforms.
+            // `dispatch_queue_get_label` is marked as unavailable.
             return ""
         #else
             if Thread.isMainThread {
