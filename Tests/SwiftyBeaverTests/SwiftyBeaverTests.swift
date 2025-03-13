@@ -29,7 +29,7 @@ class SwiftyBeaverTests: XCTestCase {
         // add valid destinations
         let console = ConsoleDestination()
         let console2 = ConsoleDestination()
-        let file = FileDestination()
+        let mock = MockDestination()
 
         XCTAssertEqual(log.countDestinations(), 0)
         XCTAssertTrue(log.addDestination(console))
@@ -39,7 +39,7 @@ class SwiftyBeaverTests: XCTestCase {
         XCTAssertTrue(log.addDestination(console2))
         XCTAssertEqual(log.countDestinations(), 2)
         XCTAssertFalse(log.addDestination(console2))
-        XCTAssertTrue(log.addDestination(file))
+        XCTAssertTrue(log.addDestination(mock))
         XCTAssertEqual(log.countDestinations(), 3)
     }
 
@@ -52,12 +52,12 @@ class SwiftyBeaverTests: XCTestCase {
         // remove valid destinations
         let console = ConsoleDestination()
         let console2 = ConsoleDestination()
-        let file = FileDestination()
+        let mock = MockDestination()
 
         // add destinations
         XCTAssertTrue(log.addDestination(console))
         XCTAssertTrue(log.addDestination(console2))
-        XCTAssertTrue(log.addDestination(file))
+        XCTAssertTrue(log.addDestination(mock))
         XCTAssertEqual(log.countDestinations(), 3)
         // remove destinations
         XCTAssertTrue(log.removeDestination(console))
@@ -67,7 +67,7 @@ class SwiftyBeaverTests: XCTestCase {
         XCTAssertTrue(log.removeDestination(console2))
         XCTAssertFalse(log.removeDestination(console2))
         XCTAssertEqual(log.countDestinations(), 1)
-        XCTAssertTrue(log.removeDestination(file))
+        XCTAssertTrue(log.removeDestination(mock))
         XCTAssertEqual(log.countDestinations(), 0)
     }
 
@@ -171,35 +171,29 @@ class SwiftyBeaverTests: XCTestCase {
         log.verbose("a verbose hello from hopefully just 1 console!")
         log.debug("a debug hello from 2 different consoles!")
 
-        // add file
-        let file = FileDestination()
-        file.logFileURL = URL(string: "file:///tmp/testSwiftyBeaver.log")!
-        XCTAssertTrue(log.addDestination(file))
+        // add mock
+        let mock = MockDestination()
+        XCTAssertTrue(log.addDestination(mock))
         XCTAssertEqual(log.countDestinations(), 3)
-        log.verbose("default file msg 1")
-        log.verbose("default file msg 2")
-        log.verbose("default file msg 3")
+        log.verbose("default mock msg 1")
+        log.verbose("default mock msg 2")
+        log.verbose("default mock msg 3")
 
-        // log to another file
-        let file2 = FileDestination()
-        file2.logFileURL = URL(string: "file:///tmp/testSwiftyBeaver2.log")!
+        // log to another mock
+        let mock2 = MockDestination()
         console2.format = "$L: $M"
-        file2.minLevel = SwiftyBeaver.Level.debug
-        XCTAssertTrue(log.addDestination(file2))
+        mock2.minLevel = SwiftyBeaver.Level.debug
+        XCTAssertTrue(log.addDestination(mock2))
         XCTAssertEqual(log.countDestinations(), 4)
-        log.verbose("this should be in file 1")
-        log.debug("this should be in both files, msg 1")
-        log.info("this should be in both files, msg 2")
+        log.verbose("this should be in mock 1")
+        log.debug("this should be in both mocks, msg 1")
+        log.info("this should be in both mocks, msg 2")
 
-        // log to default file location
-        let file3 = FileDestination()
+        // log to default mock location
+        let mock3 = MockDestination()
         console2.format = "$L: $M"
-        XCTAssertTrue(log.addDestination(file3))
+        XCTAssertTrue(log.addDestination(mock3))
         XCTAssertEqual(log.countDestinations(), 5)
-        guard let f3URL = file3.logFileURL else {
-            return
-        }
-        log.info("Logging to default log file \(f3URL)")
     }
 
     func testColors() {
@@ -210,11 +204,10 @@ class SwiftyBeaverTests: XCTestCase {
         let console = ConsoleDestination()
         XCTAssertTrue(log.addDestination(console))
 
-        // add file
-        let file = FileDestination()
-        file.logFileURL = URL(string: "file:///tmp/testSwiftyBeaver.log")!
-        file.format = "$L: $M"
-        XCTAssertTrue(log.addDestination(file))
+        // add mock
+        let mock = MockDestination()
+        mock.format = "$L: $M"
+        XCTAssertTrue(log.addDestination(mock))
 
         log.verbose("not so important")
         log.debug("something to debug")
@@ -234,11 +227,10 @@ class SwiftyBeaverTests: XCTestCase {
         console.format = "$U: $M"
         XCTAssertTrue(log.addDestination(console))
 
-        // add file
-        let file = FileDestination()
-        file.logFileURL = URL(string: "file:///tmp/testSwiftyBeaver.log")!
-        file.format = "$U: $M"
-        XCTAssertTrue(log.addDestination(file))
+        // add mock
+        let mock = MockDestination()
+        mock.format = "$U: $M"
+        XCTAssertTrue(log.addDestination(mock))
 
         log.verbose("not so important")
         log.debug("something to debug")
@@ -329,7 +321,7 @@ class SwiftyBeaverTests: XCTestCase {
     }
 
     func testVersionAndBuild() {
-        XCTAssertGreaterThan(SwiftyBeaver.version.length, 4)
+        XCTAssertGreaterThan(SwiftyBeaver.version.count, 4)
         XCTAssertGreaterThan(SwiftyBeaver.build, 500)
     }
 
@@ -343,80 +335,64 @@ class SwiftyBeaverTests: XCTestCase {
     }
 
     func testGetCorrectThread() {
-        let log = SwiftyBeaver.self
-        let mock = MockDestination()
-        // set info level on default
-        mock.minLevel = .verbose
-        mock.asynchronously = false
+        #if !os(Linux)
+            let log = SwiftyBeaver.self
+            let mock = MockDestination()
+            // set info level on default
+            mock.minLevel = .verbose
+            mock.asynchronously = false
 
-        log.addDestination(mock)
+            log.addDestination(mock)
 
-        // main thread
-        log.verbose("Hi")
-        XCTAssertEqual(mock.didSendToThread, "")
-        log.debug("Hi")
-        XCTAssertEqual(mock.didSendToThread, "")
-        log.info("Hi")
-        XCTAssertEqual(mock.didSendToThread, "")
-        log.warning("Hi")
-        XCTAssertEqual(mock.didSendToThread, "")
-        log.error("Hi")
-        XCTAssertEqual(mock.didSendToThread, "")
-
-        let expectation = XCTestExpectation(description: "thread check")
-
-        DispatchQueue.global(qos: .background).async {
+            // main thread
             log.verbose("Hi")
-            XCTAssertEqual(mock.didSendToThread, "com.apple.root.background-qos")
+            XCTAssertEqual(mock.didSendToThread, "")
             log.debug("Hi")
-            XCTAssertEqual(mock.didSendToThread, "com.apple.root.background-qos")
+            XCTAssertEqual(mock.didSendToThread, "")
             log.info("Hi")
-            XCTAssertEqual(mock.didSendToThread, "com.apple.root.background-qos")
+            XCTAssertEqual(mock.didSendToThread, "")
             log.warning("Hi")
-            XCTAssertEqual(mock.didSendToThread, "com.apple.root.background-qos")
+            XCTAssertEqual(mock.didSendToThread, "")
             log.error("Hi")
-            XCTAssertEqual(mock.didSendToThread, "com.apple.root.background-qos")
-            expectation.fulfill()
-        }
+            XCTAssertEqual(mock.didSendToThread, "")
 
-        wait(for: [expectation], timeout: 2)
+            let expectation = XCTestExpectation(description: "thread check")
 
-        let expectation2 = XCTestExpectation(description: "thread check custom")
+            DispatchQueue.global(qos: .background).async {
+                log.verbose("Hi")
+                XCTAssertEqual(mock.didSendToThread, "com.apple.root.background-qos")
+                log.debug("Hi")
+                XCTAssertEqual(mock.didSendToThread, "com.apple.root.background-qos")
+                log.info("Hi")
+                XCTAssertEqual(mock.didSendToThread, "com.apple.root.background-qos")
+                log.warning("Hi")
+                XCTAssertEqual(mock.didSendToThread, "com.apple.root.background-qos")
+                log.error("Hi")
+                XCTAssertEqual(mock.didSendToThread, "com.apple.root.background-qos")
+                expectation.fulfill()
+            }
 
-        DispatchQueue(label: "MyTestLabel").async {
-            log.verbose("Hi")
-            XCTAssertEqual(mock.didSendToThread, "MyTestLabel")
-            log.debug("Hi")
-            XCTAssertEqual(mock.didSendToThread, "MyTestLabel")
-            log.info("Hi")
-            XCTAssertEqual(mock.didSendToThread, "MyTestLabel")
-            log.warning("Hi")
-            XCTAssertEqual(mock.didSendToThread, "MyTestLabel")
-            log.error("Hi")
-            XCTAssertEqual(mock.didSendToThread, "MyTestLabel")
-            expectation2.fulfill()
-        }
+            wait(for: [expectation], timeout: 2)
 
-        wait(for: [expectation2], timeout: 2)
+            let expectation2 = XCTestExpectation(description: "thread check custom")
+
+            DispatchQueue(label: "MyTestLabel").async {
+                log.verbose("Hi")
+                XCTAssertEqual(mock.didSendToThread, "MyTestLabel")
+                log.debug("Hi")
+                XCTAssertEqual(mock.didSendToThread, "MyTestLabel")
+                log.info("Hi")
+                XCTAssertEqual(mock.didSendToThread, "MyTestLabel")
+                log.warning("Hi")
+                XCTAssertEqual(mock.didSendToThread, "MyTestLabel")
+                log.error("Hi")
+                XCTAssertEqual(mock.didSendToThread, "MyTestLabel")
+                expectation2.fulfill()
+            }
+
+            wait(for: [expectation2], timeout: 2)
+        #endif
     }
-
-    static let allTests = [
-        ("testAddDestination", testAddDestination),
-        ("testRemoveDestination", testRemoveDestination),
-        ("testLoggingWithoutDestination", testLoggingWithoutDestination),
-        ("testDestinationIntegration", testDestinationIntegration),
-        ("testColors", testColors),
-        ("testModifiedColors", testModifiedColors),
-        ("testDifferentMessageTypes", testDifferentMessageTypes),
-        ("testAutoClosure", testAutoClosure),
-        (
-            "testLongRunningTaskIsNotExecutedWhenLoggingUnderMinLevel",
-            testLongRunningTaskIsNotExecutedWhenLoggingUnderMinLevel
-        ),
-        ("testVersionAndBuild", testVersionAndBuild),
-        ("testStripParams", testStripParams),
-        // ("testGetCorrectThread", testGetCorrectThread) // incorrect on Linux
-    ]
 }
 
 private class MockDestination: BaseDestination {

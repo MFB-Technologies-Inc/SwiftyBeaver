@@ -6,7 +6,6 @@
 
 import Foundation
 
-// swiftlint:disable:next type_body_length
 open class SwiftyBeaver {
     /// version string of framework
     public static let version = "2.1.1" // UPDATE ON RELEASE!
@@ -75,6 +74,10 @@ open class SwiftyBeaver {
             // on 9/30/2016 not yet implemented in server-side Swift:
             // > import Foundation
             // > Thread.isMainThread
+
+            // 2025/03/13 `Thread.isMainThread` is implemented on non-Darwin platforms. However,
+            // `__dispatch_queue_get_label` is not exposed on non-Darwin platforms.
+            // `dispatch_queue_get_label` is marked as unavailable.
             return ""
         #else
             if Thread.isMainThread {
@@ -96,17 +99,10 @@ open class SwiftyBeaver {
         line: Int = #line,
         context: Any? = nil
     ) {
-        #if swift(>=5)
-            custom(
-                level: .verbose, message: message(), file: file, function: function, line: line,
-                context: context
-            )
-        #else
-            custom(
-                level: .verbose, message: message, file: file, function: function, line: line,
-                context: context
-            )
-        #endif
+        custom(
+            level: .verbose, message: message(), file: file, function: function, line: line,
+            context: context
+        )
     }
 
     /// log something which help during debugging (low priority)
@@ -117,17 +113,10 @@ open class SwiftyBeaver {
         line: Int = #line,
         context: Any? = nil
     ) {
-        #if swift(>=5)
-            custom(
-                level: .debug, message: message(), file: file, function: function, line: line,
-                context: context
-            )
-        #else
-            custom(
-                level: .debug, message: message, file: file, function: function, line: line,
-                context: context
-            )
-        #endif
+        custom(
+            level: .debug, message: message(), file: file, function: function, line: line,
+            context: context
+        )
     }
 
     /// log something which you are really interested but which is not an issue or error (normal priority)
@@ -138,17 +127,10 @@ open class SwiftyBeaver {
         line: Int = #line,
         context: Any? = nil
     ) {
-        #if swift(>=5)
-            custom(
-                level: .info, message: message(), file: file, function: function, line: line,
-                context: context
-            )
-        #else
-            custom(
-                level: .info, message: message, file: file, function: function, line: line,
-                context: context
-            )
-        #endif
+        custom(
+            level: .info, message: message(), file: file, function: function, line: line,
+            context: context
+        )
     }
 
     /// log something which may cause big trouble soon (high priority)
@@ -159,17 +141,10 @@ open class SwiftyBeaver {
         line: Int = #line,
         context: Any? = nil
     ) {
-        #if swift(>=5)
-            custom(
-                level: .warning, message: message(), file: file, function: function, line: line,
-                context: context
-            )
-        #else
-            custom(
-                level: .warning, message: message, file: file, function: function, line: line,
-                context: context
-            )
-        #endif
+        custom(
+            level: .warning, message: message(), file: file, function: function, line: line,
+            context: context
+        )
     }
 
     /// log something which will keep you awake at night (highest priority)
@@ -180,17 +155,10 @@ open class SwiftyBeaver {
         line: Int = #line,
         context: Any? = nil
     ) {
-        #if swift(>=5)
-            custom(
-                level: .error, message: message(), file: file, function: function, line: line,
-                context: context
-            )
-        #else
-            custom(
-                level: .error, message: message, file: file, function: function, line: line,
-                context: context
-            )
-        #endif
+        custom(
+            level: .error, message: message(), file: file, function: function, line: line,
+            context: context
+        )
     }
 
     /// log something which will keep you awake at night (highest priority)
@@ -201,17 +169,10 @@ open class SwiftyBeaver {
         line: Int = #line,
         context: Any? = nil
     ) {
-        #if swift(>=5)
-            custom(
-                level: .critical, message: message(), file: file, function: function, line: line,
-                context: context
-            )
-        #else
-            custom(
-                level: .critical, message: message, file: file, function: function, line: line,
-                context: context
-            )
-        #endif
+        custom(
+            level: .critical, message: message(), file: file, function: function, line: line,
+            context: context
+        )
     }
 
     /// log something which will keep you awake at night (highest priority)
@@ -222,17 +183,10 @@ open class SwiftyBeaver {
         line: Int = #line,
         context: Any? = nil
     ) {
-        #if swift(>=5)
-            custom(
-                level: .fault, message: message(), file: file, function: function, line: line,
-                context: context
-            )
-        #else
-            custom(
-                level: .fault, message: message, file: file, function: function, line: line,
-                context: context
-            )
-        #endif
+        custom(
+            level: .fault, message: message(), file: file, function: function, line: line,
+            context: context
+        )
     }
 
     /// custom logging to manually adjust values, should just be used by other frameworks
@@ -244,27 +198,15 @@ open class SwiftyBeaver {
         line: Int = #line,
         context: Any? = nil
     ) {
-        #if swift(>=5)
-            dispatch_send(
-                level: level,
-                message: message(),
-                thread: threadName(),
-                file: file,
-                function: function,
-                line: line,
-                context: context
-            )
-        #else
-            dispatch_send(
-                level: level,
-                message: message,
-                thread: threadName(),
-                file: file,
-                function: function,
-                line: line,
-                context: context
-            )
-        #endif
+        dispatch_send(
+            level: level,
+            message: message(),
+            thread: threadName(),
+            file: file,
+            function: function,
+            line: line,
+            context: context
+        )
     }
 
     // swiftlint:disable function_parameter_count
@@ -357,12 +299,8 @@ open class SwiftyBeaver {
     class func stripParams(function: String) -> String {
         // swiftlint:disable:next identifier_name
         var f = function
-        if let indexOfBrace = f.find("(") {
-            #if swift(>=4.0)
-                f = String(f[..<indexOfBrace])
-            #else
-                f = f.substring(to: indexOfBrace)
-            #endif
+        if let indexOfBrace = f.firstIndex(of: "(") {
+            f = String(f[..<indexOfBrace])
         }
         f += "()"
         return f

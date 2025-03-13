@@ -9,36 +9,6 @@
 import Dispatch
 import Foundation
 
-// store operating system / platform
-#if os(iOS)
-    // swiftlint:disable:next identifier_name
-    let OS = "iOS"
-#elseif os(OSX)
-    // swiftlint:disable:next identifier_name
-    let OS = "OSX"
-#elseif os(watchOS)
-    // swiftlint:disable:next identifier_name
-    let OS = "watchOS"
-#elseif os(tvOS)
-    // swiftlint:disable:next identifier_name
-    let OS = "tvOS"
-#elseif os(Linux)
-    // swiftlint:disable:next identifier_name
-    let OS = "Linux"
-#elseif os(FreeBSD)
-    // swiftlint:disable:next identifier_name
-    let OS = "FreeBSD"
-#elseif os(Windows)
-    // swiftlint:disable:next identifier_name
-    let OS = "Windows"
-#elseif os(Android)
-    // swiftlint:disable:next identifier_name
-    let OS = "Android"
-#else
-    // swiftlint:disable:next identifier_name
-    let OS = "Unknown"
-#endif
-
 // swiftlint:disable type_body_length
 
 /// destination which all others inherit from. do not directly use
@@ -90,12 +60,9 @@ open class BaseDestination: Hashable, Equatable {
     let formatter = DateFormatter()
     let startDate = Date()
 
-    // each destination class must have an own hashValue Int
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(defaultHashValue)
+        hasher.combine(ObjectIdentifier(Self.self))
     }
-
-    open var defaultHashValue: Int { 0 }
 
     // each destination instance must have an own serial queue to ensure serial output
     // GCD gives it a prioritization between User Initiated and Utility
@@ -178,7 +145,7 @@ open class BaseDestination: Hashable, Equatable {
         // swiftlint:disable:next identifier_name
         var s: String!
         var sign: Int = 1
-        if text.firstChar == "-" {
+        if text.first == "-" {
             sign = -1
             s = String(text.suffix(from: text.index(text.startIndex, offsetBy: 1)))
         } else {
@@ -258,24 +225,16 @@ open class BaseDestination: Hashable, Equatable {
                 text += paddedString(String(line), padding) + remainingPhrase
             case "D":
                 // start of datetime format
-                #if swift(>=3.2)
-                    text += paddedString(formatDate(String(remainingPhrase)), padding)
-                #else
-                    text += paddedString(formatDate(remainingPhrase), padding)
-                #endif
+                text += paddedString(formatDate(String(remainingPhrase)), padding)
             case "d":
                 text += remainingPhrase
             case "U":
                 text += paddedString(uptime(), padding) + remainingPhrase
             case "Z":
                 // start of datetime format in UTC timezone
-                #if swift(>=3.2)
-                    text += paddedString(
-                        formatDate(String(remainingPhrase), timeZone: "UTC"), padding
-                    )
-                #else
-                    text += paddedString(formatDate(remainingPhrase, timeZone: "UTC"), padding)
-                #endif
+                text += paddedString(
+                    formatDate(String(remainingPhrase), timeZone: "UTC"), padding
+                )
             case "z":
                 text += remainingPhrase
             case "C":
@@ -451,17 +410,13 @@ open class BaseDestination: Hashable, Equatable {
         }
 
         // remove the leading {"key":" from the json string and the final }
-        let offset = key.length + 5
+        let offset = key.count + 5
         let endIndex = str.index(
             str.startIndex,
-            offsetBy: str.length - 2
+            offsetBy: str.count - 2
         )
         let range = str.index(str.startIndex, offsetBy: offset) ..< endIndex
-        #if swift(>=3.2)
-            return String(str[range])
-        #else
-            return str[range]
-        #endif
+        return String(str[range])
     }
 
     /// turns dict into JSON-encoded string
@@ -491,15 +446,9 @@ open class BaseDestination: Hashable, Equatable {
 
     /// Remove a filter from the list of filters
     public func removeFilter(_ filter: FilterType) {
-        #if swift(>=5)
-            let index = filters.firstIndex {
-                ObjectIdentifier($0) == ObjectIdentifier(filter)
-            }
-        #else
-            let index = filters.index {
-                ObjectIdentifier($0) == ObjectIdentifier(filter)
-            }
-        #endif
+        let index = filters.firstIndex {
+            ObjectIdentifier($0) == ObjectIdentifier(filter)
+        }
 
         guard let filterIndex = index else {
             return
