@@ -439,7 +439,7 @@ open class BaseDestination: Hashable, Equatable {
             let jsonData = try JSONSerialization.data(withJSONObject: dict, options: [])
             jsonString = String(data: jsonData, encoding: .utf8)
         } catch {
-            Self.fallbackLog("Could not create JSON from dict.")
+            Self.fallbackLog("Could not create JSON from dict. Error: \(String(describing: error))")
         }
         return jsonString
     }
