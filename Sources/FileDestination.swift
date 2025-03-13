@@ -85,7 +85,10 @@
                                 baseURL = appURL
                             }
                         } catch {
-                            print("Warning! Could not create folder /Library/Caches/\(appName)")
+                            Self.fallbackLog(
+                                // swiftlint:disable:next line_length
+                                "Could not create folder /Library/Caches/\(appName). Error: \(String(describing: error))"
+                            )
                         }
                     }
                 }
@@ -149,7 +152,7 @@
                             rotateFile(url)
                         }
                     } catch {
-                        print("validateSaveFile error: \(error)")
+                        Self.fallbackLog("Could not check file size. Error: \(String(describing: error))")
                     }
                 }
             }
@@ -180,7 +183,7 @@
                 let newFile = makeRotatedFileUrl(fileUrl, index: firstIndex).path
                 try fileManager.moveItem(atPath: filePath, toPath: newFile)
             } catch {
-                print("rotateFile error: \(error)")
+                Self.fallbackLog("Could not rotate file. Error: \(String(describing: error))")
             }
         }
 
@@ -239,12 +242,12 @@
                     fileHandle.closeFile()
                     success = true
                 } catch {
-                    print("SwiftyBeaver File Destination could not write to file \(url).")
+                    Self.fallbackLog("Could not write to file \(url). Error: \(String(describing: error))")
                 }
             }
 
             if let error {
-                print("Failed writing file with error: \(String(describing: error))")
+                Self.fallbackLog("Failed writing file with error: \(String(describing: error))")
                 return false
             }
 
@@ -261,7 +264,7 @@
                 try fileManager.removeItem(at: url)
                 return true
             } catch {
-                print("SwiftyBeaver File Destination could not remove file \(url).")
+                Self.fallbackLog("Could not remove file \(url). Error: \(String(describing: error))")
                 return false
             }
         }
