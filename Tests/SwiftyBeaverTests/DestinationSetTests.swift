@@ -27,11 +27,11 @@ class DestinationSetTests: XCTestCase {
         // add valid destinations
         let console = ConsoleDestination()
         let console2 = ConsoleDestination()
-        let file = FileDestination()
+        let gcd = GoogleCloudDestination(serviceName: "service-name")
 
         XCTAssertTrue(log.addDestination(console))
         XCTAssertTrue(log.addDestination(console2))
-        XCTAssertTrue(log.addDestination(file))
+        XCTAssertTrue(log.addDestination(gcd))
 
         // Test that destinations are successfully added
         XCTAssertEqual(log.countDestinations(), 3)
@@ -59,11 +59,11 @@ class DestinationSetTests: XCTestCase {
         // add valid destinations
         let console = ConsoleDestination()
         let console2 = ConsoleDestination()
-        let file = FileDestination()
+        let gcd = GoogleCloudDestination(serviceName: "service-name")
 
         XCTAssertTrue(log.addDestination(console))
         XCTAssertTrue(log.addDestination(console2))
-        XCTAssertTrue(log.addDestination(file))
+        XCTAssertTrue(log.addDestination(gcd))
 
         // Test that destinations are successfully added
         XCTAssertEqual(log.countDestinations(), 3)
