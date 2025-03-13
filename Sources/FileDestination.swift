@@ -44,9 +44,14 @@
         // Number of log files used in rotation, default is 1 which deactivates file rotation
         public var logFileAmount = 1
 
-        let fileManager = FileManager.default
+        let fileManager: FileManager
 
-        public init(logFileURL: URL? = nil) {
+        public convenience init(logFileURL: URL? = nil) {
+            self.init(logFileURL: logFileURL, fileManager: .default)
+        }
+
+        public init(logFileURL: URL? = nil, fileManager: FileManager) {
+            self.fileManager = fileManager
             if let logFileURL {
                 self.logFileURL = logFileURL
                 super.init()
@@ -120,10 +125,10 @@
             if logFileAmount > 1 {
                 guard let url = logFileURL else { return false }
                 let filePath = url.path
-                if FileManager.default.fileExists(atPath: filePath) == true {
+                if fileManager.fileExists(atPath: filePath) == true {
                     do {
                         // Get file size
-                        let attr = try FileManager.default.attributesOfItem(atPath: filePath)
+                        let attr = try fileManager.attributesOfItem(atPath: filePath)
                         // swiftlint:disable:next force_cast
                         let fileSize = attr[FileAttributeKey.size] as! UInt64
                         // Do file rotation
@@ -146,21 +151,21 @@
                 for index in stride(from: lastIndex, through: firstIndex, by: -1) {
                     let oldFile = makeRotatedFileUrl(fileUrl, index: index).path
 
-                    if FileManager.default.fileExists(atPath: oldFile) {
+                    if fileManager.fileExists(atPath: oldFile) {
                         if index == lastIndex {
                             // Delete the last file
-                            try FileManager.default.removeItem(atPath: oldFile)
+                            try fileManager.removeItem(atPath: oldFile)
                         } else {
                             // Move the current file to next index
                             let newFile = makeRotatedFileUrl(fileUrl, index: index + 1).path
-                            try FileManager.default.moveItem(atPath: oldFile, toPath: newFile)
+                            try fileManager.moveItem(atPath: oldFile, toPath: newFile)
                         }
                     }
                 }
 
                 // Finally, move the current file
                 let newFile = makeRotatedFileUrl(fileUrl, index: firstIndex).path
-                try FileManager.default.moveItem(atPath: filePath, toPath: newFile)
+                try fileManager.moveItem(atPath: filePath, toPath: newFile)
             } catch {
                 print("rotateFile error: \(error)")
             }
