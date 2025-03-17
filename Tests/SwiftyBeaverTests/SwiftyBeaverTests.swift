@@ -401,7 +401,7 @@ private class MockDestination: BaseDestination {
     var didSendToThread: String?
     var didSendFile: String?
     var didSendFunction: String?
-    var didSendLine: Int?
+    var didSendLine: UInt?
     var didSendContext: Any??
 
     override func send(
