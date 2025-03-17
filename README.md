@@ -1,3 +1,7 @@
+[![ci](https://github.com/MFB-Technologies-Inc/SwiftyBeaver/actions/workflows/ci.yml/badge.svg)](https://github.com/MFB-Technologies-Inc/SwiftyBeaver/actions/workflows/ci.yml)
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FMFB-Technologies-Inc%2FSwiftyBeaver%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/MFB-Technologies-Inc/SwiftyBeaver)
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FMFB-Technologies-Inc%2FSwiftyBeaver%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/MFB-Technologies-Inc/SwiftyBeaver)
+
 **Colorful**, flexible, **lightweight** logging for Swift 5 & **Swift 6**.
 
 Great for **development & release** with support for Console, file & cloud destinations for server-side Swift.
@@ -8,7 +12,6 @@ Great for **development & release** with support for Console, file & cloud desti
 
 <img width="924" alt="image" src="https://github.com/SwiftyBeaver/SwiftyBeaver/assets/15070906/418a6a70-ced4-4000-91c3-8dc8fc235b7c">
 
-#### In Xcode 15
 ```Swift
 
 // use Apple's fancy OSLog API:
@@ -30,35 +33,11 @@ console.logPrintWay = .print
 
 You can fully customize your log format, turn it into JSON, or create your own destinations. For example, our [Google Cloud Destination](https://github.com/SwiftyBeaver/SwiftyBeaver/blob/master/Sources/GoogleCloudDestination.swift) is just another customized logging format that adds the powerful functionality of automatic server-side Swift logging when hosted on Google Cloud Platform.
 
----
-
 ## Installation
 
 - For **Swift 4 & 5** install the latest SwiftyBeaver version
 - For **Swift 3** install SwiftyBeaver 1.8.4
 - For **Swift 2** install SwiftyBeaver 0.7.0
-
-### Carthage
-
-You can use [Carthage](https://github.com/Carthage/Carthage) to install SwiftyBeaver by adding that to your Cartfile:
-
-Swift 4 & 5:
-
-```Swift
-github "SwiftyBeaver/SwiftyBeaver"
-```
-
-Swift 3:
-
-```Swift
-github "SwiftyBeaver/SwiftyBeaver" ~> 1.8.4
-```
-
-Swift 2:
-
-```Swift
-github "SwiftyBeaver/SwiftyBeaver" ~> 0.7
-```
 
 ### Swift Package Manager
 
@@ -68,7 +47,18 @@ For [Swift Package Manager](https://swift.org/package-manager/) add the followin
 .package(url: "https://github.com/SwiftyBeaver/SwiftyBeaver.git", .upToNextMajor(from: "2.0.0")),
 ```
 
+### Disable `swift-log` integration to avoid adding it as a dependency.
+
+Set the `SWIFT_LOG_INTEGRATION` environment variable to `NO` or `FALSE` for any commands that resolve package dependencies.
+
+```shell
+SWIFT_LOG_INTEGRATION=FALSE swift build
+SWIFT_LOG_INTEGRATION=FALSE swift test
+```
+
 ## Usage
+
+### SwiftyBeaver
 
 Add that near the top of your `AppDelegate.swift` to be able to use SwiftyBeaver in your whole project.
 
@@ -140,6 +130,22 @@ struct yourApp: App {
     }
 }
 ```
+
+### swift-log Integration with `SwiftyBeaverSwiftLog`
+
+SwiftyBeaver can be used through `swift-log` with the `SwiftyBeaverSwiftLog` target.
+
+In the same place you add your destinations to `SwiftyBeaver` you can boostratp `LoggingSystem` as shown:
+
+```swift
+import Logging
+import SwiftyBeaver
+import SwiftyBeaverSwiftLog
+LoggingSystem.bootstrap { label in
+    SwiftyBeaverLogHandler(metadata: ["label": .string(label)])
+}
+```
+---
 
 ## Server-side Swift
 
