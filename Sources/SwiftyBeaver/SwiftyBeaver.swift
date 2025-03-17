@@ -12,7 +12,7 @@ open class SwiftyBeaver {
     /// build number of framework
     public static let build = 2110 // version 1.6.2 -> 1620, UPDATE ON RELEASE!
 
-    public enum Level: Int {
+    public enum Level: Int, CaseIterable {
         case verbose = 0
         case debug = 1
         case info = 2
