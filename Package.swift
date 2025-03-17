@@ -8,7 +8,7 @@ let package = Package(
         .library(name: "SwiftyBeaver", targets: ["SwiftyBeaver"]),
     ],
     targets: [
-        .target(name: "SwiftyBeaver", path: "Sources"),
+        .target(name: "SwiftyBeaver"),
         .testTarget(name: "SwiftyBeaverTests", dependencies: ["SwiftyBeaver"]),
     ]
 )
