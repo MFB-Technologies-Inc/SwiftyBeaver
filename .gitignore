@@ -73,3 +73,10 @@ Carthage/
 fastlane/report.xml
 fastlane/screenshots
 /.swiftpm
+
+# Package.resolved
+#
+# As a library, we don't need to pin a specific dependency version. Further, if a consumer disables the use
+# our dependencies, we don't want a Package.resolved possibly causing trouble.
+
+Package.resolved
