@@ -74,7 +74,7 @@ open class ConsoleDestination: BaseDestination {
         thread: String,
         file: String,
         function: String,
-        line: Int,
+        line: UInt,
         context: Any? = nil
     ) -> String? {
         let formattedString = super.send(

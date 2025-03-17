@@ -410,7 +410,7 @@ private class MockDestination: BaseDestination {
         thread: String,
         file: String,
         function: String,
-        line: Int,
+        line: UInt,
         context: Any?
     ) -> String? {
         didSendToLevel = level

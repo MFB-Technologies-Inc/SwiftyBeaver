@@ -86,7 +86,7 @@ open class BaseDestination: Hashable, Equatable {
         thread: String,
         file: String,
         function: String,
-        line: Int,
+        line: UInt,
         context: Any? = nil
     ) -> String? {
         if format.hasPrefix("$J") {
@@ -207,7 +207,7 @@ open class BaseDestination: Hashable, Equatable {
         thread: String,
         file: String,
         function: String,
-        line: Int,
+        line: UInt,
         context: Any? = nil
     ) -> String {
         var text = ""
@@ -292,7 +292,7 @@ open class BaseDestination: Hashable, Equatable {
         thread: String,
         file: String,
         function: String,
-        line: Int,
+        line: UInt,
         context: Any? = nil
     ) -> String? {
         var dict: [String: Any] = [

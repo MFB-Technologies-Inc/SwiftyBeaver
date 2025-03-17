@@ -27,7 +27,7 @@ public final class GoogleCloudDestination: BaseDestination {
         thread _: String,
         file: String,
         function: String,
-        line: Int,
+        line: UInt,
         context: Any? = nil
     ) -> String? {
         let reportLocation: [String: Any] = ["filePath": file, "lineNumber": line, "functionName": function]
