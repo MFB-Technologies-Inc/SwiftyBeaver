@@ -145,7 +145,7 @@
         func validateSaveFile(str: String) -> Bool {
             if logFileAmount > 1 {
                 guard let url = logFileURL else { return false }
-                let filePath = url.path
+                let filePath = url._path()
                 if fileManager.fileExists(atPath: filePath) == true {
                     do {
                         // Get file size
@@ -165,12 +165,12 @@
         }
 
         private func rotateFile(_ fileUrl: URL) {
-            let filePath = fileUrl.path
+            let filePath = fileUrl._path()
             let lastIndex = (logFileAmount - 1)
             let firstIndex = 1
             do {
                 for index in stride(from: lastIndex, through: firstIndex, by: -1) {
-                    let oldFile = makeRotatedFileUrl(fileUrl, index: index).path
+                    let oldFile = makeRotatedFileUrl(fileUrl, index: index)._path()
 
                     if fileManager.fileExists(atPath: oldFile) {
                         if index == lastIndex {
@@ -178,14 +178,14 @@
                             try fileManager.removeItem(atPath: oldFile)
                         } else {
                             // Move the current file to next index
-                            let newFile = makeRotatedFileUrl(fileUrl, index: index + 1).path
+                            let newFile = makeRotatedFileUrl(fileUrl, index: index + 1)._path()
                             try fileManager.moveItem(atPath: oldFile, toPath: newFile)
                         }
                     }
                 }
 
                 // Finally, move the current file
-                let newFile = makeRotatedFileUrl(fileUrl, index: firstIndex).path
+                let newFile = makeRotatedFileUrl(fileUrl, index: firstIndex)._path()
                 try fileManager.moveItem(atPath: filePath, toPath: newFile)
             } catch {
                 Self.fallbackLog("Could not rotate file. Error: \(String(describing: error))")
@@ -218,28 +218,15 @@
             var error: NSError?
             coordinator.coordinate(writingItemAt: url, error: &error) { url in
                 do {
-                    if fileManager.fileExists(atPath: url.path) == false {
+                    if fileManager.fileExists(atPath: url._path()) == false {
                         let directoryURL = url.deletingLastPathComponent()
-                        if fileManager.fileExists(atPath: directoryURL.path) == false {
+                        if fileManager.fileExists(atPath: directoryURL._path()) == false {
                             try fileManager.createDirectory(
                                 at: directoryURL,
                                 withIntermediateDirectories: true
                             )
                         }
-                        // iOS 16.0+ iPadOS 16.0+ Mac Catalyst 16.0+ macOS 13.0+ tvOS 16.0+ visionOS 1.0+ watchOS 9.0+
-                        let urlPath = if #available(
-                            iOS 16,
-                            macCatalyst 16,
-                            macOS 13,
-                            tvOS 16,
-                            visionOS 1,
-                            watchOS 9,
-                            *
-                        ) {
-                            url.path(percentEncoded: false)
-                        } else {
-                            url.path
-                        }
+                        let urlPath = url._path()
                         guard !urlPath.isEmpty else {
                             Self.fallbackLog("Could not write to file because URL path is empty.")
                             return
@@ -251,24 +238,21 @@
 
                         #if os(iOS) || os(watchOS)
                             if #available(iOS 10.0, watchOS 3.0, *) {
-                                var attributes = try fileManager.attributesOfItem(atPath: url.path)
+                                var attributes = try fileManager.attributesOfItem(atPath: urlPath)
                                 attributes[FileAttributeKey.protectionKey] = FileProtectionType.none
-                                try fileManager.setAttributes(attributes, ofItemAtPath: url.path)
+                                try fileManager.setAttributes(attributes, ofItemAtPath: urlPath)
                             }
                         #endif
                     }
 
                     let fileHandle = try fileHandle(forWritingTo: url)
-                    fileHandle.seekToEndOfFile()
-                    if #available(iOS 13.4, watchOS 6.2, tvOS 13.4, macOS 10.15.4, *) {
-                        try fileHandle.write(contentsOf: data)
-                    } else {
-                        fileHandle.write(data)
-                    }
+                    try fileHandle._seekToEnd()
+
+                    try fileHandle._write(contentsOf: data)
                     if syncAfterEachWrite {
-                        fileHandle.synchronizeFile()
+                        try fileHandle._synchronize()
                     }
-                    fileHandle.closeFile()
+                    try fileHandle._close()
                     success = true
                 } catch {
                     Self.fallbackLog("Could not write to file \(url). Error: \(String(describing: error))")
@@ -286,7 +270,7 @@
         /// deletes log file.
         /// returns true if file was removed or does not exist, false otherwise
         public func deleteLogFile() -> Bool {
-            guard let url = logFileURL, fileManager.fileExists(atPath: url.path) == true else {
+            guard let url = logFileURL, fileManager.fileExists(atPath: url._path()) == true else {
                 return true
             }
             do {
@@ -295,6 +279,58 @@
             } catch {
                 Self.fallbackLog("Could not remove file \(url). Error: \(String(describing: error))")
                 return false
+            }
+        }
+    }
+
+    extension FileHandle {
+        fileprivate func _close() throws {
+            if #available(iOS 13, macCatalyst 13.1, macOS 10.15, tvOS 13, visionOS 1, watchOS 6, *) {
+                try close()
+            } else {
+                closeFile()
+            }
+        }
+
+        fileprivate func _seekToEnd() throws {
+            if #available(iOS 13.4, macCatalyst 13.4, macOS 10.15.4, tvOS 13.4, visionOS 1, watchOS 6.2, *) {
+                try seekToEnd()
+            } else {
+                seekToEndOfFile()
+            }
+        }
+
+        fileprivate func _synchronize() throws {
+            if #available(iOS 13, macCatalyst 13.1, macOS 10.15, tvOS 13, visionOS 1, watchOS 6, *) {
+                try synchronize()
+            } else {
+                synchronizeFile()
+            }
+        }
+
+        fileprivate func _write(contentsOf data: Data) throws {
+            if #available(iOS 13.4, watchOS 6.2, tvOS 13.4, macOS 10.15.4, *) {
+                try write(contentsOf: data)
+            } else {
+                write(data)
+            }
+        }
+    }
+
+    extension URL {
+        fileprivate func _path() -> String {
+            if #available(
+                iOS 16,
+                macCatalyst 16,
+                macOS 13,
+                tvOS 16,
+                visionOS 1,
+                watchOS 9,
+                *
+            ) {
+                path(percentEncoded: false)
+            } else {
+                path
             }
         }
     }
