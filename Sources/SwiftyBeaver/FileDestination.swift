@@ -226,7 +226,28 @@
                                 withIntermediateDirectories: true
                             )
                         }
-                        fileManager.createFile(atPath: url.path, contents: nil)
+                        // iOS 16.0+ iPadOS 16.0+ Mac Catalyst 16.0+ macOS 13.0+ tvOS 16.0+ visionOS 1.0+ watchOS 9.0+
+                        let urlPath = if #available(
+                            iOS 16,
+                            macCatalyst 16,
+                            macOS 13,
+                            tvOS 16,
+                            visionOS 1,
+                            watchOS 9,
+                            *
+                        ) {
+                            url.path(percentEncoded: false)
+                        } else {
+                            url.path
+                        }
+                        guard !urlPath.isEmpty else {
+                            Self.fallbackLog("Could not write to file because URL path is empty.")
+                            return
+                        }
+                        if !fileManager.createFile(atPath: urlPath, contents: nil) {
+                            Self.fallbackLog("Could not create file at path: \(urlPath)")
+                            return
+                        }
 
                         #if os(iOS) || os(watchOS)
                             if #available(iOS 10.0, watchOS 3.0, *) {
