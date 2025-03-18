@@ -121,7 +121,7 @@ open class BaseDestination: Hashable, Equatable {
         _ message: @autoclosure () -> String,
         file _: String = #file,
         function _: String = #function,
-        line _: Int = #line,
+        line _: UInt = #line,
         context _: Any? = nil
     ) {
         print("SwiftyBeaver.\(String(describing: Self.self)): \(message())")
