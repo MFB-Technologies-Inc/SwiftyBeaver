@@ -125,8 +125,13 @@
                 context: context
             )
 
-            if let str = formattedString {
-                _ = validateSaveFile(str: str)
+            guard let formattedString else {
+                Self.fallbackLog("No formatted string was formed for message: \(msg)")
+                return nil
+            }
+            guard validateSaveFile(str: formattedString) else {
+                Self.fallbackLog("Could not validate or write to file with formatted string: \(formattedString)")
+                return formattedString
             }
             return formattedString
         }
@@ -196,7 +201,10 @@
         /// appends a string as line to a file.
         /// returns boolean about success
         func saveToFile(str: String) -> Bool {
-            guard let url = logFileURL else { return false }
+            guard let url = logFileURL else {
+                Self.fallbackLog("No file URL found to save to.")
+                return false
+            }
 
             let line = str + "\n"
             guard let data = line.data(using: String.Encoding.utf8) else { return false }
