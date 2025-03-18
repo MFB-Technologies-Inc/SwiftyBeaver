@@ -71,13 +71,13 @@
             logger.critical("critical-message", line: 7)
 
             #expect(destination.messages == [
-                "18:00:00.000 VERBOSE SwiftyBeaverLogHandlerTests.logMessages():1 - trace-message",
-                "18:00:00.000 DEBUG SwiftyBeaverLogHandlerTests.logMessages():2 - debug-message",
-                "18:00:00.000 INFO SwiftyBeaverLogHandlerTests.logMessages():3 - info-message",
-                "18:00:00.000 INFO SwiftyBeaverLogHandlerTests.logMessages():4 - notice-message",
-                "18:00:00.000 WARNING SwiftyBeaverLogHandlerTests.logMessages():5 - warning-message",
-                "18:00:00.000 ERROR SwiftyBeaverLogHandlerTests.logMessages():6 - error-message",
-                "18:00:00.000 CRITICAL SwiftyBeaverLogHandlerTests.logMessages():7 - critical-message",
+                "00:00:00.000 VERBOSE SwiftyBeaverLogHandlerTests.logMessages():1 - trace-message",
+                "00:00:00.000 DEBUG SwiftyBeaverLogHandlerTests.logMessages():2 - debug-message",
+                "00:00:00.000 INFO SwiftyBeaverLogHandlerTests.logMessages():3 - info-message",
+                "00:00:00.000 INFO SwiftyBeaverLogHandlerTests.logMessages():4 - notice-message",
+                "00:00:00.000 WARNING SwiftyBeaverLogHandlerTests.logMessages():5 - warning-message",
+                "00:00:00.000 ERROR SwiftyBeaverLogHandlerTests.logMessages():6 - error-message",
+                "00:00:00.000 CRITICAL SwiftyBeaverLogHandlerTests.logMessages():7 - critical-message",
             ])
         }
 
@@ -104,16 +104,16 @@
             logger.critical("critical-message", line: 7)
 
             #expect(destinationA.messages == [
-                "18:00:00.000 INFO SwiftyBeaverLogHandlerTests.logMessagesWithIndependentDestinationMinLogLevel():3 - info-message",
-                "18:00:00.000 INFO SwiftyBeaverLogHandlerTests.logMessagesWithIndependentDestinationMinLogLevel():4 - notice-message",
-                "18:00:00.000 WARNING SwiftyBeaverLogHandlerTests.logMessagesWithIndependentDestinationMinLogLevel():5 - warning-message",
-                "18:00:00.000 ERROR SwiftyBeaverLogHandlerTests.logMessagesWithIndependentDestinationMinLogLevel():6 - error-message",
-                "18:00:00.000 CRITICAL SwiftyBeaverLogHandlerTests.logMessagesWithIndependentDestinationMinLogLevel():7 - critical-message",
+                "00:00:00.000 INFO SwiftyBeaverLogHandlerTests.logMessagesWithIndependentDestinationMinLogLevel():3 - info-message",
+                "00:00:00.000 INFO SwiftyBeaverLogHandlerTests.logMessagesWithIndependentDestinationMinLogLevel():4 - notice-message",
+                "00:00:00.000 WARNING SwiftyBeaverLogHandlerTests.logMessagesWithIndependentDestinationMinLogLevel():5 - warning-message",
+                "00:00:00.000 ERROR SwiftyBeaverLogHandlerTests.logMessagesWithIndependentDestinationMinLogLevel():6 - error-message",
+                "00:00:00.000 CRITICAL SwiftyBeaverLogHandlerTests.logMessagesWithIndependentDestinationMinLogLevel():7 - critical-message",
             ])
 
             #expect(destinationB.messages == [
-                "18:00:00.000 ERROR SwiftyBeaverLogHandlerTests.logMessagesWithIndependentDestinationMinLogLevel():6 - error-message",
-                "18:00:00.000 CRITICAL SwiftyBeaverLogHandlerTests.logMessagesWithIndependentDestinationMinLogLevel():7 - critical-message",
+                "00:00:00.000 ERROR SwiftyBeaverLogHandlerTests.logMessagesWithIndependentDestinationMinLogLevel():6 - error-message",
+                "00:00:00.000 CRITICAL SwiftyBeaverLogHandlerTests.logMessagesWithIndependentDestinationMinLogLevel():7 - critical-message",
             ])
         }
 
@@ -149,12 +149,12 @@
             logger.critical("critical-message", line: 7)
 
             #expect(destination.messages == [
-                "18:00:00.000 DEBUG SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfDebug():2 - debug-message",
-                "18:00:00.000 INFO SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfDebug():3 - info-message",
-                "18:00:00.000 INFO SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfDebug():4 - notice-message",
-                "18:00:00.000 WARNING SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfDebug():5 - warning-message",
-                "18:00:00.000 ERROR SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfDebug():6 - error-message",
-                "18:00:00.000 CRITICAL SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfDebug():7 - critical-message",
+                "00:00:00.000 DEBUG SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfDebug():2 - debug-message",
+                "00:00:00.000 INFO SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfDebug():3 - info-message",
+                "00:00:00.000 INFO SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfDebug():4 - notice-message",
+                "00:00:00.000 WARNING SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfDebug():5 - warning-message",
+                "00:00:00.000 ERROR SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfDebug():6 - error-message",
+                "00:00:00.000 CRITICAL SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfDebug():7 - critical-message",
             ])
         }
 
@@ -175,11 +175,11 @@
             logger.critical("critical-message", line: 7)
 
             #expect(destination.messages == [
-                "18:00:00.000 INFO SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfInfo():3 - info-message",
-                "18:00:00.000 INFO SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfInfo():4 - notice-message",
-                "18:00:00.000 WARNING SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfInfo():5 - warning-message",
-                "18:00:00.000 ERROR SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfInfo():6 - error-message",
-                "18:00:00.000 CRITICAL SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfInfo():7 - critical-message",
+                "00:00:00.000 INFO SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfInfo():3 - info-message",
+                "00:00:00.000 INFO SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfInfo():4 - notice-message",
+                "00:00:00.000 WARNING SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfInfo():5 - warning-message",
+                "00:00:00.000 ERROR SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfInfo():6 - error-message",
+                "00:00:00.000 CRITICAL SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfInfo():7 - critical-message",
             ])
         }
 
@@ -200,10 +200,10 @@
             logger.critical("critical-message", line: 7)
 
             #expect(destination.messages == [
-                "18:00:00.000 INFO SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfNotice():4 - notice-message",
-                "18:00:00.000 WARNING SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfNotice():5 - warning-message",
-                "18:00:00.000 ERROR SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfNotice():6 - error-message",
-                "18:00:00.000 CRITICAL SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfNotice():7 - critical-message",
+                "00:00:00.000 INFO SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfNotice():4 - notice-message",
+                "00:00:00.000 WARNING SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfNotice():5 - warning-message",
+                "00:00:00.000 ERROR SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfNotice():6 - error-message",
+                "00:00:00.000 CRITICAL SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfNotice():7 - critical-message",
             ])
         }
 
@@ -224,9 +224,9 @@
             logger.critical("critical-message", line: 7)
 
             #expect(destination.messages == [
-                "18:00:00.000 WARNING SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfWarning():5 - warning-message",
-                "18:00:00.000 ERROR SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfWarning():6 - error-message",
-                "18:00:00.000 CRITICAL SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfWarning():7 - critical-message",
+                "00:00:00.000 WARNING SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfWarning():5 - warning-message",
+                "00:00:00.000 ERROR SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfWarning():6 - error-message",
+                "00:00:00.000 CRITICAL SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfWarning():7 - critical-message",
             ])
         }
 
@@ -247,8 +247,8 @@
             logger.critical("critical-message", line: 7)
 
             #expect(destination.messages == [
-                "18:00:00.000 ERROR SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfError():6 - error-message",
-                "18:00:00.000 CRITICAL SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfError():7 - critical-message",
+                "00:00:00.000 ERROR SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfError():6 - error-message",
+                "00:00:00.000 CRITICAL SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfError():7 - critical-message",
             ])
         }
 
@@ -269,7 +269,7 @@
             logger.critical("critical-message", line: 7)
 
             #expect(destination.messages == [
-                "18:00:00.000 CRITICAL SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfCritical():7 - critical-message",
+                "00:00:00.000 CRITICAL SwiftyBeaverLogHandlerTests.logMessagesWithMinimumLevelOfCritical():7 - critical-message",
             ])
         }
     }
@@ -281,6 +281,7 @@
             self.messages = messages
             super.init()
             asynchronously = false
+            format = "$ZHH:mm:ss.SSS$d $C$L$c $N.$F:$l - $M"
         }
 
         override class func date() -> Date {
