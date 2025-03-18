@@ -30,7 +30,7 @@
         func setLogLevel() {
             let destinationA = InMemoryDestination()
             destinationA.minLevel = .debug
-            let destinationB = FileDestination()
+            let destinationB = InMemoryDestination()
             destinationB.minLevel = .warning
             let destinationC = GoogleCloudDestination(serviceName: "")
             destinationC.minLevel = .critical
