@@ -38,7 +38,7 @@ class GoogleCloudDestinationTests: XCTestCase {
         let thread = ""
         let file = "/file/path.swift"
         let function = "TestFunction()"
-        let line = 123
+        let line: UInt = 123
 
         let gcpDestination = GoogleCloudDestination(serviceName: "TEST")
         let str = gcpDestination.send(.verbose, msg: msg, thread: thread, file: file, function: function, line: line)
@@ -58,7 +58,7 @@ class GoogleCloudDestinationTests: XCTestCase {
         let thread = ""
         let file = "/file/path.swift"
         let function = "TestFunction()"
-        let line = 123
+        let line: UInt = 123
 
         let gcd = GoogleCloudDestination(serviceName: "SwiftyBeaver")
 

@@ -401,7 +401,7 @@ private class MockDestination: BaseDestination {
     var didSendToThread: String?
     var didSendFile: String?
     var didSendFunction: String?
-    var didSendLine: Int?
+    var didSendLine: UInt?
     var didSendContext: Any??
 
     override func send(
@@ -410,7 +410,7 @@ private class MockDestination: BaseDestination {
         thread: String,
         file: String,
         function: String,
-        line: Int,
+        line: UInt,
         context: Any?
     ) -> String? {
         didSendToLevel = level

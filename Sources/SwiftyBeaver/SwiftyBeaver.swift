@@ -12,7 +12,7 @@ open class SwiftyBeaver {
     /// build number of framework
     public static let build = 2110 // version 1.6.2 -> 1620, UPDATE ON RELEASE!
 
-    public enum Level: Int {
+    public enum Level: Int, CaseIterable {
         case verbose = 0
         case debug = 1
         case info = 2
@@ -96,7 +96,7 @@ open class SwiftyBeaver {
         _ message: @autoclosure () -> Any,
         file: String = #file,
         function: String = #function,
-        line: Int = #line,
+        line: UInt = #line,
         context: Any? = nil
     ) {
         custom(
@@ -110,7 +110,7 @@ open class SwiftyBeaver {
         _ message: @autoclosure () -> Any,
         file: String = #file,
         function: String = #function,
-        line: Int = #line,
+        line: UInt = #line,
         context: Any? = nil
     ) {
         custom(
@@ -124,7 +124,7 @@ open class SwiftyBeaver {
         _ message: @autoclosure () -> Any,
         file: String = #file,
         function: String = #function,
-        line: Int = #line,
+        line: UInt = #line,
         context: Any? = nil
     ) {
         custom(
@@ -138,7 +138,7 @@ open class SwiftyBeaver {
         _ message: @autoclosure () -> Any,
         file: String = #file,
         function: String = #function,
-        line: Int = #line,
+        line: UInt = #line,
         context: Any? = nil
     ) {
         custom(
@@ -152,7 +152,7 @@ open class SwiftyBeaver {
         _ message: @autoclosure () -> Any,
         file: String = #file,
         function: String = #function,
-        line: Int = #line,
+        line: UInt = #line,
         context: Any? = nil
     ) {
         custom(
@@ -166,7 +166,7 @@ open class SwiftyBeaver {
         _ message: @autoclosure () -> Any,
         file: String = #file,
         function: String = #function,
-        line: Int = #line,
+        line: UInt = #line,
         context: Any? = nil
     ) {
         custom(
@@ -180,7 +180,7 @@ open class SwiftyBeaver {
         _ message: @autoclosure () -> Any,
         file: String = #file,
         function: String = #function,
-        line: Int = #line,
+        line: UInt = #line,
         context: Any? = nil
     ) {
         custom(
@@ -195,7 +195,7 @@ open class SwiftyBeaver {
         message: @autoclosure () -> Any,
         file: String = #file,
         function: String = #function,
-        line: Int = #line,
+        line: UInt = #line,
         context: Any? = nil
     ) {
         dispatch_send(
@@ -217,7 +217,7 @@ open class SwiftyBeaver {
         thread: String,
         file: String,
         function: String,
-        line: Int,
+        line: UInt,
         context: Any?
     ) {
         var resolvedMessage: String?

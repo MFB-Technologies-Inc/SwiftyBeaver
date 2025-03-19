@@ -58,7 +58,7 @@ open class BaseDestination: Hashable, Equatable {
 
     var filters = [FilterType]()
     let formatter = DateFormatter()
-    let startDate = Date()
+    let startDate: Date
 
     public func hash(into hasher: inout Hasher) {
         hasher.combine(ObjectIdentifier(Self.self))
@@ -70,6 +70,7 @@ open class BaseDestination: Hashable, Equatable {
     var debugPrint = false // set to true to debug the internal filter logic of the class
 
     public init() {
+        startDate = Self.date()
         let uuid = NSUUID().uuidString
         let queueLabel = "swiftybeaver-queue-" + uuid
         queue = DispatchQueue(label: queueLabel, target: queue)
@@ -85,7 +86,7 @@ open class BaseDestination: Hashable, Equatable {
         thread: String,
         file: String,
         function: String,
-        line: Int,
+        line: UInt,
         context: Any? = nil
     ) -> String? {
         if format.hasPrefix("$J") {
@@ -120,10 +121,16 @@ open class BaseDestination: Hashable, Equatable {
         _ message: @autoclosure () -> String,
         file _: String = #file,
         function _: String = #function,
-        line _: Int = #line,
+        line _: UInt = #line,
         context _: Any? = nil
     ) {
         print("SwiftyBeaver.\(String(describing: Self.self)): \(message())")
+    }
+
+    // Allows dependency injection for getting the current date
+    @inlinable
+    open class func date() -> Date {
+        Date()
     }
 
     public func execute(synchronously: Bool, block: @escaping () -> Void) {
@@ -200,7 +207,7 @@ open class BaseDestination: Hashable, Equatable {
         thread: String,
         file: String,
         function: String,
-        line: Int,
+        line: UInt,
         context: Any? = nil
     ) -> String {
         var text = ""
@@ -285,11 +292,11 @@ open class BaseDestination: Hashable, Equatable {
         thread: String,
         file: String,
         function: String,
-        line: Int,
+        line: UInt,
         context: Any? = nil
     ) -> String? {
         var dict: [String: Any] = [
-            "timestamp": Date().timeIntervalSince1970,
+            "timestamp": Self.date().timeIntervalSince1970,
             "level": level.rawValue,
             "message": msg,
             "thread": thread,
@@ -394,14 +401,13 @@ open class BaseDestination: Hashable, Equatable {
         }
         formatter.calendar = calendar
         formatter.dateFormat = dateFormat
-        // let dateStr = formatter.string(from: NSDate() as Date)
-        let dateStr = formatter.string(from: Date())
+        let dateStr = formatter.string(from: Self.date())
         return dateStr
     }
 
     /// returns a uptime string
     func uptime() -> String {
-        let interval = Date().timeIntervalSince(startDate)
+        let interval = Self.date().timeIntervalSince(startDate)
 
         let hours = Int(interval) / 3600
         let minutes = Int(interval / 60) - Int(hours * 60)
