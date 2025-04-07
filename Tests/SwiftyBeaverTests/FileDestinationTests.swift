@@ -6,7 +6,7 @@
 
 #if !os(Linux)
     import Foundation
-    @testable import SwiftyBeaver
+    @_spi(Testable) import SwiftyBeaver
     import XCTest
 
     class FileDestinationTests: XCTestCase {

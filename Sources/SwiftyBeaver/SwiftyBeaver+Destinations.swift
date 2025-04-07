@@ -55,8 +55,7 @@ extension SwiftyBeaver {
         }
 
         /// internal helper which dispatches send to dedicated queue if minLevel is ok
-        @usableFromInline
-        func dispatch_send(
+        public func dispatch_send(
             // swiftlint:disable:previous function_parameter_count
             level: SwiftyBeaver.Level,
             message: @autoclosure () -> Any,
@@ -290,7 +289,8 @@ extension SwiftyBeaver {
         }
 
         /// removes the parameters from a function because it looks weird with a single param
-        class func stripParams(function: String) -> String {
+        @_spi(Testable)
+        public class func stripParams(function: String) -> String {
             // swiftlint:disable:next identifier_name
             var f = function
             if let indexOfBrace = f.firstIndex(of: "(") {
