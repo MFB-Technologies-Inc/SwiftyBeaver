@@ -53,6 +53,12 @@ open class SwiftyBeaver {
         destinationsState.countDestinations()
     }
 
+    /// returns the current thread name
+    @inlinable
+    open class func threadName() -> String {
+        Destinations.threadName()
+    }
+
     // MARK: Levels
 
     /// log something generally unimportant (lowest priority)
