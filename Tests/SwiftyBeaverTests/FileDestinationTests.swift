@@ -10,17 +10,8 @@
     import XCTest
 
     class FileDestinationTests: XCTestCase {
-        override func setUp() {
-            super.setUp()
-            SwiftyBeaver.removeAllDestinations()
-        }
-
-        override func tearDown() {
-            super.tearDown()
-        }
-
         func testFileIsWritten() {
-            let log = SwiftyBeaver.self
+            let log = SwiftyBeaver.Destinations()
 
             let path = "/tmp/testSBF.log"
             deleteFile(path: path)
@@ -56,7 +47,7 @@
         }
 
         func testFileIsWrittenToFolderWithSpaces() {
-            let log = SwiftyBeaver.self
+            let log = SwiftyBeaver.Destinations()
 
             let folder = "/tmp/folder with spaces"
             createFolder(path: folder)
@@ -99,7 +90,7 @@
         }
 
         func testFileIsWrittenToDeletedFolder() {
-            let log = SwiftyBeaver.self
+            let log = SwiftyBeaver.Destinations()
 
             let path = "/tmp/\(UUID().uuidString)/testSBF.log"
             deleteFile(path: path)

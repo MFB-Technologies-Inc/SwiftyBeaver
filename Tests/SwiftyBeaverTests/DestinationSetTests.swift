@@ -8,18 +8,8 @@ import SwiftyBeaver
 import XCTest
 
 class DestinationSetTests: XCTestCase {
-    override func setUp() {
-        super.setUp()
-        SwiftyBeaver.removeAllDestinations()
-    }
-
-    override func tearDown() {
-        super.tearDown()
-        SwiftyBeaver.removeAllDestinations()
-    }
-
     func testChangeDestinationsMinLogLevels() {
-        let log = SwiftyBeaver.self
+        let log = SwiftyBeaver.Destinations()
 
         // Test for default state
         XCTAssertEqual(log.countDestinations(), 0)
@@ -51,7 +41,7 @@ class DestinationSetTests: XCTestCase {
     }
 
     func testRemoveConsoleDestinations() {
-        let log = SwiftyBeaver.self
+        let log = SwiftyBeaver.Destinations()
 
         // Test for default state
         XCTAssertEqual(log.countDestinations(), 0)
@@ -81,7 +71,7 @@ class DestinationSetTests: XCTestCase {
 
     /*
      func testModifyingDestinationsWhileLoggingFromDifferentThread() {
-         let log = SwiftyBeaver.self
+         let log = SwiftyBeaver.Destinations()
 
          // Test for default state
          XCTAssertEqual(log.countDestinations(), 0)
