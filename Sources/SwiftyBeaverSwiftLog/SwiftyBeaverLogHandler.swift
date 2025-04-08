@@ -27,13 +27,15 @@ public struct SwiftyBeaverLogHandler: LogHandler {
     }
 
     /// Allows the customization of mapping between `Logger.Level` and `SwiftyBeaver.Level`
-    public struct LevelConversion {
-        public let fromSwiftyBeaver: (SwiftyBeaver.Level) -> Logger.Level
-        public let toSwiftyBeaver: (Logger.Level) -> SwiftyBeaver.Level
+    public struct LevelConversion: Sendable {
+        public let fromSwiftyBeaver: @Sendable (SwiftyBeaver.Level) -> Logger.Level
+        public let toSwiftyBeaver: @Sendable (Logger.Level) -> SwiftyBeaver.Level
 
         public init(
-            fromSwiftyBeaver: @escaping (SwiftyBeaver.Level) -> Logger.Level = Logger.Level.init(swiftyBeaverLevel:),
-            toSwiftyBeaver: @escaping (Logger.Level) -> SwiftyBeaver.Level = SwiftyBeaver.Level.init(swiftLogLevel:)
+            fromSwiftyBeaver: @escaping @Sendable (SwiftyBeaver.Level) -> Logger.Level = Logger.Level
+                .init(swiftyBeaverLevel:),
+            toSwiftyBeaver: @escaping @Sendable (Logger.Level) -> SwiftyBeaver.Level = SwiftyBeaver.Level
+                .init(swiftLogLevel:)
         ) {
             self.fromSwiftyBeaver = fromSwiftyBeaver
             self.toSwiftyBeaver = toSwiftyBeaver

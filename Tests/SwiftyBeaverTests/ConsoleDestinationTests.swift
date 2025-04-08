@@ -6,53 +6,27 @@
 
 import Foundation
 @_spi(Testable) import SwiftyBeaver
-import XCTest
+import Testing
 
-class ConsoleDestinationTests: XCTestCase {
-    func testUseTerminalColors() {
+@Suite
+struct ConsoleDestinationTests {
+    @Test
+    func useTerminalColors() {
         let log = SwiftyBeaver.Destinations()
         let console = ConsoleDestination()
-        XCTAssertTrue(log.addDestination(console))
+        #expect(log.addDestination(console))
 
         // default xcode colors
-        XCTAssertFalse(console.useTerminalColors)
-        XCTAssertEqual(console.levelColor.verbose, "⬜️ ")
-        XCTAssertEqual(console.reset, "")
-        XCTAssertEqual(console.escape, "")
+        #expect(!console.useTerminalColors)
+        #expect(console.levelColor.verbose == "⬜️ ")
+        #expect(console.reset == "")
+        #expect(console.escape == "")
 
         // switch to terminal colors
         console.useTerminalColors = true
-        XCTAssertTrue(console.useTerminalColors)
-        XCTAssertEqual(console.levelColor.verbose, "251m")
-        XCTAssertEqual(console.reset, "\u{001b}[0m")
-        XCTAssertEqual(console.escape, "\u{001b}[38;5;")
+        #expect(console.useTerminalColors)
+        #expect(console.levelColor.verbose == "251m")
+        #expect(console.reset == "\u{001b}[0m")
+        #expect(console.escape == "\u{001b}[38;5;")
     }
 }
-
-#if canImport(Testing)
-    import Testing
-
-    @Suite
-    struct _ConsoleDestinationTests {
-        @Test
-        func useTerminalColors() {
-            let log = SwiftyBeaver.Destinations()
-            let console = ConsoleDestination()
-            #expect(log.addDestination(console))
-
-            // default xcode colors
-            #expect(!console.useTerminalColors)
-            #expect(console.levelColor.verbose == "⬜️ ")
-            #expect(console.reset == "")
-            #expect(console.escape == "")
-
-            // switch to terminal colors
-            console.useTerminalColors = true
-            #expect(console.useTerminalColors)
-            #expect(console.levelColor.verbose == "251m")
-            #expect(console.reset == "\u{001b}[0m")
-            #expect(console.escape == "\u{001b}[38;5;")
-        }
-    }
-
-#endif

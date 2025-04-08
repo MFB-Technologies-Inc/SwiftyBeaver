@@ -136,7 +136,7 @@ open class BaseDestination: Hashable, Equatable {
         Date()
     }
 
-    public func execute(synchronously: Bool, block: @escaping () -> Void) {
+    public func execute(synchronously: Bool, block: @escaping @Sendable () -> Void) {
         guard let queue else {
             fatalError("Queue not set")
         }

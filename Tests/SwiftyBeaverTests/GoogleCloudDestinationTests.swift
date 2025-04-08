@@ -13,17 +13,20 @@
 //
 import Foundation
 @_spi(Testable) import SwiftyBeaver
-import XCTest
+import Testing
 
-class GoogleCloudDestinationTests: XCTestCase {
-    func testUseGoogleCloudPDestination() {
+@Suite
+struct GoogleCloudDestinationTests {
+    @Test
+    func useGoogleCloudPDestination() {
         let log = SwiftyBeaver.Destinations()
         let gcpDestination = GoogleCloudDestination(serviceName: "TEST")
         gcpDestination.minLevel = .verbose
-        XCTAssertTrue(log.addDestination(gcpDestination))
+        #expect(log.addDestination(gcpDestination))
     }
 
-    func testSend() {
+    @Test
+    func send() {
         // let dateStr = formatter.stringFromDate(NSDate())
         let msg = "test message\nNewlineäößø"
         let thread = ""
@@ -32,19 +35,22 @@ class GoogleCloudDestinationTests: XCTestCase {
         let line: UInt = 123
 
         let gcpDestination = GoogleCloudDestination(serviceName: "TEST")
-        let str = gcpDestination.send(.verbose, msg: msg, thread: thread, file: file, function: function, line: line)
-        XCTAssertNotNil(str)
+        let str = gcpDestination.send(
+            .verbose, msg: msg, thread: thread, file: file, function: function, line: line
+        )
+        #expect(str != nil)
         if let str {
-            XCTAssertEqual(str.first, "{")
-            XCTAssertEqual(str.last, "}")
-            XCTAssertNotNil(str.range(of: "{\"service\":\"TEST\"}"))
-            XCTAssertNotNil(str.range(of: "\"severity\":\"DEBUG\""))
-            XCTAssertNotNil(str.range(of: "\"message\":\"test message\\nNewlineäößø\""))
-            XCTAssertNotNil(str.range(of: "\"functionName\":\"TestFunction()\""))
+            #expect(str.first == "{")
+            #expect(str.last == "}")
+            #expect(str.range(of: "{\"service\":\"TEST\"}") != nil)
+            #expect(str.range(of: "\"severity\":\"DEBUG\"") != nil)
+            #expect(str.range(of: "\"message\":\"test message\\nNewlineäößø\"") != nil)
+            #expect(str.range(of: "\"functionName\":\"TestFunction()\"") != nil)
         }
     }
 
-    func testContextMessage() {
+    @Test
+    func contextMessage() {
         let msg = "test message\nNewlineäößø"
         let thread = ""
         let file = "/file/path.swift"
@@ -60,96 +66,22 @@ class GoogleCloudDestinationTests: XCTestCase {
             file: file,
             function: function,
             line: line,
-            context: ["user": "Beaver", "httpRequest": ["method": "GET", "responseStatusCode": 200]]
+            context: [
+                "user": "Beaver", "httpRequest": ["method": "GET", "responseStatusCode": 200],
+            ]
         )
 
-        XCTAssertNotNil(str)
+        #expect(str != nil)
         if let str {
-            XCTAssertEqual(str.first, "{")
-            XCTAssertEqual(str.last, "}")
-            XCTAssertNotNil(str.range(of: "{\"service\":\"SwiftyBeaver\"}"))
-            XCTAssertNotNil(str.range(of: "\"severity\":\"DEBUG\""))
-            XCTAssertNotNil(str.range(of: "\"message\":\"test message\\nNewlineäößø\""))
-            XCTAssertNotNil(str.range(of: "\"functionName\":\"TestFunction()\""))
-            XCTAssertNotNil(str.range(of: "\"user\":\"Beaver\""))
-            XCTAssertNotNil(str.range(of: "\"method\":\"GET\""))
-            XCTAssertNotNil(str.range(of: "\"responseStatusCode\":200"))
+            #expect(str.first == "{")
+            #expect(str.last == "}")
+            #expect(str.range(of: "{\"service\":\"SwiftyBeaver\"}") != nil)
+            #expect(str.range(of: "\"severity\":\"DEBUG\"") != nil)
+            #expect(str.range(of: "\"message\":\"test message\\nNewlineäößø\"") != nil)
+            #expect(str.range(of: "\"functionName\":\"TestFunction()\"") != nil)
+            #expect(str.range(of: "\"user\":\"Beaver\"") != nil)
+            #expect(str.range(of: "\"method\":\"GET\"") != nil)
+            #expect(str.range(of: "\"responseStatusCode\":200") != nil)
         }
     }
 }
-
-#if canImport(Testing)
-    import Testing
-
-    @Suite
-    struct _GoogleCloudDestinationTests {
-        @Test
-        func useGoogleCloudPDestination() {
-            let log = SwiftyBeaver.Destinations()
-            let gcpDestination = GoogleCloudDestination(serviceName: "TEST")
-            gcpDestination.minLevel = .verbose
-            #expect(log.addDestination(gcpDestination))
-        }
-
-        @Test
-        func send() {
-            // let dateStr = formatter.stringFromDate(NSDate())
-            let msg = "test message\nNewlineäößø"
-            let thread = ""
-            let file = "/file/path.swift"
-            let function = "TestFunction()"
-            let line: UInt = 123
-
-            let gcpDestination = GoogleCloudDestination(serviceName: "TEST")
-            let str = gcpDestination.send(
-                .verbose, msg: msg, thread: thread, file: file, function: function, line: line
-            )
-            #expect(str != nil)
-            if let str {
-                #expect(str.first == "{")
-                #expect(str.last == "}")
-                #expect(str.range(of: "{\"service\":\"TEST\"}") != nil)
-                #expect(str.range(of: "\"severity\":\"DEBUG\"") != nil)
-                #expect(str.range(of: "\"message\":\"test message\\nNewlineäößø\"") != nil)
-                #expect(str.range(of: "\"functionName\":\"TestFunction()\"") != nil)
-            }
-        }
-
-        @Test
-        func contextMessage() {
-            let msg = "test message\nNewlineäößø"
-            let thread = ""
-            let file = "/file/path.swift"
-            let function = "TestFunction()"
-            let line: UInt = 123
-
-            let gcd = GoogleCloudDestination(serviceName: "SwiftyBeaver")
-
-            let str = gcd.send(
-                .verbose,
-                msg: msg,
-                thread: thread,
-                file: file,
-                function: function,
-                line: line,
-                context: [
-                    "user": "Beaver", "httpRequest": ["method": "GET", "responseStatusCode": 200],
-                ]
-            )
-
-            #expect(str != nil)
-            if let str {
-                #expect(str.first == "{")
-                #expect(str.last == "}")
-                #expect(str.range(of: "{\"service\":\"SwiftyBeaver\"}") != nil)
-                #expect(str.range(of: "\"severity\":\"DEBUG\"") != nil)
-                #expect(str.range(of: "\"message\":\"test message\\nNewlineäößø\"") != nil)
-                #expect(str.range(of: "\"functionName\":\"TestFunction()\"") != nil)
-                #expect(str.range(of: "\"user\":\"Beaver\"") != nil)
-                #expect(str.range(of: "\"method\":\"GET\"") != nil)
-                #expect(str.range(of: "\"responseStatusCode\":200") != nil)
-            }
-        }
-    }
-
-#endif
