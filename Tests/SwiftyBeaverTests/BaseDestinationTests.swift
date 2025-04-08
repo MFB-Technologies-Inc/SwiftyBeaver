@@ -329,15 +329,15 @@ class BaseDestinationTests: XCTestCase {
         var str = ""
 
         str = obj.levelWord(SwiftyBeaver.Level.verbose)
-        XCTAssertNotNil(str, "VERBOSE")
+        XCTAssertEqual(str, "VERBOSE")
         str = obj.levelWord(SwiftyBeaver.Level.debug)
-        XCTAssertNotNil(str, "DEBUG")
+        XCTAssertEqual(str, "DEBUG")
         str = obj.levelWord(SwiftyBeaver.Level.info)
-        XCTAssertNotNil(str, "INFO")
+        XCTAssertEqual(str, "INFO")
         str = obj.levelWord(SwiftyBeaver.Level.warning)
-        XCTAssertNotNil(str, "WARNING")
+        XCTAssertEqual(str, "WARNING")
         str = obj.levelWord(SwiftyBeaver.Level.error)
-        XCTAssertNotNil(str, "ERROR")
+        XCTAssertEqual(str, "ERROR")
 
         // custom level strings
         obj.levelString.verbose = "Who cares"
@@ -347,15 +347,15 @@ class BaseDestinationTests: XCTestCase {
         obj.levelString.error = "OMG!!!"
 
         str = obj.levelWord(SwiftyBeaver.Level.verbose)
-        XCTAssertNotNil(str, "Who cares")
+        XCTAssertEqual(str, "Who cares")
         str = obj.levelWord(SwiftyBeaver.Level.debug)
-        XCTAssertNotNil(str, "Look")
+        XCTAssertEqual(str, "Look")
         str = obj.levelWord(SwiftyBeaver.Level.info)
-        XCTAssertNotNil(str, "Interesting")
+        XCTAssertEqual(str, "Interesting")
         str = obj.levelWord(SwiftyBeaver.Level.warning)
-        XCTAssertNotNil(str, "Oh oh")
+        XCTAssertEqual(str, "Oh oh")
         str = obj.levelWord(SwiftyBeaver.Level.error)
-        XCTAssertNotNil(str, "OMG!!!")
+        XCTAssertEqual(str, "OMG!!!")
     }
 
     func testColorForLevel() {
@@ -364,33 +364,33 @@ class BaseDestinationTests: XCTestCase {
 
         // empty on default
         str = obj.colorForLevel(SwiftyBeaver.Level.verbose)
-        XCTAssertNotNil(str, "")
+        XCTAssertEqual(str, "")
         str = obj.colorForLevel(SwiftyBeaver.Level.debug)
-        XCTAssertNotNil(str, "")
+        XCTAssertEqual(str, "")
         str = obj.colorForLevel(SwiftyBeaver.Level.info)
-        XCTAssertNotNil(str, "")
+        XCTAssertEqual(str, "")
         str = obj.colorForLevel(SwiftyBeaver.Level.warning)
-        XCTAssertNotNil(str, "")
+        XCTAssertEqual(str, "")
         str = obj.colorForLevel(SwiftyBeaver.Level.error)
-        XCTAssertNotNil(str, "")
+        XCTAssertEqual(str, "")
 
         // custom level color strings
-        obj.levelString.verbose = "silver"
-        obj.levelString.debug = "green"
-        obj.levelString.info = "blue"
-        obj.levelString.warning = "yellow"
-        obj.levelString.error = "red"
+        obj.levelColor.verbose = "silver"
+        obj.levelColor.debug = "green"
+        obj.levelColor.info = "blue"
+        obj.levelColor.warning = "yellow"
+        obj.levelColor.error = "red"
 
         str = obj.colorForLevel(SwiftyBeaver.Level.verbose)
-        XCTAssertNotNil(str, "silver")
+        XCTAssertEqual(str, "silver")
         str = obj.colorForLevel(SwiftyBeaver.Level.debug)
-        XCTAssertNotNil(str, "green")
+        XCTAssertEqual(str, "green")
         str = obj.colorForLevel(SwiftyBeaver.Level.info)
-        XCTAssertNotNil(str, "blue")
+        XCTAssertEqual(str, "blue")
         str = obj.colorForLevel(SwiftyBeaver.Level.warning)
-        XCTAssertNotNil(str, "yellow")
+        XCTAssertEqual(str, "yellow")
         str = obj.colorForLevel(SwiftyBeaver.Level.error)
-        XCTAssertNotNil(str, "red")
+        XCTAssertEqual(str, "red")
     }
 
     func testFileNameOfFile() {
