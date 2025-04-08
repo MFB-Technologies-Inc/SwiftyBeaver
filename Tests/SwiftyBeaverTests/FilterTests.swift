@@ -5,7 +5,7 @@
 // LICENSE file in the root directory of this source tree.
 
 import Foundation
-@testable import SwiftyBeaver
+@_spi(Testable) import SwiftyBeaver
 import XCTest
 
 class FilterTests: XCTestCase {

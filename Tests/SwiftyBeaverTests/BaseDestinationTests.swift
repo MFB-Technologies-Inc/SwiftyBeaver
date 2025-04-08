@@ -5,18 +5,10 @@
 // LICENSE file in the root directory of this source tree.
 
 import Foundation
-@testable import SwiftyBeaver
+@_spi(Testable) import SwiftyBeaver
 import XCTest
 
 class BaseDestinationTests: XCTestCase {
-    override func setUp() {
-        super.setUp()
-    }
-
-    override func tearDown() {
-        super.tearDown()
-    }
-
     func testInit() {
         let obj = BaseDestination()
         XCTAssertNotNil(obj.queue)

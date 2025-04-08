@@ -53,8 +53,10 @@ open class BaseDestination: Hashable, Equatable {
         public var fault = "" // red
     }
 
-    var reset = ""
-    var escape = ""
+    @_spi(Testable)
+    public var reset = ""
+    @_spi(Testable)
+    public var escape = ""
 
     var filters = [FilterType]()
     let formatter = DateFormatter()
@@ -66,7 +68,8 @@ open class BaseDestination: Hashable, Equatable {
 
     // each destination instance must have an own serial queue to ensure serial output
     // GCD gives it a prioritization between User Initiated and Utility
-    var queue: DispatchQueue? // dispatch_queue_t?
+    @_spi(Testable)
+    public var queue: DispatchQueue? // dispatch_queue_t?
     var debugPrint = false // set to true to debug the internal filter logic of the class
 
     public init() {
@@ -200,7 +203,8 @@ open class BaseDestination: Hashable, Equatable {
     // swiftlint:disable function_body_length
     // swiftlint:disable function_parameter_count
     /// returns the log message based on the format pattern
-    func formatMessage(
+    @_spi(Testable)
+    public func formatMessage(
         _ format: String,
         level: SwiftyBeaver.Level,
         msg: String,
@@ -286,7 +290,8 @@ open class BaseDestination: Hashable, Equatable {
 
     // swiftlint:disable function_parameter_count
     /// returns the log payload as optional JSON string
-    func messageToJSON(
+    @_spi(Testable)
+    public func messageToJSON(
         _ level: SwiftyBeaver.Level,
         msg: String,
         thread: String,
@@ -314,7 +319,8 @@ open class BaseDestination: Hashable, Equatable {
     // swiftlint:enable function_parameter_count
 
     /// returns the string of a level
-    func levelWord(_ level: SwiftyBeaver.Level) -> String {
+    @_spi(Testable)
+    public func levelWord(_ level: SwiftyBeaver.Level) -> String {
         var str = ""
 
         switch level {
@@ -343,7 +349,8 @@ open class BaseDestination: Hashable, Equatable {
     }
 
     /// returns color string for level
-    func colorForLevel(_ level: SwiftyBeaver.Level) -> String {
+    @_spi(Testable)
+    public func colorForLevel(_ level: SwiftyBeaver.Level) -> String {
         var color = ""
 
         switch level {
@@ -372,7 +379,8 @@ open class BaseDestination: Hashable, Equatable {
     }
 
     /// returns the filename of a path
-    func fileNameOfFile(_ file: String) -> String {
+    @_spi(Testable)
+    public func fileNameOfFile(_ file: String) -> String {
         let fileParts = file.components(separatedBy: "/")
         if let lastPart = fileParts.last {
             return lastPart
@@ -381,7 +389,8 @@ open class BaseDestination: Hashable, Equatable {
     }
 
     /// returns the filename without suffix (= file ending) of a path
-    func fileNameWithoutSuffix(_ file: String) -> String {
+    @_spi(Testable)
+    public func fileNameWithoutSuffix(_ file: String) -> String {
         let fileName = fileNameOfFile(file)
 
         if !fileName.isEmpty {
@@ -395,7 +404,8 @@ open class BaseDestination: Hashable, Equatable {
 
     /// returns a formatted date string
     /// optionally in a given abbreviated timezone like "UTC"
-    func formatDate(_ dateFormat: String, timeZone: String = "") -> String {
+    @_spi(Testable)
+    public func formatDate(_ dateFormat: String, timeZone: String = "") -> String {
         if !timeZone.isEmpty {
             formatter.timeZone = TimeZone(abbreviation: timeZone)
         }
@@ -477,7 +487,8 @@ open class BaseDestination: Hashable, Equatable {
     /// Answer whether the destination has any message filters
     /// returns boolean and is used to decide whether to resolve
     /// the message before invoking shouldLevelBeLogged
-    func hasMessageFilters() -> Bool {
+    @_spi(Testable)
+    open func hasMessageFilters() -> Bool {
         !getFiltersTargeting(
             Filter.TargetType.message(.equals([], true)),
             fromFilters: filters
@@ -487,7 +498,8 @@ open class BaseDestination: Hashable, Equatable {
     // swiftlint:disable cyclomatic_complexity
     /// checks if level is at least minLevel or if a minLevel filter for that path does exist
     /// returns boolean and can be used to decide if a message should be logged or not
-    func shouldLevelBeLogged(
+    @_spi(Testable)
+    open func shouldLevelBeLogged(
         _ level: SwiftyBeaver.Level,
         path: String,
         function: String,

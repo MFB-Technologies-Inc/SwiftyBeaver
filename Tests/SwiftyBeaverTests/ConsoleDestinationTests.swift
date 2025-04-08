@@ -5,21 +5,12 @@
 // LICENSE file in the root directory of this source tree.
 
 import Foundation
-@testable import SwiftyBeaver
+@_spi(Testable) import SwiftyBeaver
 import XCTest
 
 class ConsoleDestinationTests: XCTestCase {
-    override func setUp() {
-        super.setUp()
-        SwiftyBeaver.removeAllDestinations()
-    }
-
-    override func tearDown() {
-        super.tearDown()
-    }
-
     func testUseTerminalColors() {
-        let log = SwiftyBeaver.self
+        let log = SwiftyBeaver.Destinations()
         let console = ConsoleDestination()
         XCTAssertTrue(log.addDestination(console))
 

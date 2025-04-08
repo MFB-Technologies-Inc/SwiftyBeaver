@@ -5,23 +5,14 @@
 // LICENSE file in the root directory of this source tree.
 
 import Foundation
-@testable import SwiftyBeaver
+@_spi(Testable) import SwiftyBeaver
 import XCTest
 
 class SwiftyBeaverTests: XCTestCase {
     var instanceVar = "an instance variable"
 
-    override func setUp() {
-        super.setUp()
-        SwiftyBeaver.removeAllDestinations()
-    }
-
-    override func tearDown() {
-        super.tearDown()
-    }
-
     func testAddDestination() {
-        let log = SwiftyBeaver.self
+        let log = SwiftyBeaver.Destinations()
 
         // add invalid destination
         XCTAssertEqual(log.countDestinations(), 0)
@@ -44,7 +35,7 @@ class SwiftyBeaverTests: XCTestCase {
     }
 
     func testRemoveDestination() {
-        let log = SwiftyBeaver.self
+        let log = SwiftyBeaver.Destinations()
 
         // remove invalid destination
         XCTAssertEqual(log.countDestinations(), 0)
@@ -72,7 +63,7 @@ class SwiftyBeaverTests: XCTestCase {
     }
 
     func testLogVerifiesIfShouldLogOnAllDestinations() {
-        let log = SwiftyBeaver.self
+        let log = SwiftyBeaver.Destinations()
 
         let dest1 = MockDestination()
         dest1.asynchronously = false
@@ -106,7 +97,7 @@ class SwiftyBeaverTests: XCTestCase {
     }
 
     func testLogCallsAllDestinations() {
-        let log = SwiftyBeaver.self
+        let log = SwiftyBeaver.Destinations()
 
         let dest1 = MockDestination()
         dest1.asynchronously = false
@@ -149,13 +140,13 @@ class SwiftyBeaverTests: XCTestCase {
     }
 
     func testLoggingWithoutDestination() {
-        let log = SwiftyBeaver.self
+        let log = SwiftyBeaver.Destinations()
         // no destination was set, yet
         log.verbose("Where do I log to?")
     }
 
     func testDestinationIntegration() {
-        let log = SwiftyBeaver.self
+        let log = SwiftyBeaver.Destinations()
         log.verbose("that should lead to nowhere")
 
         // add console
@@ -197,7 +188,7 @@ class SwiftyBeaverTests: XCTestCase {
     }
 
     func testColors() {
-        let log = SwiftyBeaver.self
+        let log = SwiftyBeaver.Destinations()
         log.verbose("that should lead to nowhere")
 
         // add console
@@ -219,7 +210,7 @@ class SwiftyBeaverTests: XCTestCase {
     }
 
     func testUptime() {
-        let log = SwiftyBeaver.self
+        let log = SwiftyBeaver.Destinations()
         log.verbose("that should lead to nowhere")
 
         // add console
@@ -242,7 +233,7 @@ class SwiftyBeaverTests: XCTestCase {
     }
 
     func testModifiedColors() {
-        let log = SwiftyBeaver.self
+        let log = SwiftyBeaver.Destinations()
 
         // add console
         let console = ConsoleDestination()
@@ -263,7 +254,7 @@ class SwiftyBeaverTests: XCTestCase {
     }
 
     func testDifferentMessageTypes() {
-        let log = SwiftyBeaver.self
+        let log = SwiftyBeaver.Destinations()
 
         // add console
         let console = ConsoleDestination()
@@ -294,7 +285,7 @@ class SwiftyBeaverTests: XCTestCase {
     }
 
     func testAutoClosure() {
-        let log = SwiftyBeaver.self
+        let log = SwiftyBeaver.Destinations()
         // add console
         let console = ConsoleDestination()
         XCTAssertTrue(log.addDestination(console))
@@ -303,7 +294,7 @@ class SwiftyBeaverTests: XCTestCase {
     }
 
     func testLongRunningTaskIsNotExecutedWhenLoggingUnderMinLevel() {
-        let log = SwiftyBeaver.self
+        let log = SwiftyBeaver.Destinations()
 
         // add console
         let console = ConsoleDestination()
@@ -327,16 +318,16 @@ class SwiftyBeaverTests: XCTestCase {
 
     func testStripParams() {
         var f = "singleParam"
-        XCTAssertEqual(SwiftyBeaver.stripParams(function: f), "singleParam()")
+        XCTAssertEqual(SwiftyBeaver.Destinations.stripParams(function: f), "singleParam()")
         f = "logWithParamFunc(_:foo:hello:)"
-        XCTAssertEqual(SwiftyBeaver.stripParams(function: f), "logWithParamFunc()")
+        XCTAssertEqual(SwiftyBeaver.Destinations.stripParams(function: f), "logWithParamFunc()")
         f = "aFunc()"
-        XCTAssertEqual(SwiftyBeaver.stripParams(function: f), "aFunc()")
+        XCTAssertEqual(SwiftyBeaver.Destinations.stripParams(function: f), "aFunc()")
     }
 
     func testGetCorrectThread() {
         #if !os(Linux)
-            let log = SwiftyBeaver.self
+            let log = SwiftyBeaver.Destinations()
             let mock = MockDestination()
             // set info level on default
             mock.minLevel = .verbose
