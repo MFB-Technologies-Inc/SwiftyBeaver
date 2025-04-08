@@ -192,6 +192,49 @@
             }
         }
 
+        /// Get all available log files limited to the current maximum ``logFileAmount``, sorted increasing by the
+        /// integer postfix.
+        public func allFileUrls(fileUrl: URL) -> [URL] {
+            (1 ... logFileAmount - 1).compactMap { index in
+                let url = makeRotatedFileUrl(fileUrl, index: index)
+                if fileManager.fileExists(atPath: url._path()) {
+                    return url
+                } else {
+                    return nil
+                }
+            }
+        }
+
+        public func exportLogFiles(destination: URL) throws -> URL {
+            let coordinator = NSFileCoordinator()
+            guard let logFileURL else {
+                fatalError()
+            }
+            let directory = logFileURL.deletingLastPathComponent()
+            var coordinatorError: NSError?
+            var fileManagerError: (any Error)?
+            let expectedUrls = allFileUrls(fileUrl: logFileURL)
+            coordinator
+                .coordinate(
+                    readingItemAt: directory,
+                    options: .forUploading,
+                    error: &coordinatorError
+                ) { [fileManager] file in
+                    guard expectedUrls.contains(file) else {
+                        return
+                    }
+                    do {
+                        try fileManager.moveItem(at: file, to: destination)
+                    } catch {
+                        fileManagerError = error
+                    }
+                }
+            if let error = coordinatorError ?? fileManagerError {
+                throw error
+            }
+            return destination
+        }
+
         private func makeRotatedFileUrl(_ fileUrl: URL, index: Int) -> URL {
             // The index is appended to the file name, to preserve the original extension.
             fileUrl.deletingPathExtension()
