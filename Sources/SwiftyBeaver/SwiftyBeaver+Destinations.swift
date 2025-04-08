@@ -7,7 +7,11 @@
 import Foundation
 
 extension SwiftyBeaver {
-    open class Destinations {
+    /// Stores and mediates access to destinations.
+    ///
+    /// Destinations are accessed through `DispatchQueue`s for safe concurrent access. Any changes that include internal
+    /// access to `_destinations` need to be carefully checked.
+    open class Destinations: @unchecked Sendable {
         // a set of active destinations
         private var _destinations = Set<BaseDestination>()
 
