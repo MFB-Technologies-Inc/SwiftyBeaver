@@ -90,7 +90,7 @@ class DestinationSetTests: XCTestCase {
      */
 
     private func startMutatingDestinations(
-        log: SwiftyBeaver.Type,
+        log: SwiftyBeaver.Destinations,
         queue: DispatchQueue,
         expectation: XCTestExpectation,
         onGoingMutationCount: Int = 0
@@ -120,7 +120,7 @@ class DestinationSetTests: XCTestCase {
         }
     }
 
-    private func startSpammingLogs(log: SwiftyBeaver.Type, queue: DispatchQueue) {
+    private func startSpammingLogs(log: SwiftyBeaver.Destinations, queue: DispatchQueue) {
         queue.async { [weak self, weak queue] in
             log.info("Test Message")
 
