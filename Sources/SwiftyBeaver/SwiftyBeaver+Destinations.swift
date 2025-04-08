@@ -9,7 +9,13 @@ import Foundation
 extension SwiftyBeaver {
     open class Destinations {
         // a set of active destinations
-        public private(set) var destinations = Set<BaseDestination>()
+        private var _destinations = Set<BaseDestination>()
+
+        public var destinations: Set<BaseDestination> {
+            Self.queue.sync(flags: DispatchWorkItemFlags.barrier) {
+                _destinations
+            }
+        }
 
         /// A private queue for synchronizing access to `destinations`.
         /// Read accesses are done concurrently.
@@ -22,10 +28,10 @@ extension SwiftyBeaver {
         @discardableResult
         open func addDestination(_ destination: BaseDestination) -> Bool {
             Self.queue.sync(flags: DispatchWorkItemFlags.barrier) {
-                if destinations.contains(destination) {
+                if _destinations.contains(destination) {
                     return false
                 }
-                destinations.insert(destination)
+                _destinations.insert(destination)
                 return true
             }
         }
@@ -34,10 +40,10 @@ extension SwiftyBeaver {
         @discardableResult
         open func removeDestination(_ destination: BaseDestination) -> Bool {
             Self.queue.sync(flags: DispatchWorkItemFlags.barrier) {
-                if destinations.contains(destination) == false {
+                if _destinations.contains(destination) == false {
                     return false
                 }
-                destinations.remove(destination)
+                _destinations.remove(destination)
                 return true
             }
         }
@@ -45,13 +51,13 @@ extension SwiftyBeaver {
         /// if you need to start fresh
         open func removeAllDestinations() {
             Self.queue.sync(flags: DispatchWorkItemFlags.barrier) {
-                destinations.removeAll()
+                _destinations.removeAll()
             }
         }
 
         /// returns the amount of destinations
         open func countDestinations() -> Int {
-            Self.queue.sync { destinations.count }
+            Self.queue.sync { _destinations.count }
         }
 
         /// internal helper which dispatches send to dedicated queue if minLevel is ok
@@ -66,7 +72,6 @@ extension SwiftyBeaver {
             context: Any?
         ) {
             var resolvedMessage: String?
-            let destinations = Self.queue.sync { self.destinations }
             for dest in destinations {
                 guard let queue = dest.queue else {
                     continue
@@ -246,7 +251,6 @@ extension SwiftyBeaver {
         /// returns: true if all messages flushed, false if timeout or error occurred
         public func flush(secondTimeout: Int64) -> Bool {
             let grp = DispatchGroup()
-            let destinations = Self.queue.sync { self.destinations }
             for dest in destinations {
                 guard let queue = dest.queue else {
                     continue
