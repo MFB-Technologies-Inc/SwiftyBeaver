@@ -28,3 +28,31 @@ class ConsoleDestinationTests: XCTestCase {
         XCTAssertEqual(console.escape, "\u{001b}[38;5;")
     }
 }
+
+#if canImport(Testing)
+    import Testing
+
+    @Suite
+    struct _ConsoleDestinationTests {
+        @Test
+        func useTerminalColors() {
+            let log = SwiftyBeaver.Destinations()
+            let console = ConsoleDestination()
+            #expect(log.addDestination(console))
+
+            // default xcode colors
+            #expect(!console.useTerminalColors)
+            #expect(console.levelColor.verbose == "⬜️ ")
+            #expect(console.reset == "")
+            #expect(console.escape == "")
+
+            // switch to terminal colors
+            console.useTerminalColors = true
+            #expect(console.useTerminalColors)
+            #expect(console.levelColor.verbose == "251m")
+            #expect(console.reset == "\u{001b}[0m")
+            #expect(console.escape == "\u{001b}[38;5;")
+        }
+    }
+
+#endif
