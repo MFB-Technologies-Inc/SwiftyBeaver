@@ -210,7 +210,7 @@ class DestinationSetTests: XCTestCase {
 
             await confirmation(
                 "Enough mutations on log destinations were made to likely trigger the race condition",
-                expectedCount: 1000
+                expectedCount: 2000
             ) { enoughMutationsMade in
                 await withTaskGroup(of: Void.self) { taskGroup in
                     Self.startMutatingDestinations(log: log, queue: serialQueue, taskGroup: &taskGroup)
