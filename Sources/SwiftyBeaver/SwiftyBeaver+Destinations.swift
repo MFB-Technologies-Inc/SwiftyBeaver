@@ -93,15 +93,17 @@ extension SwiftyBeaver {
                     let f = Self.stripParams(function: function)
 
                     if dest.asynchronously {
+                        let dest = UncheckedSendable(wrapped: dest)
+                        let context = UncheckedSendable(wrapped: context)
                         queue.async {
-                            _ = dest.send(
+                            _ = dest.wrapped.send(
                                 level,
                                 msg: msgStr,
                                 thread: thread,
                                 file: file,
                                 function: f,
                                 line: line,
-                                context: context
+                                context: context.wrapped
                             )
                         }
                     } else {
@@ -261,8 +263,9 @@ extension SwiftyBeaver {
                 }
                 grp.enter()
                 if dest.asynchronously {
+                    let _dest = UncheckedSendable(wrapped: dest)
                     queue.async {
-                        dest.flush()
+                        _dest.wrapped.flush()
                         grp.leave()
                     }
                 } else {
