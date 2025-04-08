@@ -145,7 +145,7 @@ class DestinationSetTests: XCTestCase {
             // add valid destinations
             let console = ConsoleDestination()
             let console2 = ConsoleDestination()
-            let file = FileDestination()
+            let file = GoogleCloudDestination(serviceName: "service-name")
 
             #expect(log.addDestination(console))
             #expect(log.addDestination(console2))
@@ -178,7 +178,7 @@ class DestinationSetTests: XCTestCase {
             // add valid destinations
             let console = ConsoleDestination()
             let console2 = ConsoleDestination()
-            let file = FileDestination()
+            let file = GoogleCloudDestination(serviceName: "service-name")
 
             #expect(log.addDestination(console))
             #expect(log.addDestination(console2))
