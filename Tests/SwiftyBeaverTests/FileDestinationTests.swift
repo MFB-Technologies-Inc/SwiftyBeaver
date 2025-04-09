@@ -136,11 +136,11 @@
         @Test
         func allFileUrls() throws {
             let path = "/tmp/testSBF.log"
-            let path1 = "/tmp/testSBF-1.log"
-            let path2 = "/tmp/testSBF-2.log"
-            let path3 = "/tmp/testSBF-3.log"
-            let path4 = "/tmp/testSBF-4.log"
-            let path5 = "/tmp/testSBF-5.log"
+            let path1 = "/tmp/testSBF.1.log"
+            let path2 = "/tmp/testSBF.2.log"
+            let path3 = "/tmp/testSBF.3.log"
+            let path4 = "/tmp/testSBF.4.log"
+            let path5 = "/tmp/testSBF.5.log"
 
             deleteFile(path: path)
             deleteFile(path: path1)
@@ -156,7 +156,7 @@
             FileManager.default.createFile(atPath: path4, contents: Data("4".utf8))
             FileManager.default.createFile(atPath: path5, contents: Data("5".utf8))
 
-            let url = try #require(URL(string: "file://" + path))
+            let url = try #require(URL(string: path))
 
             // add file
             let file = FileDestination()

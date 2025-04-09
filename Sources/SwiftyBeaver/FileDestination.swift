@@ -195,7 +195,11 @@
         /// Get all available log files limited to the current maximum ``logFileAmount``, sorted increasing by the
         /// integer postfix.
         public func allFileUrls(fileUrl: URL) -> [URL] {
-            (1 ... logFileAmount - 1).compactMap { index in
+            var urls = [URL]()
+            if fileManager.fileExists(atPath: fileUrl._path()) {
+                urls.append(fileUrl)
+            }
+            urls += (1 ... logFileAmount - 1).compactMap { index in
                 let url = makeRotatedFileUrl(fileUrl, index: index)
                 if fileManager.fileExists(atPath: url._path()) {
                     return url
@@ -203,6 +207,7 @@
                     return nil
                 }
             }
+            return urls
         }
 
         public func exportLogFiles(destination: URL) throws -> URL {
