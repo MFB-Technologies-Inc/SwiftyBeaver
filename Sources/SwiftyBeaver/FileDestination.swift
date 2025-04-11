@@ -199,12 +199,14 @@
             if fileManager.fileExists(atPath: fileUrl._path()) {
                 urls.append(fileUrl)
             }
-            urls += (1 ... logFileAmount - 1).compactMap { index in
-                let url = makeRotatedFileUrl(fileUrl, index: index)
-                if fileManager.fileExists(atPath: url._path()) {
-                    return url
-                } else {
-                    return nil
+            if logFileAmount > 1 {
+                urls += (1 ... logFileAmount - 1).compactMap { index in
+                    let url = makeRotatedFileUrl(fileUrl, index: index)
+                    if fileManager.fileExists(atPath: url._path()) {
+                        return url
+                    } else {
+                        return nil
+                    }
                 }
             }
             return urls
