@@ -210,6 +210,29 @@
             return urls
         }
 
+        public func exportLogFiles() throws -> [Data] {
+            let coordinator = NSFileCoordinator()
+            guard let logFileURL else {
+                fatalError()
+            }
+            var coordinatorError: NSError?
+            let expectedUrls = allFileUrls(fileUrl: logFileURL)
+            var data = [Data]()
+            coordinator
+                .coordinate(
+                    readingItemAt: logFileURL,
+                    error: &coordinatorError
+                ) { [fileManager] _ in
+                    data = expectedUrls.compactMap { url in
+                        fileManager.contents(atPath: url._path())
+                    }
+                }
+            if let error = coordinatorError {
+                throw error
+            }
+            return data
+        }
+
         public func exportLogFiles(destination: URL) throws -> URL {
             let coordinator = NSFileCoordinator()
             guard let logFileURL else {
