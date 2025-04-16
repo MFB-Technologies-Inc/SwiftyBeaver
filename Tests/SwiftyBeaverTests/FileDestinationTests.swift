@@ -15,7 +15,7 @@
         func fileIsWritten() {
             let log = SwiftyBeaver.Destinations()
 
-            let path = "/tmp/testSBF.log"
+            let path = "/tmp/\(functionName())_testSBF.log"
             deleteFile(path: path)
 
             // add file
@@ -96,9 +96,9 @@
         func fileIsWrittenToDeletedFolder() {
             let log = SwiftyBeaver.Destinations()
 
-            let path = "/tmp/\(UUID().uuidString)/testSBF.log"
+            let path = "/tmp/\(functionName())/testSBF.log"
             deleteFile(path: path)
-            deleteFile(path: "/tmp/\(UUID().uuidString)/testSBF.log.1")
+            deleteFile(path: "/tmp/\(functionName())/testSBF.log.1")
 
             // add file
             let file = FileDestination()
@@ -131,6 +131,82 @@
             #expect(lines[2] == "INFO: third line to log")
             #expect(lines[3] == "WARNING: fourth line with context 123")
             #expect(lines[4] == "")
+        }
+
+        @Test
+        func allFileUrls() throws {
+            let path = "/tmp/\(functionName())_testSBF.log"
+            let path1 = "/tmp/\(functionName())_testSBF.1.log"
+            let path2 = "/tmp/\(functionName())_testSBF.2.log"
+            let path3 = "/tmp/\(functionName())_testSBF.3.log"
+            let path4 = "/tmp/\(functionName())_testSBF.4.log"
+            let path5 = "/tmp/\(functionName())_testSBF.5.log"
+
+            deleteFile(path: path)
+            deleteFile(path: path1)
+            deleteFile(path: path2)
+            deleteFile(path: path3)
+            deleteFile(path: path4)
+            deleteFile(path: path5)
+
+            FileManager.default.createFile(atPath: path, contents: Data("0".utf8))
+            FileManager.default.createFile(atPath: path1, contents: Data("1".utf8))
+            FileManager.default.createFile(atPath: path2, contents: Data("2".utf8))
+            FileManager.default.createFile(atPath: path3, contents: Data("3".utf8))
+            FileManager.default.createFile(atPath: path4, contents: Data("4".utf8))
+            FileManager.default.createFile(atPath: path5, contents: Data("5".utf8))
+
+            let url = try #require(URL(string: path))
+
+            // add file
+            let file = FileDestination()
+            file.logFileAmount = 5
+            file.logFileURL = url
+
+            let fileUrls = file.allFileUrls(fileUrl: url)
+            #expect(fileUrls.map(\.absoluteString) == [
+                path,
+                path1,
+                path2,
+                path3,
+                path4,
+            ])
+        }
+
+        @Test
+        func allFileUrls_OneFile() throws {
+            let path = "/tmp/\(functionName())_testSBF.log"
+
+            deleteFile(path: path)
+
+            FileManager.default.createFile(atPath: path, contents: Data("0".utf8))
+
+            let url = try #require(URL(string: path))
+
+            // add file
+            let file = FileDestination()
+            file.logFileAmount = 1
+            file.logFileURL = url
+
+            let fileUrls = file.allFileUrls(fileUrl: url)
+            #expect(fileUrls.map(\.absoluteString) == [path])
+        }
+
+        @Test
+        func allFileUrls_ZeroFiles() throws {
+            let path = "/tmp/\(functionName())_testSBF.log"
+
+            deleteFile(path: path)
+
+            let url = try #require(URL(string: path))
+
+            // add file
+            let file = FileDestination()
+            file.logFileAmount = 1
+            file.logFileURL = url
+
+            let fileUrls = file.allFileUrls(fileUrl: url)
+            #expect(fileUrls.isEmpty)
         }
 
         // MARK: Helper Functions
@@ -167,6 +243,11 @@
             } catch {
                 print("Unable to create directory")
             }
+        }
+
+        /// Removes the `()` from the function name for use in paths
+        func functionName(function: String = #function) -> String {
+            function.trimmingCharacters(in: ["(", ")"])
         }
     }
 #endif

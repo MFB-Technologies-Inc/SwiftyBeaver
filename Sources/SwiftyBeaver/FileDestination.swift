@@ -192,6 +192,26 @@
             }
         }
 
+        /// Get all available log files limited to the current maximum ``logFileAmount``, sorted increasing by the
+        /// integer postfix.
+        public func allFileUrls(fileUrl: URL) -> [URL] {
+            var urls = [URL]()
+            if fileManager.fileExists(atPath: fileUrl._path()) {
+                urls.append(fileUrl)
+            }
+            if logFileAmount > 1 {
+                urls += (1 ... logFileAmount - 1).compactMap { index in
+                    let url = makeRotatedFileUrl(fileUrl, index: index)
+                    if fileManager.fileExists(atPath: url._path()) {
+                        return url
+                    } else {
+                        return nil
+                    }
+                }
+            }
+            return urls
+        }
+
         private func makeRotatedFileUrl(_ fileUrl: URL, index: Int) -> URL {
             // The index is appended to the file name, to preserve the original extension.
             fileUrl.deletingPathExtension()
