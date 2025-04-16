@@ -15,7 +15,7 @@
         func fileIsWritten() {
             let log = SwiftyBeaver.Destinations()
 
-            let path = "/tmp/testSBF.log"
+            let path = "/tmp/\(functionName())_testSBF.log"
             deleteFile(path: path)
 
             // add file
@@ -96,9 +96,9 @@
         func fileIsWrittenToDeletedFolder() {
             let log = SwiftyBeaver.Destinations()
 
-            let path = "/tmp/\(UUID().uuidString)/testSBF.log"
+            let path = "/tmp/\(functionName())/testSBF.log"
             deleteFile(path: path)
-            deleteFile(path: "/tmp/\(UUID().uuidString)/testSBF.log.1")
+            deleteFile(path: "/tmp/\(functionName())/testSBF.log.1")
 
             // add file
             let file = FileDestination()
@@ -135,12 +135,12 @@
 
         @Test
         func allFileUrls() throws {
-            let path = "/tmp/testSBF.log"
-            let path1 = "/tmp/testSBF.1.log"
-            let path2 = "/tmp/testSBF.2.log"
-            let path3 = "/tmp/testSBF.3.log"
-            let path4 = "/tmp/testSBF.4.log"
-            let path5 = "/tmp/testSBF.5.log"
+            let path = "/tmp/\(functionName())_testSBF.log"
+            let path1 = "/tmp/\(functionName())_testSBF.1.log"
+            let path2 = "/tmp/\(functionName())_testSBF.2.log"
+            let path3 = "/tmp/\(functionName())_testSBF.3.log"
+            let path4 = "/tmp/\(functionName())_testSBF.4.log"
+            let path5 = "/tmp/\(functionName())_testSBF.5.log"
 
             deleteFile(path: path)
             deleteFile(path: path1)
@@ -175,7 +175,7 @@
 
         @Test
         func allFileUrls_OneFile() throws {
-            let path = "/tmp/testSBF.log"
+            let path = "/tmp/\(functionName())_testSBF.log"
 
             deleteFile(path: path)
 
@@ -194,7 +194,7 @@
 
         @Test
         func allFileUrls_ZeroFiles() throws {
-            let path = "/tmp/testSBF.log"
+            let path = "/tmp/\(functionName())_testSBF.log"
 
             deleteFile(path: path)
 
@@ -243,6 +243,11 @@
             } catch {
                 print("Unable to create directory")
             }
+        }
+
+        /// Removes the `()` from the function name for use in paths
+        func functionName(function: String = #function) -> String {
+            function.trimmingCharacters(in: ["(", ")"])
         }
     }
 #endif
