@@ -9,6 +9,7 @@
 #if !os(Linux)
     import Foundation
 
+    // swiftlint:disable:next type_body_length
     open class FileDestination: BaseDestination {
         public var fileHandle: FileHandle?
         public var logFileURL: URL?
