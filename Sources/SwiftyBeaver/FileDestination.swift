@@ -223,7 +223,8 @@
 
         /// appends a string as line to a file.
         /// returns boolean about success
-        func saveToFile(str: String) -> Bool {
+        @_spi(Testable)
+        open func saveToFile(str: String) -> Bool {
             guard let url = logFileURL else {
                 Self.fallbackLog("No file URL found to save to.")
                 return false
