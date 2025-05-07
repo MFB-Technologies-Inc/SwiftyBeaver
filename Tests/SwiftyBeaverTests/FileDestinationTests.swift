@@ -209,6 +209,176 @@
             #expect(fileUrls.isEmpty)
         }
 
+        @available(iOS 16, macOS 13, tvOS 16, watchOS 9, *)
+        @Test
+        func rotateFiles() async throws {
+            let log = SwiftyBeaver.Destinations()
+
+            let path = "/tmp/\(functionName())_testSBF.log"
+            let url = try #require(URL(string: "file://" + path))
+            let path1 = "/tmp/\(functionName())_testSBF.1.log"
+            let url1 = try #require(URL(string: "file://" + path1))
+            let path2 = "/tmp/\(functionName())_testSBF.2.log"
+            let url2 = try #require(URL(string: "file://" + path2))
+            deleteFile(path: path)
+            deleteFile(path: path1)
+            deleteFile(path: path2)
+
+            // add file
+            let file = TestFileDestination()
+            file.logFileURL = url
+            file.format = "$L: $M $X"
+            file.logFileAmount = 3
+            file.logFileMaxSize = 1
+            _ = log.addDestination(file)
+
+            try await confirmation { confirmation in
+                file.confirmation = confirmation
+                log.error("first file")
+                try await Task.sleep(for: .seconds(1))
+            }
+
+            var fileUrls = file.allFileUrls(fileUrl: url)
+
+            #expect(fileUrls.count == 1)
+            if let _url = fileUrls.popLast() {
+                #expect(_url == url)
+            }
+
+            var fileLines = try #require(linesOfFile(path: path))
+            #expect(fileLines.count == 2)
+            #expect(fileLines[0] == "ERROR: first file")
+
+            try await confirmation { confirmation in
+                file.confirmation = confirmation
+                log.error("second file")
+                try await Task.sleep(for: .seconds(1))
+            }
+
+            fileUrls = file.allFileUrls(fileUrl: url)
+
+            #expect(fileUrls.count == 2)
+            if let _url = fileUrls.popLast() {
+                #expect(_url == url1)
+            }
+            if let _url = fileUrls.popLast() {
+                #expect(_url == url)
+            }
+
+            fileLines = try #require(linesOfFile(path: path))
+            #expect(fileLines.count == 2)
+            #expect(fileLines[0] == "ERROR: second file")
+
+            fileLines = try #require(linesOfFile(path: path1))
+            #expect(fileLines.count == 2)
+            #expect(fileLines[0] == "ERROR: first file")
+
+            try await confirmation { confirmation in
+                file.confirmation = confirmation
+                log.error("third file")
+                try await Task.sleep(for: .seconds(1))
+            }
+
+            fileUrls = file.allFileUrls(fileUrl: url)
+
+            #expect(fileUrls.count == 3)
+            if let _url = fileUrls.popLast() {
+                #expect(_url == url2)
+            }
+            if let _url = fileUrls.popLast() {
+                #expect(_url == url1)
+            }
+            if let _url = fileUrls.popLast() {
+                #expect(_url == url)
+            }
+
+            fileLines = try #require(linesOfFile(path: path))
+            #expect(fileLines.count == 2)
+            #expect(fileLines[0] == "ERROR: third file")
+
+            fileLines = try #require(linesOfFile(path: path1))
+            #expect(fileLines.count == 2)
+            #expect(fileLines[0] == "ERROR: second file")
+
+            fileLines = try #require(linesOfFile(path: path2))
+            #expect(fileLines.count == 2)
+            #expect(fileLines[0] == "ERROR: first file")
+
+            try await confirmation { confirmation in
+                file.confirmation = confirmation
+                log.error("fourth file")
+                try await Task.sleep(for: .seconds(1))
+            }
+
+            fileUrls = file.allFileUrls(fileUrl: url)
+
+            #expect(fileUrls.count == 3)
+            if let _url = fileUrls.popLast() {
+                #expect(_url == url2)
+            }
+            if let _url = fileUrls.popLast() {
+                #expect(_url == url1)
+            }
+            if let _url = fileUrls.popLast() {
+                #expect(_url == url)
+            }
+
+            fileLines = try #require(linesOfFile(path: path))
+            #expect(fileLines.count == 2)
+            #expect(fileLines.first == "ERROR: fourth file")
+
+            fileLines = try #require(linesOfFile(path: path1))
+            #expect(fileLines.count == 2)
+            #expect(fileLines.first == "ERROR: third file")
+
+            fileLines = try #require(linesOfFile(path: path2))
+            #expect(fileLines.count == 2)
+            #expect(fileLines.first == "ERROR: second file")
+        }
+
+        @available(iOS 16, macOS 13, tvOS 16, watchOS 9, *)
+        @Test
+        func openAfterClose() async throws {
+            let log = SwiftyBeaver.Destinations()
+
+            let path = "/tmp/\(functionName())_testSBF.log"
+            let url = try #require(URL(string: "file://" + path))
+            deleteFile(path: path)
+
+            // add file
+            let file1 = TestFileDestination()
+            file1.logFileURL = url
+            file1.format = "$L: $M $X"
+            _ = log.addDestination(file1)
+
+            try await confirmation { confirmation in
+                file1.confirmation = confirmation
+                log.error("first")
+                try await Task.sleep(for: .seconds(1))
+            }
+
+            var fileLines = try #require(linesOfFile(path: path))
+            #expect(fileLines.count == 2)
+            #expect(fileLines[0] == "ERROR: first")
+
+            let file2 = TestFileDestination()
+            file2.logFileURL = url
+            file2.format = "$L: $M $X"
+            _ = log.removeDestination(file1)
+            _ = log.addDestination(file2)
+
+            try await confirmation { confirmation in
+                file2.confirmation = confirmation
+                log.error("second")
+                try await Task.sleep(for: .seconds(1))
+            }
+
+            fileLines = try #require(linesOfFile(path: path))
+            #expect(fileLines.count == 3)
+            #expect(fileLines[0] == "ERROR: first")
+            #expect(fileLines[1] == "ERROR: second")
+        }
+
         // MARK: Helper Functions
 
         // deletes a file if it is existing
@@ -248,6 +418,16 @@
         /// Removes the `()` from the function name for use in paths
         func functionName(function: String = #function) -> String {
             function.trimmingCharacters(in: ["(", ")"])
+        }
+    }
+
+    final class TestFileDestination: FileDestination {
+        var confirmation: Testing.Confirmation?
+
+        override func saveToFile(str: String) -> Bool {
+            let result = super.saveToFile(str: str)
+            confirmation?.confirm()
+            return result
         }
     }
 #endif

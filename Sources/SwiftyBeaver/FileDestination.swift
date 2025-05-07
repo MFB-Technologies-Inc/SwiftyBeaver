@@ -9,7 +9,9 @@
 #if !os(Linux)
     import Foundation
 
+    // swiftlint:disable:next type_body_length
     open class FileDestination: BaseDestination {
+        public var fileHandle: FileHandle?
         public var logFileURL: URL?
         public var syncAfterEachWrite: Bool = false
         public var colored: Bool = false {
@@ -186,6 +188,8 @@
 
                 // Finally, move the current file
                 let newFile = makeRotatedFileUrl(fileUrl, index: firstIndex)._path()
+                try fileHandle?._close()
+                fileHandle = nil
                 try fileManager.moveItem(atPath: filePath, toPath: newFile)
             } catch {
                 Self.fallbackLog("Could not rotate file. Error: \(String(describing: error))")
@@ -220,7 +224,8 @@
 
         /// appends a string as line to a file.
         /// returns boolean about success
-        func saveToFile(str: String) -> Bool {
+        @_spi(Testable)
+        open func saveToFile(str: String) -> Bool {
             guard let url = logFileURL else {
                 Self.fallbackLog("No file URL found to save to.")
                 return false
@@ -265,14 +270,12 @@
                         #endif
                     }
 
-                    let fileHandle = try fileHandle(forWritingTo: url)
-                    try fileHandle._seekToEnd()
+                    let fileHandle = try getOrCreateFileHandle(url: url)
 
                     try fileHandle._write(contentsOf: data)
                     if syncAfterEachWrite {
                         try fileHandle._synchronize()
                     }
-                    try fileHandle._close()
                     success = true
                 } catch {
                     Self.fallbackLog("Could not write to file \(url). Error: \(String(describing: error))")
@@ -287,6 +290,17 @@
             return success
         }
 
+        private func getOrCreateFileHandle(url: URL) throws -> FileHandle {
+            if let fileHandle {
+                return fileHandle
+            } else {
+                let fileHandle = try fileHandle(forWritingTo: url)
+                try fileHandle._seekToEnd()
+                self.fileHandle = fileHandle
+                return fileHandle
+            }
+        }
+
         /// deletes log file.
         /// returns true if file was removed or does not exist, false otherwise
         public func deleteLogFile() -> Bool {
@@ -299,6 +313,14 @@
             } catch {
                 Self.fallbackLog("Could not remove file \(url). Error: \(String(describing: error))")
                 return false
+            }
+        }
+
+        deinit {
+            do {
+                try fileHandle?._close()
+            } catch {
+                Self.fallbackLog("Failed to close file handle in deinit. Error: \(String(describing: error))")
             }
         }
     }
